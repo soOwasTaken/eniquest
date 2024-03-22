@@ -13,13 +13,13 @@ app.use(express.static('public')); // if your frontend files are in 'public' dir
 
 app.post('/processPrompt', async (req, res) => {
     const userContent = req.body.content; // Extract the user's input sent from frontend
-    
+
     let data = JSON.stringify({
         "model": "open-mistral-7b",
         "messages": [
             {
                 "role": "user",
-                "content": "A user is asked about the limit of free speech : Please rate his answer based on the Implications question on a scale of 0 to 10 based on the criteria of reasoning quality, ethical considerations, respect for diversity, example relevance, and insight into implications. brief explanation in 7 words or less:'" + userContent + "'\"\nCriteria:\n1)Reasoning Quality: Does the response demonstrate clear and logical reasoning?\n2)Ethical Consideration: How does the response deal with ethical implications?\n3)Respect for Diversity: Does the response acknowledge and respect diverse viewpoints?\nExample Relevance: How relevant and illustrative are the examples provided?\nInsight into Implications: Does the response discuss the implications of where free speech stops?\nYou should always use this specific pattern\nScore: [Insert x/10]\nSummary: [Insert a concise sentence (max. 7 words) capturing the essence of the evaluation]\n" // Insert user input here
+                "content": "A user is asked about the limit of free speech : Please rate his answer based on the Implications question on a scale of 0 to 10 based on the criteria of reasoning quality, ethical considerations, respect for diversity, example relevance, and insight into implications. brief explanation in 7 words or less:\'" + userContent + "\'\nCriteria:\n1)Reasoning Quality: Does the response demonstrate clear and logical reasoning?\n2)Ethical Consideration: How does the response deal with ethical implications?\n3)Respect for Diversity: Does the response acknowledge and respect diverse viewpoints?\nExample Relevance: How relevant and illustrative are the examples provided?\nInsight into Implications: Does the response discuss the implications of where free speech stops?\nYou should always use this specific pattern\nScore: [Insert x/10]\nSummary: [Insert a concise sentence (max. 7 words) capturing the essence of the evaluation]\n" // Insert user input here
             }
         ],
         "temperature": 0.7,
@@ -54,7 +54,7 @@ app.post('/processPrompt', async (req, res) => {
             totalTokens: totalTokens,
             messageContent: messageContent
         };
-
+        
 
         // Append to a file
         fs.appendFile('data.json', JSON.stringify(dataToStore) + ',\n', (err) => {
@@ -64,7 +64,17 @@ app.post('/processPrompt', async (req, res) => {
         });
 
         // Optionally, send a confirmation back to the frontend
-        res.send('Data processed');
+        const content = response.data.choices[0].message.content;
+        const result = processContentForSummary(content);
+        console.log("send to front:"+ result);
+
+        if (result && result.summary) {
+            // Send back the summary to the frontend
+            res.json({ summary: result.summary });
+        } else {
+            // If no summary was found, send an appropriate message
+            res.status(404).send("Summary not found");
+        }
     })
     .catch((error) => {
         console.log(error);
@@ -118,6 +128,7 @@ function processEntryById(content, id) {
         const scoreResult = score >= 5 ? 1 : 0;
 
         return { scoreResult, summary };
+        
 
     } else {
         console.error('Pattern not found in content');
@@ -125,6 +136,20 @@ function processEntryById(content, id) {
     }
 }
 
+function processContentForSummary(content) {
+    const summaryRegex = /[^:]*:[^:]*: ([^\.]*)\./;
+    const summaryMatch = content.match(summaryRegex);
+
+    if (summaryMatch) {
+        const summary = summaryMatch[1];
+
+        return { summary };
+
+    } else {
+        console.error('Summary pattern not found in content');
+        return null;
+    }
+}
 
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
