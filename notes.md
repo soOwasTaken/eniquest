@@ -315,3 +315,14 @@ After that, the NodeServer is going to send to the front-end a answer.
 
 The `1` or `0` that come first will indicate if the user can go to the next page or not.
 And then, obviously the small sentence, for the user.
+
+## Modification to the website to show the content of the small sentence.
+
+We just returned the string from the "summary" object from the json to the answer of the call from the frontend.
+And then used a javascript script to append a new div that we added on the website to show the content of it with a little of format.
+Also added a minimum of 15 character to be able to send the prompt to the NodeServer to fix some issues with the IA that can give a good note
+from a empty message, and also to reduce spam and token use. for the moment it's a pop-up we will send a message instead later on.
+
+
+
+
