@@ -20,17 +20,22 @@ document.getElementById("hiddenInput").addEventListener("keypress", function (e)
       .then(data => {
         // Use the data object directly to append summary and change color
         const summaryParagraph = document.createElement('p');
-        summaryParagraph.classList.add("text-reveal");
         summaryParagraph.textContent = data.summary;
 
         // Change paragraph color based on scoreResult
         if (data.scoreResult === 0) {
-          summaryParagraph.style.color = 'red'; // Negative feedback
+          summaryParagraph.style.color = '#A0153E'; // Negative feedback
         } else {
-          summaryParagraph.style.color = 'green'; // Positive feedback
+          summaryParagraph.style.color = '#65B741'; // Positive feedback
         }
-        summaryDisplay.innerHTML="";
-        summaryDisplay.appendChild(summaryParagraph);
+        
+        summaryParagraph.classList.add("text-reveal"); // Add fade-in animation class
+        summaryDisplay.innerHTML = ""; // Clear previous content
+        summaryDisplay.appendChild(summaryParagraph); // Append paragraph to summaryDisplay
+        // Set timeout to trigger fade-out animation after 5 seconds
+        setTimeout(() => {
+          summaryParagraph.style.animation = "fadeOut 1s ease-in-out forwards";
+        }, 6000); // Adjust timing as needed (5000 milliseconds = 5 seconds)
       })
       .catch(error => console.error("Error:", error));
     }

@@ -46,6 +46,24 @@ app.post('/processPrompt', async (req, res) => {
         .then((response) => {
             const content = response.data.choices[0].message.content;
             const result = processEntryById(content, response.data.id);
+            const userOutput = userContent; // Assuming this is what you meant by user output
+            const totalTokens = response.data.usage.prompt_tokens + response.data.usage.total_tokens + response.data.usage.completion_tokens;
+            const messageContent = response.data.choices[0].message.content; // Adjust according to the actual response structure
+            const dataToStore = {
+              id: response.data.id,
+              userOutput: userOutput,
+              totalTokens: totalTokens,
+              messageContent: messageContent
+            };
+        
+
+        // Append to a file
+
+            fs.appendFile('data.json', JSON.stringify(dataToStore) + ',\n', (err) => {
+                if (err) throw err;
+            console.log('Data appended to file!');
+            processLatestEntry();
+        });
 
             if (result) {
                 // Now we include both the score and summary in our response to the frontend
@@ -60,6 +78,40 @@ app.post('/processPrompt', async (req, res) => {
         });
 });
 
+function processLatestEntry() {
+    const filePath = 'data.json';
+
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+
+
+            console.error('Error reading the file:', err);
+            return;
+
+        }
+
+
+        try {
+            const jsonData = JSON.parse(`[${data.slice(0, -2)}]`);
+            const lastEntry = jsonData[jsonData.length - 1]; // Assuming you want to process the last entry
+
+
+            // Now process this entry as needed
+            // For example, finding by ID would be replaced by just using lastEntry directly
+            const result = processEntryById(lastEntry.messageContent, lastEntry.id);
+            if (result) {
+                console.log(`${result.scoreResult}, ${result.summary}`);
+            }
+        } catch (parseError) {
+
+            console.error('Error parsing JSON from file:', parseError);
+
+        }
+    });
+
+}
+
+
 function processEntryById(content, id) {
 
     console.log("Content received for processing:", content); // Debug: log the content
@@ -73,7 +125,7 @@ function processEntryById(content, id) {
     if (scoreMatch && summaryMatch) {
         const score = parseInt(scoreMatch[1], 10);
         const summary = summaryMatch[1].trim();
-        const scoreResult = score >= 5 ? 1 : 0;
+        const scoreResult = score >= 6 ? 1 : 0;
 
         return { scoreResult, summary };
     } else {

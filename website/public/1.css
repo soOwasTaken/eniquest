@@ -282,7 +282,6 @@ body.splat-toggle .splat {
   position: absolute;
   left: 20px;
   width: 50px;
-
   height: 50px;
   line-height: 51px;
   box-sizing: border-box;
@@ -291,10 +290,8 @@ body.splat-toggle .splat {
   font-size: 10px;
   font-weight: bold;
   background-color: rgba(255, 255, 255, 0.2);
-
   color: rgba(0, 0, 0, 0.5);
   border-radius: 50%;
-
   cursor: pointer;
   transition: background-color 0.3s;
 }
@@ -339,59 +336,35 @@ body.single-toggle .drop:nth-child(10) {
 }
 
 
-/* title styles */
-
-.text-reveal p{
-    position: relative;
-
-    overflow: hidden;
-
-    display: block;
-    line-height: 1.2;
+#summaryDisplay {
+  text-align: center;
 }
 
-.text-reveal p::after{
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    animation: a-ltr-after 2s cubic-bezier(.77,0,.18,1) forwards;
 
-    transform: translateX(-101%);
+.text-reveal {
+  opacity: 0;
+  font-family: "Oswald", sans-serif;
+  font-size:30px;
+  animation: fadeIn 2s ease-in-out forwards;
+  text-transform:uppercase;
+  font-style:italic;
 }
 
-.text-reveal p::before{
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--bg-color);
-    animation: a-ltr-before 2s cubic-bezier(.77,0,.18,1) forwards;
-    transform: translateX(0);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.text-reveal p:nth-of-type(1)::before,
-.text-reveal p:nth-of-type(1)::after{
-
-    animation-delay: 1s;
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
-.text-reveal p:nth-of-type(2)::before,
-.text-reveal p:nth-of-type(2)::after{
-    animation-delay: 1.5s;
-}
-
-@keyframes a-ltr-after{
-    0% {transform: translateX(-100%)}
-    100% {transform: translateX(101%)}
-}
-
-@keyframes a-ltr-before{
-    0% {transform: translateX(0)}
-    100% {transform: translateX(200%)}
-}
