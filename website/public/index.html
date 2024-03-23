@@ -2,15 +2,21 @@
 <html>
 <head>
     <title>Prompt Sender</title>
+    <link rel="stylesheet" href="1.css">
 </head>
 <body>
-    <h1>Send a Prompt</h1>
-    <form id="promptForm">
-
-        <textarea id="promptInput" placeholder="Enter your prompt here"></textarea>
-        <button type="submit">Send</button>
-    </form>
-    <div id="summaryDisplay"></div>
+<section class="wrapper">
+  <div class="above-top">Where does the</div>
+  <div class="top">Freespeech</div>
+  <div class="bottom" aria-hidden="true">Freespeech</div>
+  <div class="under-bottom">stop for you?</div>
+  <div id="container-input">
+    <div id="input"></div>
+    <input type="text" id="hiddenInput">
+  </div>
+</section>
+  <div id="summaryDisplay"></div>
     <script src="script.js"></script>
+    <script src="prompt.js"></script>
 </body>
 </html>
