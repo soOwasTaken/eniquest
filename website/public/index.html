@@ -2,15 +2,28 @@
 <html>
 <head>
     <title>Prompt Sender</title>
+    <link rel="stylesheet" href="1.css">
 </head>
-<body>
-    <h1>Send a Prompt</h1>
-    <form id="promptForm">
-
-        <textarea id="promptInput" placeholder="Enter your prompt here"></textarea>
-        <button type="submit">Send</button>
-    </form>
-    <div id="summaryDisplay"></div>
+<body class="back-row-toggle splat-toggle">
+<div class="rain front-row"></div>
+<div class="rain back-row"></div>
+<section class="wrapper">
+  <div class="above-top">Where does the</div>
+  <div class="top">Freespeech</div>
+  <div class="bottom" aria-hidden="true">Freespeech</div>
+  <div class="under-bottom">stop for you?</div>
+  <div id="container-input">
+    <div id="input"></div>
+    <input type="text" id="hiddenInput">
+</section>
+  <div id="summaryDisplay"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="script.js"></script>
+    <script src="prompt.js"></script>
+    <script src ="rain.js"></script>
+    <audio id="rainAudio" loop autoplay>
+     <source src="rain-ambiant.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
 </body>
 </html>
