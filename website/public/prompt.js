@@ -73,7 +73,7 @@ window.onload = function() {
 
         if (!isMobile && !isIE) input.appendChild(cursor);
 
-        if (targetContent.length - lastContent.length > 1) setTimeout(refresh, 150);
+        if (targetContent.length - lastContent.length > 1) setTimeout(refresh, 60);
         else inputLock = false;
 
         lastContent = v;
@@ -109,7 +109,7 @@ window.onload = function() {
                 targetContent = hiddenInput.value;
 
                 if (targetContent != lastContent && !inputLock) refresh();
-            }, 100);
+            }, 10);
         }
 
     }
@@ -119,9 +119,9 @@ window.onload = function() {
 
     autoWriteTimer = setTimeout(function() {
         if (lastContent != "") return;
-        targetContent = "Please answer the question here.";
+        targetContent = "    You can type here to answer the above question.";
 
         refresh();
-    }, 800);
+    }, 100);
 }
 

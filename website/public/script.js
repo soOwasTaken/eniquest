@@ -20,6 +20,7 @@ document.getElementById("hiddenInput").addEventListener("keypress", function (e)
       .then(data => {
         // Use the data object directly to append summary and change color
         const summaryParagraph = document.createElement('p');
+        summaryParagraph.classList.add("text-reveal");
         summaryParagraph.textContent = data.summary;
 
         // Change paragraph color based on scoreResult
