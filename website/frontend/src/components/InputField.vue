@@ -32,7 +32,7 @@ export default {
 
     this.autoWriteTimer = setTimeout(() => {
       if (this.lastContent !== '') return;
-      this.targetContent = "    You can type here to answer the above question.";
+      this.targetContent = "You can type here to answer the above question.";
       this.refresh();
     }, 100);
 
@@ -175,7 +175,7 @@ export default {
 #container {
     position: absolute;
     top: 50%;
-    left: 30%;
+    left: 26.5%;
 }
 
 #input {
@@ -186,6 +186,7 @@ export default {
     font-size:32px;
     white-space: pre-wrap;
     word-wrap:break-word;
+    text-transform:uppercase;
     width:1000px;
 }
 
