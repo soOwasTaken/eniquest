@@ -45,7 +45,7 @@ body, html {
 }
 
 .bottom {
-  clip-path: polygon(0% 60%, 100% 70%, 100% 100%, 0% 100%);
+  clip-path: polygon(0% 60%, 100% 50%, 100% 100%, 0% 100%);
   color: transparent;
   background: linear-gradient(177deg, black 53%, var(--text-color) 65%);
   background-clip: text;
@@ -236,6 +236,7 @@ body.back-row-toggle .rain.back-row {
   width: 15px;
   height: 10px;
   border-top: 2px dotted rgba(255, 255, 255, 0.5);
+
   border-radius: 50%;
   opacity: 1;
   transform: scale(0);
@@ -366,4 +367,5 @@ body.single-toggle .drop:nth-child(10) {
     opacity: 0;
   }
 }
+
 
