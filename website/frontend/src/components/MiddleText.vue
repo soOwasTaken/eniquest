@@ -47,7 +47,7 @@ export default {
   clip-path: polygon(0% 60%, 100% 50%, 100% 100%, 0% 100%);
   color: transparent;
   background: -webkit-linear-gradient(177deg, black 53%, white 65%);
-  background: linear-gradient(177deg, black 53%, white 68%);
+  background: linear-gradient(177deg, black 53%, white 65%);
   background-clip: text;
   -webkit-background-clip: text;
   transform: translateX(-0.02em);
