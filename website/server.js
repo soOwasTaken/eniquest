@@ -8,7 +8,7 @@ const port = 3000;
 const filePath = 'data.json';
 
 app.use(bodyParser.json()); // to parse JSON body
-app.use(express.static('public')); // if your frontend files are in 'public' directory
+//app.use(express.static('public')); // if your frontend files are in 'public' directory
 
 app.post('/processPrompt', async (req, res) => {
     const userContent = req.body.content; // Extract the user's input sent from frontend
