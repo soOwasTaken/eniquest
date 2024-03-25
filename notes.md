@@ -8,7 +8,6 @@ tags: []
 
 ..
 
-
 ## Idée première page.
 
 Page d'accueil, index.html,
@@ -25,9 +24,7 @@ Le format de la réponse doit être écrit ainsi "DECIDE LATER".
 
 Ambitieux, passe a la suite.
 
-
-
-19/03/2024 
+19/03/2024
 
 For the moment, trying to find a good way to setup our workflow, we want a page that the user can interrect with for the entry Page
 of our project, the idea is that we are going to show to the user a "situation" and put a prompt bellow it.
@@ -39,7 +36,6 @@ to check if the user completed the test or not.
 Obviously this is a idea, so today i try to check if everything is possible to work as we expect, so i'll give it a go, here is a walkthrough
 step-by-step on how i proceed and think while doing so.
 
-
 ## We need to use a LLM to analyse the prompt of the user.
 
 ### How we setup that.
@@ -49,7 +45,7 @@ step-by-step on how i proceed and think while doing so.
 OpenLLM has everything we need, it's running in a Apache License 2.0 wich mean that we need to credit them into our project.
 wich is fine, it's a cool project.
 
-They provide a ready on Docker that can run a llm ready for api, and that's exactly what we need. 
+They provide a ready on Docker that can run a llm ready for api, and that's exactly what we need.
 
 ### Instalation locally process :
 
@@ -57,7 +53,7 @@ They provide a ready on Docker that can run a llm ready for api, and that's exac
 
 `pip install openllm`
 
-*has to edit later for deploy services*
+_has to edit later for deploy services_
 
 ### installation process for test purpose
 
@@ -69,16 +65,15 @@ for test purpose, we used the model "opt-1.3b" wich is the default model used in
 
 by the way, obviously hosting a llm is taking a lot of space, so the installation take a little time.
 
-
 ### setting up a basic webpage and the server with it.
 
 Since we worked before using nodejs and javascript principaly we wanted to use it again, we love javascript.
 
-so basic stuff... 
+so basic stuff...
 
 `npm init -y`
 
-* to generate the classic empty package.json
+- to generate the classic empty package.json
 
 `npm install express`
 
@@ -99,7 +94,7 @@ Now i start trying to understand how the openllm api work, here is the link to t
 
 I need to do post commands from port 3000 to port 3001 using this path : /v1/generate
 
-```curl -X 'POST' \
+````curl -X 'POST' \
   'http://localhost:3000/v1/generate' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
@@ -145,17 +140,18 @@ I need to do post commands from port 3000 to port 3001 using this path : /v1/gen
 above is the default curl that i used to test the purpose, and yay, it's working.
 i got a response :
 
-```
+````
+
 {
-  "prompt": "What is the meaning of life?",
-  "finished": true,
-  "outputs": [
-    {
-      "index": 0,
-      "text": "\nLife is the process by which organisms, such as bacteria and cells, reproduce themselves and continue to exist.",
-      "token_ids": [
-        50118,
-        12116,
+"prompt": "What is the meaning of life?",
+"finished": true,
+"outputs": [
+{
+"index": 0,
+"text": "\nLife is the process by which organisms, such as bacteria and cells, reproduce themselves and continue to exist.",
+"token_ids": [
+50118,
+12116,
 
         16,
 
@@ -181,6 +177,7 @@ i got a response :
         8,
         535
       ],
+
 ```
 
 
@@ -239,7 +236,7 @@ for the utilisation we might need, it's more than enough probably.
 
 *If this case scenario is not optimal at all, we will just go into a algorithm that will use matching words instead of using a LLM.*
 
-aight so now the command used is 
+aight so now the command used is
 
 
 `$ docker run --gpus all --rm -it -p 3000:3000 ghcr.io/bentoml/openllm start facebook/opt-1.3b --backend vllm --cors`
@@ -302,7 +299,9 @@ The nodeServer is going to take the userprompt, and put the 'USER_PROMPT' at the
 
 Then, the server wait the for API response, and then paste it into a json like that :
 ```
+
 {"id":"d3e1029f67b845e9be9c4531ec8a982f","userOutput":"A artist should never be censured for the lyrics in he's music.","totalTokens":498,"messageContent":"Score: 5/10\nSummary: Artist's lyrics deserve protection, but ethical and diversity considerations matter."}
+
 ```
 So i can keep track on how many tokens we are using on the api. we know that we use ~500 tokens per prompt.
 
@@ -310,7 +309,9 @@ We also get the *score* that the AI noted on the *userOutput* with a small text 
 
 After that, the NodeServer is going to send to the front-end a answer.
 ```
+
 1, Artist's lyrics deserve protection, but ethical and diversity considerations matter
+
 ```
 
 The `1` or `0` that come first will indicate if the user can go to the next page or not.
@@ -324,7 +325,22 @@ Also added a minimum of 15 character to be able to send the prompt to the NodeSe
 from a empty message, and also to reduce spam and token use. for the moment it's a pop-up we will send a message instead later on.
 
 
+## 23-03 + 25-03
+
+
+We added style and audio to the first page using Vue.js
+We previously started the frontend using CSS/HTML/JavaScript but we figured that for the concept of our website where we will need multiple components and merge all the parts in a single page, React or Vue frameworks would help us a lot. We chose Vue because the framework is simpler and we thought it will me enough for what we want ultimately want to achieve.
+So we had to transform our html+css+javascript into Vue.js components. This will benefit our collaboration as it will allow each of use to work individually on a separate component, so we guessed that our productivity would get a lot better using that framework.
+
+The previous elements of our website is now in a folder called 'old frontend'
+We added effects on the question and some rain effects with the audio that goes with it
+
+We edited the validation of user input: Now if the AI gives a rate of 5 or below the answer is RED meaning he still doesn't have access to the next page of the website. If the answer is rated 6 or more the AI summary is in GREEN, allowing the user to play our game.
+We deleted the "Validate" button, now the user just has to enter the 'Enter' keyboard to validate his answer.
 
 
 
 
+
+
+```
