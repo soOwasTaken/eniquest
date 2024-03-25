@@ -5,7 +5,6 @@ import MiddleText from './components/MiddleText.vue';
 import InputField from './components/InputField.vue';
 import summaryDisplay from './components/summaryDisplay.vue';
 
-const summaryDisplayRef = ref(null);
 </script>
 
 <template>
@@ -13,7 +12,7 @@ const summaryDisplayRef = ref(null);
     <!-- Other components and elements -->
     <MiddleText />
     <InputField />
-    <summaryDisplay :ref="summaryDisplayRef" />
+    <summaryDisplay ref="summaryDisplay" />
     <!-- Other components and elements -->
   </div>
 </template>
