@@ -339,7 +339,18 @@ We edited the validation of user input: Now if the AI gives a rate of 5 or below
 We deleted the "Validate" button, now the user just has to enter the 'Enter' keyboard to validate his answer.
 
 
+## 23-03 + 25-03
 
+
+We added style and audio to the first page using Vue.js
+We previously started the frontend using CSS/HTML/JavaScript but we figured that for the concept of our website where we will need multiple components and merge all the parts in a single page, React or Vue frameworks would help us a lot. We chose Vue because the framework is simpler and we thought it will me enough for what we want ultimately want to achieve.
+So we had to transform our html+css+javascript into Vue.js components. This will benefit our collaboration as it will allow each of use to work individually on a separate component, so we guessed that our productivity would get a lot better using that framework.
+
+The previous elements of our website is now in a folder called 'old frontend'
+We added effects on the question and some rain effects with the audio that goes with it
+
+We edited the validation of user input: Now if the AI gives a rate of 5 or below the answer is RED meaning he still doesn't have access to the next page of the website. If the answer is rated 6 or more the AI summary is in GREEN, allowing the user to play our game.
+We deleted the "Validate" button, now the user just has to enter the 'Enter' keyboard to validate his answer.
 
 
 
