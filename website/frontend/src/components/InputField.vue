@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     refresh() {
-      this.inputLock = true;
+      this.inputLock = false; // This debugged the click locking the input.
 
       if (this.targetContent.length - this.lastContent.length === 0) return;
 
@@ -107,7 +107,6 @@ export default {
     },
     removeEventListeners() {
       document.removeEventListener('touchstart', this.onTouchStart);
-      document.removeEventListener('click', this.onClick);
 
       if (!this.isIE) {
         this.$refs.hiddenInput.removeEventListener('input', this.onInput);
@@ -224,7 +223,7 @@ export default {
 .blink {
     position: static;
     top: -5px;
-    animation: blink 0.5s ease infinite alternate;
+    animation: blink 0.35s ease-in-out infinite alternate;
 }
 
 @keyframes blink {
