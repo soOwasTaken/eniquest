@@ -1,7 +1,7 @@
 <template>
   <div class="old-web">
     <!-- Conditionally render the top bar along with the search results -->
-    <div v-if="showResults" class="top-bar">
+    <div v-if="!showWebsite && !showResult" class="top-bar">
       <img src="../../assets/boogle-old.png" alt="boogle-logo" class="logo" />
       <input type="text" placeholder="Search Free Speech Articles..." readonly class="search-input"/>
       <button @click="showResults = true; currentPage = ''">Search</button>
@@ -9,31 +9,31 @@
     <div v-if="showResults && currentPage === ''">
       <div class="results">
         <h2 class="search-status">Search Results for Search Free Speech Articles... Results 1 - 3 of about 102,000,000. Search took 0.40seconds.</h2>
-        <ul>
-          <li>
-            <a @click.prevent="openPage('pageOne')" class="link">The Evolution of Free Speech Online</a>
-            <p>Let's talk of the evolution of <span style ="font-weight: bold">free speech</span> online...</p>
-            <p><span style ="font-weight: bold">Description:</span> a article about how the...</p>
-            <p><span style ="font-weight: bold">Category :</span> Computers > Internet > WWW ...</p>
-            <span class="green">www.we-talk.com/ - 47k</span>
-          </li>
-          <li>
-            <a @click.prevent="openPage('pageTwo')" class="link">Community Forums: Uniting Voices for Change</a>
-            <p>Community forum online on <span style ="font-weight:bold">free speech</span></p>
-            <p><span style ="font-weight: bold">Description:</span> a forum to discuss with everyone...</p>
-            <p><span style ="font-weight: bold">Category :</span> Forum > Internet > Sharing ...</p>
-            <span class="green">www.lets-share-about.com/ - 54k</span>
-          </li>
-          <li>
-            <a @click.prevent="openPage('pageThree')" class="link">The Fuargian</a>
-              <p>The unlimited <span style="font-weight:bold">Free Speech</span> Society...</p>
-              <p><span style ="font-weight: bold">Description:</span> journalism...</p>
-              <p><span style ="font-weight: bold">Category :</span> Media > Journalism ...</p>
-              <span class="green">www.the-fuargian.com/ - 37k</span>
-          </li>
-        </ul>
-      </div>
-      <div class="footer-search">
+          <ul>
+            <li>
+              <a @click.prevent="openPage('pageOne')" class="link">The Evolution of Free Speech Online</a>
+              <p>Let's talk of the evolution of <span style ="font-weight: bold">free speech</span> online...</p>
+              <p><span style ="font-weight: bold">Description:</span> a article about how the...</p>
+              <p><span style ="font-weight: bold">Category :</span> Computers > Internet > WWW ...</p>
+              <span class="green">www.we-talk.com/ - 47k</span>
+            </li>
+            <li>
+              <a @click.prevent="openPage('pageTwo')" class="link">Community Forums: Uniting Voices for Change</a>
+              <p>Community forum online on <span style ="font-weight:bold">free speech</span></p>
+              <p><span style ="font-weight: bold">Description:</span> a forum to discuss with everyone...</p>
+              <p><span style ="font-weight: bold">Category :</span> Forum > Internet > Sharing ...</p>
+              <span class="green">www.lets-share-about.com/ - 54k</span>
+            </li>
+            <li>
+              <a @click.prevent="openPage('pageThree')" class="link">The Fuargian</a>
+                <p>The unlimited <span style="font-weight:bold">Free Speech</span> Society...</p>
+                <p><span style ="font-weight: bold">Description:</span> journalism...</p>
+                <p><span style ="font-weight: bold">Category :</span> Media > Journalism ...</p>
+                <span class="green">www.the-fuargian.com/ - 37k</span>
+            </li>
+          </ul>
+        </div>
+    <div class="footer-search">
       <p>Result page : <span style="color:red">1</span></p>
       </div>
     </div>
@@ -45,7 +45,6 @@
       <button @click="returnToMain"><-</button>
       <input type="text" placeholder="http://wwww.we-talk.com/article-48938.html" readonly class="search-input"/>
       <div class="page-content">
-
         <div class="bannerWeTalk">
           <pre>
  __        __       _____     _ _                            __  
@@ -119,9 +118,241 @@
     </div>
     <div v-if="currentPage === 'pageTwo'">
       <div class="topBarInWebsite">
-      <button @click="returnToMain"><-</button>
-      <input type="text" placeholder="http://lets-share-about.com/forum.html" readonly class="search-input"/>
+        <button @click="returnToMain"><-</button>
+        <input type="text" placeholder="http://lets-share-about.com/" readonly class="search-input"/>
       </div>
+      <div class="forum-page-content">
+        <h1>LetsShareAbout.com</h1>
+        <marquee class="marquee">📢 New Users: Please Read the Forum Rules Before Posting! 📢</marquee>
+        <div class="forum-list">
+          <div class="forum-item sticky">
+            <button class="link forum-link">📌 Sticky: Welcome to the Forum - Start Here!</button>
+          </div>
+          <div class="forum-item announcement">
+            <button class="link forum-link">📣 Announcement: Upcoming Maintenance on 30th March</button>
+          </div>
+          <!-- Multiple general discussion topics to simulate a "charged" look -->
+          <div class="forum-item">
+            <button @click.prevent="currentPage = 'forum_1'" class="link forum-link">General Discussion: Today's Hot Topic</button>
+          </div>
+          <div class="forum-item">
+            <button class="link forum-link">How to Improve Your Internet Privacy</button>
+          </div>
+          <div class="forum-item">
+            <button class="link forum-link">Favorite Retro Games - Share Yours!</button>
+          </div>
+          <div class="forum-item">
+            <button class="link forum-link">Technical Support Thread: Post Your Issues Here</button>
+          </div>
+          <div class="forum-item">
+            <button @click.prevent="currentPage = 'forum_2'" class="link forum-link">Windows XP Support Thread</button>
+          </div>
+          <div class="forum-item">
+            <button class="link forum-link">Dealing with Spam: Tips and Tricks</button>
+          </div>
+          <!-- More technical support topics -->
+          <div class="member-list-container">
+            <h3>Active Members</h3>
+            <ul class="member-list">
+              <li><strong>franklinscott456</strong> - Administrator - Offline</li>
+              <li><strong>ernestbailey9097</strong> - Administrator - Online</li>
+              <!-- Add more members from the list here -->
+              <li><strong>amberjohnson4669</strong> - Administrator - Online</li>
+              <li><strong>samantha39109</strong> - Moderator - Offline</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-if="currentPage === 'forum_1'">
+      <button @click="returnToForum"><-</button>
+      <input type="text" placeholder="http://lets-share-about.com/general-dicussion.html" readonly class="search-input"/>
+      <h2>General Discussion</h2>
+      <!-- List of clickable topics/posts -->
+      <div class="forum-posts-list">
+        <div class="forum-post-item" @click="openTopic('topic_1')">
+          <h3>Bloggers & MySpace Heroes: Is the Web the Ultimate Free Speech Zone?</h3>
+          <p>Started by User123 on March 10, 2024</p>
+        </div>
+      <div class="forum-post-item" @click="openTopic('topic_2')">
+        <h3>The Birth of Wikipedia: A New Model for Knowledge Sharing</h3>
+        <p>Started by WikiFan_2000 on March 12, 2024</p>
+      </div>
+    <!-- Add more topics as needed -->
+    </div>
+    </div>
+    <div v-if="currentPage === 'forum_2'">
+      <h2>Technical Support</h2>
+      <p>Content for Forum 2</p>
+      <!-- add more forum if needed -->
+    </div>
+    <div v-if="currentPage === 'topic_1'">
+      <button @click="returnToForumPage('forum_1')"><-</button>
+      <input type="text" placeholder="http://lets-share-about.com/general-dicussion.html/topic-43289" readonly class="search-input"/>
+      <!-- Add more posts as needed -->
+      <h2>Bloggers & MySpace Heroes: Is the Web the Ultimate Free Speech Zone?</h2>
+      <div class="post">
+        <div class="post-header">
+          <strong>BlogFanatic</strong> <span class="user-details">[Reg: Feb 1999 | Msg #156]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 1, 2000</span></div>
+        </div>
+        <p>Yo, have you guys seen how blogs are all the rage now? It's like everyone's diary is just out there. Super cool but kinda scary too, lol.</p>
+      </div>
+
+      <div class="post">
+        <div class="post-header">
+          <strong>EarlyAdopter</strong> <span class="user-details">[Reg: May 1998 | Msg #202]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 1, 2000</span></div>
+        </div>
+        <p>Totally! And MySpace is like this giant party where everyone's invited. Makes you wonder though, can we just say whatever we want online?</p>
+      </div>
+
+      <div class="post">
+        <div class="post-header">
+          <strong>PrivacyAdvocate</strong> <span class="user-details">[Reg: Oct 1999 | Msg #89]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 2, 2000</span></div>
+        </div>
+        <p>Speaking of which, isn’t it kinda creepy how everything we post is just... there? Like, forever? I’m all for sharing, but where’s the line?</p>
+      </div>
+
+      <div class="post">
+        <div class="post-header">
+          <strong>NetizenNoir</strong> <span class="user-details">[Reg: Jan 2000 | Msg #47]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 2, 2000</span></div>
+        </div>
+        <p>It's a mess, haha. Free speech is cool and all, but then you see some real weird stuff. Internet’s wild, man.</p>
+      </div>
+
+      <div class="post">
+        <div class="post-header">
+          <strong>DigitalPatriot</strong> <span class="user-details">[Reg: Jul 1997 | Msg #310]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 5, 2000</span></div>
+        </div>
+        <p>We gotta keep the net free, y’all. But let’s not be jerks about it, okay? Use your powers for good, not trolling. ✌️</p>
+      </div>
+
+      <div class="post">
+        <div class="post-header">
+          <strong>CyberPhilosopher</strong> <span class="user-details">[Reg: Mar 1998 | Msg #134]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 5, 2000</span></div>
+        </div>
+        <p>Remember the good ol’ days of chat rooms? That was just the beginning. Now we're here, spilling our brains on blogs. History in the making, folks.</p>
+      </div>
+
+      <div class="post">
+        <div class="post-header">
+          <strong>ArchiveLover</strong> <span class="user-details">[Reg: Dec 1998 | Msg #210]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 5, 2000</span></div>
+        </div>
+        <p>And don’t get me started on search engines deciding what we see. It’s like, let me find my own weird corner of the internet, thank you very much.</p>
+      </div>
+
+      <div class="post">
+        <div class="post-header">
+          <strong>EnigmaSeeker</strong> <span class="user-details">[Reg: Feb 2000 | Msg #58]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 8, 2000</span></div>
+        </div>
+        <p>Hey, while we're all here sharing and caring, don't forget to look closer. “In the web's vast playground, a secret whisper waits, for the curious souls, a hidden path illuminates.” Who’s up for a treasure hunt?</p>
+      </div>
+    </div>
+    <div v-if="currentPage === 'topic_2'">
+      <button @click="returnToForumPage('forum_1')"><-</button>
+      <input type="text" placeholder="http://lets-share-about.com/general-dicussion.html/topic-76289" readonly class="search-input"/>
+      <h2>The Birth of Wikipedia: A New Model for Knowledge Sharing</h2>
+      <div class="post">
+        <div class="post-header">
+          <strong>WikiFan_2000</strong> <span class="user-details">[Reg: Mar 1999 | Msg #432]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 12, 2000</span></div>
+        </div>
+        <p>Hey everyone,</p>
+        <p>Did you hear about the latest experiment in the world of the internet? It's called Wikipedia, a free encyclopedia that anyone can edit, launched by Jimmy Wales and Larry Sanger this January. It's a bold move towards democratizing knowledge, moving away from traditional encyclopedias that are expensive and updated infrequently.</p>
+
+        <p>What makes Wikipedia stand out is its collaborative nature. The idea that knowledge should be freely accessible to everyone and that anyone can contribute to this body of knowledge is groundbreaking. But it also raises a lot of questions:</p>
+        <ul>
+          <li>Accuracy and Vandalism: With anyone able to edit, how do we ensure the information remains accurate and free from vandalism?</li>
+          <li>Authority and Expertise: Can a community of volunteers match the depth of knowledge that experts bring to traditional encyclopedias?</li>
+          <li>Sustainability: Without a clear business model, how will Wikipedia sustain itself in the long run?</li>
+          <li>Impact on Traditional Knowledge Sources: What does the rise of Wikipedia mean for traditional encyclopedias and other sources of knowledge?</li>
+        </ul>
+        <p>I'm fascinated by the potential of Wikipedia to change how we access and contribute to knowledge. But I also wonder about the challenges it will face. What do you all think? Is Wikipedia the future of knowledge sharing, or is it an experiment that's bound to encounter insurmountable obstacles?</p>
+        <p>Looking forward to hearing your thoughts!</p>
+      </div>
+      <div class="post">
+        <div class="post-header">
+          <strong>InfoSeeker21</strong> <span class="user-details">[Reg: Aug 2000 | Msg #78]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 13, 2000</span></div>
+        </div>
+        <p>I've been following Wikipedia's progress since its announcement, and I'm optimistic. The idea that knowledge can be built collaboratively and shared freely is revolutionary. I believe the community will find ways to tackle accuracy and vandalism. The potential for learning and sharing is too great to ignore. It's a bold step into the future of information sharing!</p>
+      </div>
+      <div class="post">
+        <div class="post-header">
+          <strong>DashOn23</strong> <span class="user-details">[Reg: Apr 1999 | Msg #599]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 13, 2000</span></div>
+        </div>
+        <p>I don't really know, the project is great but i'm pretty sure the people will troll on it, and this will endup having more desinformation instead of real knowledge sharing.</p>
+      </div>
+      <div class="post">
+        <div class="post-header">
+          <strong>TechGuru98</strong> <span class="user-details">[Reg: Jan 1998 | Msg #657]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 14, 2000</span></div>
+        </div>
+        <p>While I admire the idealism behind Wikipedia, I'm concerned about the potential for misinformation. Traditional encyclopedias have expert editors for a reason. That being said, the open model could invite experts to contribute, blending the best of both worlds. If Wikipedia can develop a robust system for verifying facts, it might just work out.</p>
+      </div>
+      <div class="post">
+        <div class="post-header">
+          <strong>HistoryBuff01</strong> <span class="user-details">[Reg: Jun 1999 | Msg #321]</span>
+          <div class="post-meta"><span class="date-posted">Posted: April 15, 2000</span></div>
+        </div>
+        <p>I just contributed my first article on Wikipedia about the French Revolution, and I found the experience exhilarating! It's amazing to think that my knowledge can now be accessed by anyone around the world. This could be a game-changer for education, especially for those who can't afford traditional encyclopedias. Sure, there are hurdles to overcome, but the potential benefits are too significant to ignore.</p>
+      </div>
+    </div>
+    <div v-if="currentPage === 'topic_3'">
+      <button @click="returnToForumPage('forum_1')"><-</button>
+      <h2>YouTube's Launch: Will It Change Video Sharing Forever?</h2>
+      
+      <div class="post">
+        <div class="post-header">
+          <strong>DigitalDreamer</strong> <span class="user-details">[Reg: Jun 2004 | Msg #258]</span>
+          <div class="post-meta"><span class="date-posted">Posted: March 15, 2005</span></div>
+        </div>
+        <p>Greetings, fellow netizens!</p>
+        <p>Exciting news for all of us who dream of a more connected and expressive internet! A new website called YouTube has just been launched, aiming to make video sharing easy for everyone...</p>
+        <ul>
+          <li>Accessibility: YouTube promises to make uploading and viewing videos accessible...</li>
+          <li>Community Building: With the ability to comment on videos...</li>
+          <li>Impact on Traditional Media: As video sharing becomes more straightforward...</li>
+          <li>Creative Expression: For the aspiring filmmakers, comedians, and educators...</li>
+        </ul>
+        <p>Let's dive into these discussions. Share your thoughts on YouTube's potential and what you hope to see in the future of video sharing!</p>
+        <p>Looking forward to an engaging conversation,</p>
+        <p><strong>DigitalDreamer</strong></p>
+      </div>
+      
+      <!-- Response 1 -->
+      <div class="post">
+        <div class="post-header">
+          <strong>VisionaryVideographer</strong> <span class="user-details">[Reg: May 2003 | Msg #112]</span>
+          <div class="post-meta"><span class="date-posted">Posted: March 16, 2005</span></div>
+        </div>
+        <p>The idea that I could share my short films with a global audience is mind-blowing. YouTube could really open doors for independent creators.</p>
+      </div>
+      
+      <!-- Additional responses can follow the same structure. -->
+      
+      <!-- Sample structure for additional responses -->
+      <!-- Response 2 -->
+      <div class="post">
+        <!-- Post details for Response 2 -->
+      </div>
+      
+      <!-- Response 3 -->
+      <div class="post">
+        <!-- Post details for Response 3 -->
+      </div>
+      
+      <!-- Continue adding responses up to Response 10 -->
+      
+      <!-- Placeholder for more posts if needed -->
     </div>
     <div v-if="currentPage === 'pageThree'">
       <div class="topBarInWebsite">
@@ -131,26 +362,55 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref } from 'vue';
 
-const showResults = ref(true); // Initially show the search results
+const showResults = ref(false); // Initially hide the search results
+const showWebsite = ref(false); // Initially hide the website content
+const showResultsContent = ref(false); // Initially hide the search results content
 const currentPage = ref(''); // Initially, no specific page content is displayed
 
 function openPage(pageName) {
   currentPage.value = pageName;
   showResults.value = false; // Hide the search results when a page is opened
+  showResultsContent.value = pageName; // Hide the search results content
+  showWebsite.value = true; // Show the website content
 }
+
 
 function returnToMain() {
-
   currentPage.value = ''; // Reset to no specific page
   showResults.value = true; // Show the search results again
+  showResultsContent.value = false; // Hide the search results content
+  showWebsite.value = false; // Hide the website content
+
+}
+
+
+
+let previousPage = ''; // Variable to store the previous page
+
+function returnToMenu() {
+    currentPage.value = previousPage; // Restore the previous page
+    showMenu.value = true; // Show the menu again
+}
+
+function returnToForum() {
+  currentPage.value = 'pageTwo';
+  showMenu.value= true;
+}
+
+function openTopic(topicName) {
+  currentPage.value = topicName;
+  // Additional logic can be added here if needed, like fetching topic details
+
+}
+
+function returnToForumPage(forumPage) {
+
+  currentPage.value = forumPage;
 }
 </script>
-
-
 <style scoped>
 
 .old-web {
@@ -204,13 +464,6 @@ li p {
   max-height: 100px;
 }
 
-button {
-  background: grey;
-  color: #fff;
-  border: none;
-  padding: 7px 10px;
-  cursor: pointer;
-}
 
 .link {
   color: #0000FF;
@@ -223,13 +476,7 @@ button {
   margin-top: 20px;
 }
 
-/* Transition for simulating slow page load */
-.slow-fade-enter-active, .slow-fade-leave-active {
-  transition: opacity 2s; /* Adjust the duration to simulate slower or faster loading */
-}
-.slow-fade-enter, .slow-fade-leave-to /* Starting and ending states for the transition */ {
-  opacity: 0;
-}
+
 
 
 /* First page content style */
@@ -241,7 +488,7 @@ button {
 
 
 .menu-weTalk button {
-  background-color: lightblue;
+  background-color: light-blue;
   color: black;
   border: none;
   padding: 5px 15px;
@@ -294,5 +541,163 @@ button {
   font-weight: bold;
   line-height: 0.9;
   margin: 0;
+}
+
+/* Forum styles */
+.forum-page-content {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+}
+
+
+/* Mimic table-like layouts with divs */
+.forum-list {
+  display: block;
+  border: 2px solid #000099; /* Dark blue border */
+  background-color: #FFFFFF;
+  padding: 10px;
+}
+
+.forum-item {
+  border-bottom: 1px solid #000099;
+  padding: 10px;
+  background-image: url('path/to/your/pattern.gif'); /* Optional: Add a patterned background */
+}
+
+.forum-item:last-child {
+  border-bottom: none;
+
+}
+
+
+.forum-link {
+  font-size: 16px;
+  color: #000099; /* Dark blue text */
+}
+
+/* Hover effect for a more interactive feel */
+
+.forum-link:hover {
+
+  color: #FF0000; /* Change to red on hover */
+  text-decoration: none; /* Remove underline on hover */
+}
+
+/* Add a retro flair with a marquee */
+.marquee {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #FFFF00; /* Yellow background for visibility */
+  color: #FF00FF; /* Magenta text for that classic look */
+}
+
+.forum-posts-list {
+  margin-top: 10px;
+}
+
+.forum-post-item {
+
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.forum-post-item:hover {
+  background-color: #f0f0f0;
+}
+
+.post {
+  background-color: #F8F8F8; /* A slightly off-white background for each post */
+  border: 1px solid #D3D3D3; /* Light grey border, common in early web designs */
+  margin-bottom: 8px; /* Space between posts */
+  padding: 10px; /* Padding inside posts */
+  font-size: 14px; /* Default font size, larger sizes were less common */
+  color: #000000; /* Black text for readability */
+}
+
+.post p {
+
+  margin-bottom: 10px; /* Space between paragraphs */
+  line-height: 1.4; /* Slightly increased line height for readability */
+}
+
+.post strong {
+  color: #000080; /* Navy blue for user names to stand out */
+  font-weight: normal; /* Avoid too bold text, as it was not as common */
+}
+
+/* Mimic the look of hyperlinks */
+.post a {
+
+  color: #0000EE; /* Standard link blue */
+  text-decoration: underline; /* Underlines were always on */
+}
+
+.post a:hover {
+  color: #FF0000; /* Change to red on hover for visibility */
+
+}
+
+
+/* Add a classic touch with a bottom border on the last paragraph to separate posts */
+.post p:last-child {
+  padding-bottom: 5px;
+}
+
+.member-list-container {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #F5F5F5; /* Light grey background for the member list section */
+  border-top: 2px solid #000080; /* Dark blue border for separation */
+
+}
+
+
+.member-list {
+  list-style-type: none; /* Remove default list styling */
+  padding: 0;
+}
+
+.member-list li {
+  margin: 5px 0;
+  font-family: 'Arial', sans-serif; /* Use a simple, readable font */
+}
+
+
+.member-list li strong {
+
+  color: #000080; /* Dark blue for usernames */
+}
+
+.member-list li:after {
+
+  content: attr(data-status);
+
+  margin-left: 10px;
+  color: #008000; /* Green color for online status */
+  font-weight: normal;
+}
+
+.member-list li[data-status="Offline"]:after {
+  color: #FF0000; /* Red color for offline status */
+}
+
+.post-header {
+  margin-bottom: 8px;
+}
+
+.user-details, .date-posted {
+
+  font-size: 12px; /* Slightly smaller font size for details */
+  color: #707070; /* A muted color for these details */
+}
+
+
+.user-details {
+  margin-right: 10px; /* Space between user details and the date posted */
+}
+
+.post-meta {
+  margin-bottom: 10px; /* Extra space before the post content begins */
 }
 </style>
