@@ -2047,11 +2047,12 @@ hr {
   transform: translate(-18px, 15px);
 }
 .news-page .socials-apps {
+  transform: translateY(-40%);
   margin-left: 45px;
 }
-.news-page .copyright {
-  margin-top: 10px;
-}
+/* .news-page .copyright {
+   margin-top: 10px;
+} */
 .news-page #x {
   margin-right: 0;
 }
