@@ -25,16 +25,20 @@
               <span class="green">www.lets-share-about.com/ - 54k</span>
             </li>
             <li>
-              <a @click.prevent="openPage('pageThree')" class="link">The Fuargian</a>
-                <p>The unlimited <span style="font-weight:bold">Free Speech</span> Society...</p>
-                <p><span style ="font-weight: bold">Description:</span> journalism...</p>
-                <p><span style ="font-weight: bold">Category :</span> Media > Journalism ...</p>
-                <span class="green">www.the-fuargian.com/ - 37k</span>
+              <a @click.prevent="openPage('pageThree')" class="link">myspoce.com</a>
+                <p>The unlimited <span style="font-weight:bold">Free Speech</span> first network.</p>
+                <p><span style ="font-weight: bold">Description:</span> social network...</p>
+                <p><span style ="font-weight: bold">Category :</span> Media > Social ...</p>
+                <span class="green">www.my-spoce.com/ - 37k</span>
             </li>
           </ul>
         </div>
     <div class="footer-search">
-      <p>Result page : <span style="color:red">1</span></p>
+      <p>Result page :
+        <span style="color:red">1</span>
+        <a href="#two" class="clickable-number">2</a>
+      </p>
+      <div id="two" class="number-content">defend to</div>
       </div>
     </div>
 
@@ -87,7 +91,7 @@
         <p>
           The advent of social media platforms transformed the landscape once again. Initially celebrated as tools 
           for further democratization, these platforms soon faced criticism for facilitating echo chambers, spreading 
-          misinformation, and enabling surveillance and censorship.
+          misinformation, and enabling surveillance and censorship.<p class="whatever">I disapprove</p>
         </p>
         <h2>Legal and Ethical Challenges</h2>
         <p>
@@ -182,9 +186,16 @@
     </div>
     </div>
     <div v-if="currentPage === 'forum_2'">
+      <div class="topBarInWebsite">
+        <button @click="returnToForum"><-</button>
+        <input type="text" placeholder="http://lets-share-about.com/technical-support.html/" readonly class="search-input"/>
+      </div>
       <h2>Technical Support</h2>
-      <p>Content for Forum 2</p>
-      <!-- add more forum if needed -->
+      <p>We made it here.</p>
+      <form @submit.prevent="submitAnswer">
+        <input type="text" v-model="answer" name="answer" required>
+        <button type="submit">Submit Answer</button>
+      </form>
     </div>
     <div v-if="currentPage === 'topic_1'">
       <button @click="returnToForumPage('forum_1')"><-</button>
@@ -252,7 +263,7 @@
           <strong>EnigmaSeeker</strong> <span class="user-details">[Reg: Feb 2000 | Msg #58]</span>
           <div class="post-meta"><span class="date-posted">Posted: April 8, 2000</span></div>
         </div>
-        <p>Hey, while we're all here sharing and caring, don't forget to look closer. “In the web's vast playground, a secret whisper waits, for the curious souls, a hidden path illuminates.” Who’s up for a treasure hunt?</p>
+        <p style="color:cyan">your right</p>
       </div>
     </div>
     <div v-if="currentPage === 'topic_2'">
@@ -357,18 +368,110 @@
     <div v-if="currentPage === 'pageThree'">
       <div class="topBarInWebsite">
       <button @click="returnToMain"><-</button>
-      <input type="text" placeholder="http://www.the-fuargian.com/news-3490.html" readonly class="search-input"/>
+      <input type="text" placeholder="http://www.myspoce.com/index.html" readonly class="search-input"/>
+      </div>
+      <div class="myspace-container">
+      <!-- Top Navigation -->
+        <div class="myspace-nav">
+            <!-- MySpace Logo -->
+          <img src="../../assets/myspoce.png" alt="MySpace logo" class="myspoceLogo">
+          <!-- Navigation Links -->
+          <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Browse</a>
+            <a href="#">Search</a>
+            <a href="#">Invite</a>
+            <a href="#">Rank</a>
+            <a href="#">Mail</a>
+            <a href="#">Blog</a>
+            <a href="#">Favorites</a>
+            <a href="#">Forum</a>
+            <a href="#">Games</a>
+            <a href="#">Music</a>
+            <a href="#">Classifieds</a>
+            <a href="#">SignUp</a>
+          </div>
+        </div>
+        <!-- Main Content -->
+        <div class="myspace-content">
+          <div class="left-column">
+          <!-- Cool New People Section -->
+          <div class="cool-new-people">
+            <h2>Cool New People</h2>
+            <div class="profiles">
+              <div class="profile">
+                <img src="../../assets/voltaire.jpg" alt="Personality 1">
+                <p>Voltaire</p>
+                <p>The French Enlightenment writer, historian, and philosopher famous for his advocacy of freedom of speech, freedom of religion, and separation of church and state.</p>
+              </div>
+              <div class="profile">
+                <img src="../../assets/mandela.jpg" alt="Personality 2">
+                <p>Nelson Mandela</p>
+                <p>he South African anti-apartheid revolutionary who became a symbol of the struggle for freedom and equality, including the right to speak freely</p>
+              </div>
+              <div class="profile">
+                <img src="../../assets/orwell.jpeg" alt="Personality 3">
+                <p>George Orwell</p>
+                <p>Known for his novels "1984" and "Animal Farm," which explore themes of surveillance, censorship, and free will.</p>
+              </div>
+            </div>
+          </div>
+          <div class="myspace-music">
+            <!-- Music listings -->
+            <h2>Featured Song</h2>
+            <div class="music-feature">
+              <img src="../../assets/system-of-a-down-album-cover.jpg" alt="System of a Down Album Cover">
+              <div class="song-description">
+                <p><strong>System of a Down - Holy Mountains</strong></p>
+                <p>From their album 'Hypnotize', System of a Down's "Holy Mountains" is a powerful anthem that addresses themes of freedom, identity, and resistance. Its driving rhythms and poignant lyrics resonate with the struggle against oppression, making it a compelling soundtrack for discussions on free speech.</p>
+              </div>
+            </div>
+          </div>
+          </div>
+          <!-- Right Column Ads or Content -->
+          <div class="right-column">
+            <div class="member-login">
+              <strong>Member Login</strong>
+              <form>
+                <input type="text" placeholder="E-Mail">
+                <input type="password" placeholder="Password">
+                <div class="remember-me">
+                  <input type="checkbox" id="rememberEmail">
+                  <label for="rememberEmail">Remember my E-mail</label>
+                </div>
+                <button class="button-myspoce" type="submit">LOGIN</button>
+                <div class="login-links">
+                  <a href="#">SIGN UP!</a>
+                  <a href="#">Forgot your password?</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Footer Links -->
+        <div class="myspace-footer">
+          <a href="#">About</a> | 
+          <a href="#">News</a> | 
+          <a href="#">FAQ</a> | 
+          <a href="#">Terms</a> | 
+          <a href="#">Privacy</a> | 
+          <a href="#">Contact</a> | 
+          <a href="#">Promote</a> | 
+          <a href="#">Advertise</a> |
+          <a href="#">MySpace Shop</a>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref , watch } from 'vue';
 
 const showResults = ref(false); // Initially hide the search results
 const showWebsite = ref(false); // Initially hide the website content
 const showResultsContent = ref(false); // Initially hide the search results content
 const currentPage = ref(''); // Initially, no specific page content is displayed
+const answer = ref('');
 
 function openPage(pageName) {
   currentPage.value = pageName;
@@ -407,9 +510,27 @@ function openTopic(topicName) {
 }
 
 function returnToForumPage(forumPage) {
-
   currentPage.value = forumPage;
 }
+
+const submitAnswer = async () => {
+    // Assuming your server expects a property named 'order'
+    // and the user's input is a single string to be checked
+    const fullAnswer = answer.value;
+    const response = await fetch('/checkOrder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ order: fullAnswer }), // Adjust based on how you want to split the input
+
+    });
+    const data = await response.json();
+
+
+    // Display the feedback
+    alert(data.feedback); // Consider replacing this with a more integrated approach
+};
 </script>
 <style scoped>
 
@@ -476,7 +597,14 @@ li p {
   margin-top: 20px;
 }
 
+.number-content {
+  display: none;
+  color: red; /* or any style you want for the '2' word appearance */
+}
 
+.number-content:target {
+  display: block;
+}
 
 
 /* First page content style */
@@ -485,7 +613,6 @@ li p {
   text-align: center;
   margin-bottom: 20px;
 }
-
 
 .menu-weTalk button {
   background-color: light-blue;
@@ -533,6 +660,10 @@ li p {
   font-style: italic;
 }
 
+.whatever {
+  opacity: 0;
+  user-select: all;
+}
 .bannerWeTalk pre {
   font-family: 'Courier New', Courier, monospace;
   white-space: pre-wrap;
@@ -699,5 +830,209 @@ li p {
 
 .post-meta {
   margin-bottom: 10px; /* Extra space before the post content begins */
+}
+
+/* myspoce */
+.myspace-container {
+  font-family: Arial, sans-serif;
+  background-color: #FFF;
+}
+
+.topBarInWebsite {
+  /* background-color: #E5E5E5; */
+  padding: 10px;
+}
+
+.search-input {
+  border: none;
+  padding: 5px;
+}
+
+.myspace-nav {
+  background-color: blue;
+  color: white;
+  padding: 10px;
+}
+
+.myspoceLogo {
+  width: 100%;
+  height: auto;
+}
+
+.nav-links a {
+  margin-right: 10px;
+  text-decoration: none;
+  color: white;
+}
+
+.login-form {
+  display: flex;
+  align-items: center;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+  margin-right: 5px;
+}
+
+.login-form button {
+  background-color: #5F9EA0;
+  color: #FFF;
+  border: none;
+  padding: 5px 10px;
+}
+
+.cool-new-people,
+.member-blogs,
+.myspace-music {
+  margin: 20px;
+  padding: 15px;
+  background-color: #F5F5F5;
+  border: 1px solid #CCC;
+}
+.myspace-content {
+  display: flex;
+}
+
+.left-column {
+  width: 70%;
+}
+
+.right-column {
+  width: 30%;
+  padding: 20px;
+}
+
+.member-login {
+  background-color: #F5F5F5;
+  padding: 10px;
+
+  border: 1px solid #CCC;
+  margin-bottom: 10px;
+}
+
+.member-login strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.member-login input[type="text"],
+.member-login input[type="password"] {
+
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.remember-me {
+  margin-bottom: 5px;
+}
+
+.button-myspoce {
+  background-color: #5F9EA0;
+  color: #FFF;
+  border: none;
+  padding: 5px 10px;
+  margin-bottom: 5px;
+}
+
+.login-links a {
+  display: inline-block;
+  margin-right: 5px;
+  text-decoration: none;
+  color: #000;
+}
+
+.myspace-footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #D3D3D3;
+  clear: both;
+}
+
+.myspace-footer a {
+  text-decoration: none;
+  color: #000;
+  margin: 0 5px;
+}
+
+.cool-new-people {
+
+  background-color: #F5F5F5;
+  padding: 10px;
+  border: 1px solid #CCC;
+  margin: 20px;
+
+}
+
+
+.cool-new-people h2 {
+  color: #000;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.profiles {
+  display: flex;
+  justify-content: space-around;
+
+  flex-wrap: wrap;
+}
+
+.profile {
+  width: 150px; /* adjust as needed */
+  text-align: center;
+  margin: 10px;
+}
+
+.profile img {
+  width: 100%; /* adjust as needed */
+  height: auto;
+  border: 1px solid #000;
+  margin-bottom: 5px;
+}
+
+
+.profile p {
+  color: #000;
+  font-size: 12px; /* adjust as needed */
+}
+
+
+.myspace-music {
+  background-color: #F5F5F5;
+  padding: 10px;
+  border: 1px solid #CCC;
+  margin: 20px;
+}
+
+.myspace-music h2 {
+  color: #000;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.music-feature {
+  display: flex;
+  align-items: center;
+}
+
+.music-feature img {
+
+  width: 100px; /* adjust as needed */
+  height: auto;
+  margin-right: 10px;
+}
+
+.song-description p {
+  color: #000;
+  font-size: 12px; /* adjust as needed */
+  margin: 0;
+}
+
+.song-description strong {
+
+  display: block;
+  margin-bottom: 5px;
 }
 </style>

@@ -6,7 +6,6 @@ const fs = require('fs');
 const app = express();
 const port = 3000;
 const filePath = 'data.json';
-
 app.use(bodyParser.json()); // to parse JSON body
 //app.use(express.static('public')); // if your frontend files are in 'public' directory
 
@@ -55,7 +54,6 @@ app.post('/processPrompt', async (req, res) => {
               totalTokens: totalTokens,
               messageContent: messageContent
             };
-        
 
         // Append to a file
 
@@ -77,6 +75,25 @@ app.post('/processPrompt', async (req, res) => {
             res.status(500).send("Error processing the prompt");
         });
 });
+
+app.post('/checkOrder', (req, res) => {
+
+    // Extract the full string sent from the client
+    const { order } = req.body;
+
+    // Define the correct phrase for comparison
+    const correctPhrase = "I disapprove of what you say, but I will defend to the death your right to say it";
+
+    // Check if the provided string matches the correct phrase
+    // You might want to consider case sensitivity and trimming spaces
+    if (order.trim().toLowerCase() === correctPhrase.toLowerCase()) {
+        res.json({ feedback: "Correct! The phrase matches exactly." });
+    } else {
+        res.json({ feedback: "Incorrect. Please try again." });
+
+    }
+});
+
 
 function processLatestEntry() {
     const filePath = 'data.json';

@@ -26,6 +26,13 @@ export default defineConfig({
           return createProxyMiddleware(proxy, options);
         },
       },
+      '/checkOrder': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        configure: (proxy, options) => {
+          return createProxyMiddleware(proxy, options);
+        },
+      },
     },
   },
 })

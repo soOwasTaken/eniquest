@@ -1,36 +1,51 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { RouterLink, RouterView } from 'vue-router';
-import OldWeb from './components/WebComparison/OldWeb.vue';
-import NewWeb from './components/WebComparison/NewWeb.vue';
-</script>
 <template>
   <div id="app">
-    <div class="web-container">
-      <OldWeb />
-      <div class="divider"></div>
-      <NewWeb />
-    </div>
+    <transition name="fade" mode="out-in">
+      <component :is="currentComponent"></component>
+    </transition>
   </div>
 </template>
-<style>
-.web-container {
-  display: flex;
-  height: 100vh; /* Use 100% of the viewport height */
-  overflow: hidden; /* Prevent scrolling outside the containers */
+
+<script setup>
+import { ref } from 'vue';
+import App1 from './App1.vue';
+import App2 from './App2.vue';
+import App3 from './App3.vue';
+// Import all the components you want to switch between
+
+let currentComponent = ref(App1); // Default component
+
+// Function to change the component
+const changeComponent = (newComponent) => {
+  currentComponent.value = newComponent;
 }
 
-/* Ensure each web component takes up half the width */
-.old-web, .new-web {
-  width: 50%;
-  overflow-y: auto; /* Enable vertical scrolling within each component */
+// Example usage:
+//changeComponent(App2);
+changeComponent(App2);
+// changeComponent(App4);
+// etc.
+</script>
+
+<style>
+:root {
+  --background-color: black;
+  --text-color: hsl(0, 0%, 100%);
+}
+
+body {
+  background-color:black;
+  margin: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
 }
-
-
-.divider {
-  background-color: #ccc; /* Light grey line for separation */
-  width: 2px; /* Thickness of the divider line */
-  height: auto; /* Take the full height available */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
+
