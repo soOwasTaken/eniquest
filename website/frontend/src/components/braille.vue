@@ -11,7 +11,8 @@
 export default {
   data() {
     return {
-      brailleText: '⠋⠗⠑⠑⠙⠕⠍⠕⠋⠎⠏⠑⠑⠉⠓⠊⠝⠉⠇⠥⠙⠑⠎⠞⠓⠑⠋⠗⠑⠑⠙⠕⠍⠞⠕⠕⠋⠋⠑⠝⠙⠏⠑⠕⠏⠇⠑', // Example braille text
+      //brailleText: '⠋⠗⠑⠑⠙⠕⠍⠕⠋⠎⠏⠑⠑⠉⠓⠊⠝⠉⠇⠥⠙⠑⠎⠞⠓⠑⠋⠗⠑⠑⠙⠕⠍⠞⠕⠕⠋⠋⠑⠝⠙⠏⠑⠕⠏⠇⠑', // Example braille text
+      brailleText: '⠊⠓⠁⠞⠑⠏⠑⠕⠏⠇⠑⠞⠓⠁⠞⠇⠊⠅⠑⠏⠊⠝⠑⠁⠏⠏⠇⠑⠏⠊⠵⠵⠁',
       characters: [],
       currentIndex: 0,
     };
