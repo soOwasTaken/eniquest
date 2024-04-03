@@ -11,6 +11,7 @@ import { ref } from 'vue';
 import App1 from './App1.vue';
 import App2 from './App2.vue';
 import App3 from './App3.vue';
+import App4 from './App4.vue';
 // Import all the components you want to switch between
 
 let currentComponent = ref(App1); // Default component
@@ -22,7 +23,7 @@ const changeComponent = (newComponent) => {
 
 // Example usage:
 //changeComponent(App2);
-changeComponent(App2);
+changeComponent(App4);
 // changeComponent(App4);
 // etc.
 </script>
