@@ -196,6 +196,7 @@ shuffleTiles()
   background: #b6b1b100;
   border-radius: 20px;
   cursor: pointer;
+  transform: translate(20px, 60px);
 }
 
 .lable {
