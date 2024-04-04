@@ -7,22 +7,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import App1 from './App1.vue';
-import App2 from './App2.vue';
-import App3 from './App3.vue';
+import { ref } from 'vue'
+import App1 from './App1.vue'
+import App2 from './App2.vue'
+import App3 from './App3.vue'
+import App5 from './App5.vue'
 // Import all the components you want to switch between
 
-let currentComponent = ref(App1); // Default component
+let currentComponent = ref(App1) // Default component
 
 // Function to change the component
 const changeComponent = (newComponent) => {
-  currentComponent.value = newComponent;
+  currentComponent.value = newComponent
 }
 
 // Example usage:
 //changeComponent(App2);
-changeComponent(App2);
+changeComponent(App1)
 // changeComponent(App4);
 // etc.
 </script>
@@ -34,18 +35,18 @@ changeComponent(App2);
 }
 
 body {
-  background-color:black;
+  background-color: black;
   margin: 0;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
 </style>
-
