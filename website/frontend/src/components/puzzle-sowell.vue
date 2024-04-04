@@ -37,7 +37,6 @@
     <div class="prompt-container">
       <p>We must reverse world order.</p>
       <div class="prompt">
-        <!-- Your prompt content goes here -->
         <input
           type="text"
           class="input"
@@ -48,21 +47,47 @@
         />
       </div>
     </div>
+    <div class="timer" :style="{ color: timerColor }">
+      {{ formatTimer(timer) }}
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import image from '../assets/george-modifieds.png'
 
-const ROWS = 3 // nombre de lignes
-const COLS = 3 // nombre de colones
+const ROWS = 5
+const COLS = 5
 const EMPTY_TILE = ROWS * COLS - 1
 
 const tiles = ref([])
 const completed = ref(false)
 let selectedTileIndex = null
 const userInput = ref('')
+const timer = ref(90) // TIME //////////////////////
+const timerColor = ref('yellow')
+
+const startTimer = () => {
+  const interval = setInterval(() => {
+    timer.value--
+    if (timer.value <= 0) {
+      clearInterval(interval)
+      resetGame()
+      startTimer()
+    }
+  }, 1000)
+}
+
+watch(timer, (newValue) => {
+  if (newValue <= 0) {
+    timerColor.value = 'red'
+  }
+})
+
+onMounted(() => {
+  startTimer()
+})
 
 const shuffleTiles = () => {
   const imagePieces = []
@@ -84,7 +109,6 @@ const shuffleTiles = () => {
   tiles.value = imagePieces.slice().sort(() => Math.random() - 0.5)
 }
 
-// MY KEYBOARD
 const handleKeyDown = (event) => {
   const key = event.key
 
@@ -93,15 +117,6 @@ const handleKeyDown = (event) => {
   }
 }
 
-// DIFFERENT KEYBOARDS
-// const handleKeyDown = (event) => {
-
-//   const keyCode = event.keyCode
-
-//   if (!((keyCode >= 48 && keyCode <= 57) || keyCode === 8)) {
-//     event.preventDefault()
-//   }
-// }
 const handleInput = () => {
   userInput.value = userInput.value.replace(/\D/g, '')
   console.log('User input:', userInput.value)
@@ -145,10 +160,18 @@ const swapTiles = (index1, index2) => {
 const resetGame = () => {
   completed.value = false
   shuffleTiles()
+  timer.value = 90 // TIME ///////////////////////////////
+  timerColor.value = 'yellow'
 }
 
 const puzzleCompleted = () => {
   return tiles.value.every((tile, index) => tile.id === index)
+}
+
+const formatTimer = (time) => {
+  const minutes = Math.floor(time / 60)
+  const seconds = time % 60
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
 }
 
 shuffleTiles()
@@ -169,17 +192,13 @@ shuffleTiles()
   scale: 0.7;
 }
 
-/*DIMENSION*/
+/* DIMENSIONS */
 .grid {
   display: grid;
-  grid-template-columns: repeat(
-    3,
-    200px
-  ); /*(5 x 120 = 600)  it will always be 600px (image width)*/
-  grid-template-rows: repeat(3, 200px);
+  grid-template-columns: repeat(5, 120px);
+  grid-template-rows: repeat(5, 120px);
   gap: 2px;
 }
-
 .button {
   margin-bottom: 10px;
 }
@@ -198,7 +217,6 @@ shuffleTiles()
   cursor: pointer;
   transform: translate(20px, 60px);
 }
-
 .lable {
   line-height: 20px;
   font-size: 17px;
@@ -206,33 +224,30 @@ shuffleTiles()
   font-family: sans-serif;
   letter-spacing: 1px;
 }
-
 .button:hover .svg-icon {
   animation: spin 2s linear infinite;
 }
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
-
   100% {
     transform: rotate(-360deg);
   }
 }
+
+/* DIMENSIONS */
 .tile {
-  width: 200px; /* DIMENSIONS*/
-  height: 200px;
+  width: 120px;
+  height: 120px;
   background-color: lightblue;
   border: 1px solid black;
   cursor: pointer;
   background-size: 600px 600px;
 }
-
 .tile.empty {
   background-color: white;
 }
-
 .tile:hover {
   background-color: lightgreen;
 }
@@ -248,7 +263,6 @@ shuffleTiles()
   text-transform: uppercase;
   margin: 1%;
 }
-
 .input {
   color: #fff;
   font-size: 16px;
@@ -264,10 +278,17 @@ shuffleTiles()
   transition: all 0.5s;
   font-weight: bold;
 }
-
 .input:hover,
 .input:focus {
   border: 2px solid #4a9dec;
   box-shadow: 0px 0px 0px 7px rgba(74, 157, 236, 20%);
+}
+.timer {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 24px;
+  position: absolute;
+  top: 120px;
+  left: 25px;
 }
 </style>
