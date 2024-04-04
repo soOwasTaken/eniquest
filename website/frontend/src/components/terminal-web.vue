@@ -237,7 +237,7 @@ To the whims of those who rule as knaves.<br>`,
         if (typeof currentDirContent[item] === 'object') {
           output += `<span style="color: blue;">${item}</span><br>`
         } else {
-          output += `${item}<br>`
+          output += `${item}&nbsp;&nbsp;&nbsp;`
         }
       }
 
