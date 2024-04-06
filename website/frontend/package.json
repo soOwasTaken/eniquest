@@ -14,8 +14,10 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@types/three": "^0.163.0",
     "animejs": "^3.2.2",
     "pinia": "^2.1.7",
+    "pixi.js": "^8.0.5",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
