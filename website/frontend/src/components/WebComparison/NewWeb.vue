@@ -527,7 +527,7 @@
         <!-- Search bar -->
         <div class="search-bar">
           <div class="container-input">
-            <input type="text" placeholder="Search" name="text" class="input" />
+            <input type="text" placeholder="Search" name="text" class="input-news" />
             <svg
               fill="#000000"
               width="20px"
@@ -2022,6 +2022,7 @@ hr {
   padding: 20px;
   text-align: center;
   text-transform: uppercase;
+  height: 95px;
 }
 
 .news-page .socials {
@@ -2081,9 +2082,9 @@ hr {
   transition: all 0.3s ease;
 }
 .news-page .container-input:hover {
-  scale: 1.3;
+  scale: 1.15;
 }
-.news-page .input {
+.news-page .input-news {
   width: 150px;
   padding: 10px 0px 10px 40px;
   border-radius: 9999px;
@@ -2100,9 +2101,9 @@ hr {
   transform: translate(0, -50%);
 }
 
-.news-page .input:focus {
+.news-page .input-news:focus {
   opacity: 1;
-  width: 250px;
+  width: 190px;
 }
 .return .return-button {
   position: fixed;
