@@ -35,11 +35,11 @@
       </div>
     </div>
     <div class="prompt-container">
-      <p>We must reverse world order.</p>
+      <p>reverse the system.</p>
       <div class="prompt">
         <input
           type="text"
-          class="input"
+          class="input-puzzle"
           id="userinput"
           v-model="userInput"
           @keyup.enter="handleInput"
@@ -66,7 +66,7 @@ const completed = ref(false)
 let selectedTileIndex = null
 const userInput = ref('')
 const timer = ref(90) // TIME //////////////////////
-const timerColor = ref('yellow')
+const timerColor = ref('black')
 
 const startTimer = () => {
   const interval = setInterval(() => {
@@ -122,7 +122,7 @@ const handleInput = () => {
   console.log('User input:', userInput.value)
 
   const inputbox = document.getElementById('userinput')
-  const inputtext = document.querySelector('.input')
+  const inputtext = document.querySelector('.input-puzzle')
   console.log(inputtext)
   if (userInput.value === '4891') {
     inputbox.style.borderColor = 'green'
@@ -179,16 +179,19 @@ shuffleTiles()
 
 <style scoped>
 .puzzle-game {
+  background: linear-gradient(205deg, rgba(60, 66, 55, 0.415) 38%, rgba(167, 167, 7, 0.41) 100%),
+    url('../assets/1puzzlebackground-2661283_1280.jpg');
   color: #fff;
-  height: 100%;
-  overflow-y: auto;
+  height: 100vh;
+  /* overflow-y: auto; */
   width: 100%;
-  transform: translateY(-10%);
+  /* transform: translateY(-10%); */
 }
 .grid-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  transform: translateY(-50px);
   scale: 0.7;
 }
 
@@ -199,23 +202,27 @@ shuffleTiles()
   grid-template-rows: repeat(5, 120px);
   gap: 2px;
 }
+
 .button {
-  margin-bottom: 10px;
-}
-.button {
-  scale: 1.5;
+  scale: 1;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 10px;
   padding: 6px 12px;
   gap: 8px;
   height: 34px;
   width: 40px;
   border: none;
-  background: #b6b1b100;
+  background-color: #01010181;
   border-radius: 20px;
   cursor: pointer;
-  transform: translate(20px, 60px);
+  color: #3570a7;
+  transform: translate(25px, 45px);
+}
+.button .svg-icon {
+  scale: 1.5;
+  transition: all 0.3s ease;
 }
 .lable {
   line-height: 20px;
@@ -225,6 +232,7 @@ shuffleTiles()
   letter-spacing: 1px;
 }
 .button:hover .svg-icon {
+  scale: 1.7;
   animation: spin 2s linear infinite;
 }
 @keyframes spin {
@@ -252,19 +260,33 @@ shuffleTiles()
   background-color: lightgreen;
 }
 .prompt-container {
+  position: relative;
   margin: 5%;
   margin-top: 0;
+  margin-bottom: 0;
   text-align: center;
   opacity: 0;
   transition: all 6s ease;
   transform: translateY(-50%);
 }
 .prompt-container p {
+  text-align: center;
+  word-spacing: 10px;
   text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 10px;
   margin: 1%;
+  margin-left: 36%;
+  padding: 0;
+  width: 28%;
+  color: #ffffffb6;
+  border-radius: 20px;
+
+  /* border: 0.1px solid#3570a7;
+  background-color: #3570a76b; */
 }
-.input {
-  color: #fff;
+.input-puzzle {
+  color: #ffffff;
   font-size: 16px;
   text-align: center;
   border: 2px solid transparent;
@@ -273,22 +295,31 @@ shuffleTiles()
   padding-left: 0.8em;
   outline: none;
   overflow: hidden;
-  background-color: #ffffff3f;
+  background-color: #886a8195;
   border-radius: 10px;
   transition: all 0.5s;
   font-weight: bold;
 }
-.input:hover,
-.input:focus {
-  border: 2px solid #4a9dec;
+.input-puzzle:hover,
+.input-puzzle:focus {
+  scale: 1.2;
+  border: 2px solid #3570a7;
   box-shadow: 0px 0px 0px 7px rgba(74, 157, 236, 20%);
 }
 .timer {
   margin-top: 10px;
   text-align: center;
   font-size: 24px;
+  font-weight: bold;
   position: absolute;
-  top: 120px;
+  top: 80px;
   left: 25px;
+  cursor: default;
+  background-color: #98959581;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.timer:hover {
+  font-size: 28px;
 }
 </style>
