@@ -296,10 +296,30 @@ export default {
       }
 
       this.refs.userInput = ''
+    },
+    adjustStyles() {
+      const player = document.querySelector('.player')
+      const clue = document.querySelector('.instruction1')
+      if (!player) return
+
+      const windowsScaling = window.devicePixelRatio || 1
+      if (windowsScaling === 1.25) {
+        // Windows scaling set to 125%
+        player.style.transform = 'scale(1.7)'
+        player.style.marginTop = '12%'
+      } else {
+        // Windows scaling set to 100%
+        player.style.transform = 'scale(2.3)'
+        player.style.marginTop = '15%'
+        clue.style.marginLeft = '3%'
+      }
     }
   },
 
   mounted() {
+    this.adjustStyles()
+    window.addEventListener('resize', this.adjustStyles)
+
     this.audio.addEventListener('timeupdate', this.updateTime)
     this.audio.addEventListener('loadedmetadata', this.setDuration)
     this.audio.addEventListener('ended', this.nextSong)
@@ -314,13 +334,16 @@ export default {
     this.audio.removeEventListener('loadedmetadata', this.setDuration)
     this.audio.removeEventListener('ended', this.nextSong)
     this.audio.removeEventListener('error', () => {})
+    window.removeEventListener('resize', this.adjustStyles)
   }
 }
 </script>
 
 <style>
 .music-page {
+  /* height: 120vh; */
   height: 100vh;
+  overflow-y: hidden;
   background: linear-gradient(205deg, rgba(34, 109, 104, 0.816) 38%, rgba(0, 251, 255, 0.48) 100%),
     url('../assets/ai-generated-bg.png') !important;
   /* animation: gradient-show-light 30s infinite !important; */
@@ -450,14 +473,25 @@ export default {
   font-size: small;
 }
 
+/*125% scaling*/
 .player {
-  scale: 1.7;
-  margin-top: 200px;
+  /* scale: 1.7; */
+  /* scale: 2.3; */
+  /* margin-top: 10%; */
+  /* margin-top: 15%; */
   margin-right: 43%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
+/* Media query for 100% scaling */
+/* @media screen and (-webkit-min-device-pixel-ratio: 0.75), screen and (min-resolution: 120dpi) {
+  .player {
+    scale: 2.3;
+    margin-top: 15%;
+  }
+} */
 
 .song-info {
   display: flex;
