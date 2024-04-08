@@ -162,10 +162,12 @@ app.post("/checkOrder", (req, res) => {
       "beautiful! in the realm of music, freedom knows no bounds!";
     const alternativeString =
       "thank you from the bottom of my heart. please continue to enjoy my rampaging music!!!";
+    const alternativeString2 = "Thanks for the lovely words 🫶";
 
     if (
       order === expectedString.toLowerCase() ||
-      order === alternativeString.toLowerCase()
+      order === alternativeString.toLowerCase() ||
+      order === alternativeString2.toLowerCase()
     ) {
       res.json({ feedback: "Well done" });
     } else {
