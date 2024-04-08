@@ -64,7 +64,7 @@ const EMPTY_TILE = ROWS * COLS - 1
 const tiles = ref([])
 const completed = ref(false)
 let selectedTileIndex = null
-const userInput = ref('')
+let userInput = ref('')
 const timer = ref(90) // TIME //////////////////////
 const timerColor = ref('black')
 
@@ -117,17 +117,36 @@ const handleKeyDown = (event) => {
   }
 }
 
-const handleInput = () => {
-  userInput.value = userInput.value.replace(/\D/g, '')
-  console.log('User input:', userInput.value)
+const handleInput = async () => {
+  const userInputValue = userInput.value.replace(/\D/g, '')
+  console.log('User input:', userInputValue)
+
+  const game = 'game3'
+
+  const response = await fetch('/checkOrder', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ game, order: userInputValue })
+  })
+
+  const data = await response.json()
 
   const inputbox = document.getElementById('userinput')
   const inputtext = document.querySelector('.input-puzzle')
   console.log(inputtext)
-  if (userInput.value === '4891') {
+  if (data.feedback === "Correct! You've solved the puzzle.") {
     inputbox.style.borderColor = 'green'
     inputtext.style.backgroundColor = 'green'
   } else {
+    let feedback = data.feedback
+    console.log(feedback)
+
+    if (userInput.value !== feedback.toUpperCase()) {
+      userInput.value = feedback.toUpperCase()
+    }
+
     inputbox.style.borderColor = '#8c0f08'
     inputtext.style.backgroundColor = '#8c0f08'
   }

@@ -136,6 +136,16 @@ app.post("/checkOrder", (req, res) => {
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
     }
+  } else if (game === "game3") {
+    // Define the correct answer for the third game
+    const correctAnswer = "4891";
+
+    // Check if the user input matches the correct answer
+    if (order === correctAnswer) {
+      res.json({ feedback: "Correct! You've solved the puzzle." });
+    } else {
+      res.json({ feedback: "Incorrect." });
+    }
   } else {
     res.status(400).json({ error: "Invalid game identifier." });
   }
