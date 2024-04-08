@@ -707,7 +707,7 @@ const submitAnswer = async () => {
   const fullAnswer = answer.value
 
   // Set the game parameter based on the game being played (game1)
-  const game = 'game1'
+  const game = 'game2'
 
   const response = await fetch('/checkOrder', {
     method: 'POST',

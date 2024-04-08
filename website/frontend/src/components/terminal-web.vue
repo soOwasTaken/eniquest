@@ -282,7 +282,7 @@ To the whims of those who rule as knaves.<br>`,
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ game: 'game2', order: guessedNames }) // Set the game parameter based on the game being played
+          body: JSON.stringify({ game: 'game1', order: guessedNames }) // Set the game parameter based on the game being played
         })
           .then((response) => response.json())
           .then((data) => {

@@ -121,7 +121,7 @@ const handleInput = async () => {
   const userInputValue = userInput.value.replace(/\D/g, '')
   console.log('User input:', userInputValue)
 
-  const game = 'game3'
+  const game = 'game4'
 
   const response = await fetch('/checkOrder', {
     method: 'POST',

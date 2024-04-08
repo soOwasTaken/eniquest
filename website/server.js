@@ -88,6 +88,7 @@ app.post("/processPrompt", async (req, res) => {
 app.post("/checkOrder", (req, res) => {
   const { game, order } = req.body;
 
+  /// WEB COMP ///
   if (game === "game2") {
     // Define the correct phrase for the first game
     const correctPhrase =
@@ -103,7 +104,9 @@ app.post("/checkOrder", (req, res) => {
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
     }
-  } else if (game === "game1") {
+  }
+  /// TERMINAL GAME //
+  else if (game === "game1") {
     // Define the correct answer array for the second game
     const correctAnswer = [
       "Elysir",
@@ -114,11 +117,11 @@ app.post("/checkOrder", (req, res) => {
     ];
 
     // Split the user's input into an array of names
-    const userAnswer = order.trim().split(" ");
+    const userAnswer = order.trim().toLowerCase().split(" ");
 
     // Check if the user's answer contains all the correct names
     const correctNames = correctAnswer.filter((name) =>
-      userAnswer.includes(name)
+      userAnswer.includes(name.toLowerCase())
     );
     const incorrectNames = correctAnswer.filter(
       (name) => !userAnswer.includes(name)
@@ -136,7 +139,9 @@ app.post("/checkOrder", (req, res) => {
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
     }
-  } else if (game === "game4") {
+  }
+  /// PUZZLE GAME ///
+  else if (game === "game4") {
     // Define the correct answer for the third game
     const correctAnswer = "4891";
 
@@ -146,9 +151,13 @@ app.post("/checkOrder", (req, res) => {
     } else {
       res.json({ feedback: "Incorrect." });
     }
-  } else if (game === "game3") {
+  }
+  /// BRAILLE GAME  ///
+  else if (game === "game3") {
     // to do
-  } else if (game === "game5") {
+  }
+  /// MUSIC PLAYER ///
+  else if (game === "game5") {
     const expectedString =
       "beautiful! in the realm of music, freedom knows no bounds!";
     const alternativeString =
@@ -162,6 +171,10 @@ app.post("/checkOrder", (req, res) => {
     } else {
       res.json({ feedback: "Wrong... Try again." });
     }
+  }
+  /// AI GENERATED IMAGE GAME ///
+  else if (game === "game6") {
+    // TO DO
   } else {
     res.status(400).json({ error: "Invalid game identifier." });
   }
