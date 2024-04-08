@@ -152,6 +152,10 @@ To the whims of those who rule as knaves.<br>`,
       },
       commands: {
         help: [
+          {
+            command: 'guess <your answer to the game>',
+            description: 'Guess what the answer to the game is'
+          },
           { command: 'clear', description: 'Clear the terminal screen' },
           { command: 'banner', description: "Display the terminal's header" },
           { command: 'ls', description: 'List all files' },
@@ -267,19 +271,45 @@ To the whims of those who rule as knaves.<br>`,
 
       let outputLine = `<p><span class="prompt" style="color: green;">${prompt}</span> <span class="command">${this.command}</span></p>`
 
-      // Check if the output is a winning message
-      const winningNames = ['Elysir', 'Xerxes', 'Pyrothia', 'Aetheria', 'Emberfell']
-      if (winningNames.every((name) => this.command.includes(name))) {
-        outputLine += `<p style="font-size: 28px; color: #B67332; text-transform: uppercase;">Congratulations! You've guessed all the names correctly!</p>`
-      } else if (output) {
-        outputLine += `<p>${output}</p>`
-      }
+      // Check if the command is a guess for the names
+      if (this.command.startsWith('guess ')) {
+        // Extract the guessed names
+        const guessedNames = this.command.substring(6).trim()
 
-      this.outputLines.push(outputLine)
-      this.$nextTick(() => {
-        const terminal = document.querySelector('.terminal')
-        terminal.scrollTop = terminal.scrollHeight
-      })
+        // Send the guessed names to the server for validation
+        fetch('/checkOrder', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ game: 'game2', order: guessedNames }) // Set the game parameter based on the game being played
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            outputLine += `<p>${data.feedback}</p>`
+            this.outputLines.push(outputLine)
+            this.$nextTick(() => {
+              const terminal = document.querySelector('.terminal')
+              terminal.scrollTop = terminal.scrollHeight
+            })
+
+            // Check if the user has won
+            if (data.feedback === 'Correct!') {
+              alert("Congratulations! You've guessed all the names correctly!")
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error)
+          })
+      } else {
+        // Handle other commands normally
+        outputLine += `<p>${output}</p>`
+        this.outputLines.push(outputLine)
+        this.$nextTick(() => {
+          const terminal = document.querySelector('.terminal')
+          terminal.scrollTop = terminal.scrollHeight
+        })
+      }
     },
     clearOutput() {
       this.outputLines = []
