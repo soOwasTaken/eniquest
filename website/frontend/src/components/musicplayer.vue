@@ -276,26 +276,24 @@ export default {
     ///////////////////////////////////////////////////////////
     ////////////////////CHECKING ANSWER/////////////////////////
     /////////////////////////////////////////////////////////
-    confirmInput() {
-      const expectedString = 'Beautiful! In the realm of music, freedom knows no bounds!'
-      const alternativeString =
-        'Thank you from the bottom of my heart. Please continue to enjoy my rampaging music!!!'
-      const trimmedInput = this.userInput.trim().toLowerCase()
-      console.log('Trimmed input:', trimmedInput)
-      console.log('Expected string:', expectedString.toLowerCase())
-
-      if (
-        trimmedInput === expectedString.toLowerCase() ||
-        trimmedInput === alternativeString.toLowerCase()
-      ) {
-        /* alert('well done') */
-        const musicPage = document.querySelector('.music-page')
-        musicPage.classList.add('yellow-success')
-      } else {
-        alert('Wrong... Try again.')
+    async confirmInput() {
+      try {
+        const response = await fetch('/checkOrder', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            game: 'game5',
+            order: this.userInput.trim().toLowerCase()
+          })
+        })
+        const data = await response.json()
+        console.log(data.feedback + 'music player')
+        alert(data.feedback)
+      } catch (error) {
+        console.error('Error confirming input:', error)
       }
-
-      this.refs.userInput = ''
     },
     adjustStyles() {
       const player = document.querySelector('.player')

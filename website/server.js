@@ -88,7 +88,7 @@ app.post("/processPrompt", async (req, res) => {
 app.post("/checkOrder", (req, res) => {
   const { game, order } = req.body;
 
-  if (game === "game1") {
+  if (game === "game2") {
     // Define the correct phrase for the first game
     const correctPhrase =
       "I disapprove of what you say, but I will defend to the death your right to say it";
@@ -103,7 +103,7 @@ app.post("/checkOrder", (req, res) => {
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
     }
-  } else if (game === "game2") {
+  } else if (game === "game1") {
     // Define the correct answer array for the second game
     const correctAnswer = [
       "Elysir",
@@ -136,7 +136,7 @@ app.post("/checkOrder", (req, res) => {
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
     }
-  } else if (game === "game3") {
+  } else if (game === "game4") {
     // Define the correct answer for the third game
     const correctAnswer = "4891";
 
@@ -145,6 +145,22 @@ app.post("/checkOrder", (req, res) => {
       res.json({ feedback: "Correct! You've solved the puzzle." });
     } else {
       res.json({ feedback: "Incorrect." });
+    }
+  } else if (game === "game3") {
+    // to do
+  } else if (game === "game5") {
+    const expectedString =
+      "beautiful! in the realm of music, freedom knows no bounds!";
+    const alternativeString =
+      "thank you from the bottom of my heart. please continue to enjoy my rampaging music!!!";
+
+    if (
+      order === expectedString.toLowerCase() ||
+      order === alternativeString.toLowerCase()
+    ) {
+      res.json({ feedback: "Well done" });
+    } else {
+      res.json({ feedback: "Wrong... Try again." });
     }
   } else {
     res.status(400).json({ error: "Invalid game identifier." });
