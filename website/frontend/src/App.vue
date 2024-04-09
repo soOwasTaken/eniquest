@@ -24,7 +24,7 @@ const changeComponent = (newComponent) => {
 
 // Example usage:
 //changeComponent(App2);
-changeComponent(App6);
+changeComponent(App3);
 // changeComponent(App4);
 // etc.
 </script>
