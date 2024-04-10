@@ -153,7 +153,7 @@ To the whims of those who rule as knaves.<br>`,
       commands: {
         help: [
           {
-            command: 'guess <your answer to the game>',
+            command: 'answer <your answer to the game>',
             description: 'Guess what the answer to the game is'
           },
           { command: 'clear', description: 'Clear the terminal screen' },
@@ -272,7 +272,7 @@ To the whims of those who rule as knaves.<br>`,
       let outputLine = `<p><span class="prompt" style="color: green;">${prompt}</span> <span class="command">${this.command}</span></p>`
 
       // Check if the command is a guess for the names
-      if (this.command.startsWith('guess ')) {
+      if (this.command.startsWith('answer ')) {
         // Extract the guessed names
         const guessedNames = this.command.substring(6).trim()
 
