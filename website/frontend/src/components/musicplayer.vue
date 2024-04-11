@@ -357,7 +357,7 @@ export default {
   background-size: cover !important;
   background-attachment: fixed !important;
   background-color: #226d68 !important; /* 34, 109, 104, */
-  transition: all 5s ease;
+  transition: all 0.3s ease;
 }
 .page-header {
   text-align: center;
@@ -416,7 +416,7 @@ export default {
   top: 10px;
   right: 10px;
   z-index: 9999;
-  padding: 10px 20px;
+  padding: 10px 10px;
   border: none;
   font-size: 24px;
   border-radius: 5px;
