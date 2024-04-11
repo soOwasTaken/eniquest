@@ -19,8 +19,8 @@
         </g>
       </svg>
     </button>
-    <div class="grid-container">
-      <div class="grid">
+    <div v-auto-animate class="grid-container">
+      <div v-auto-animate class="grid">
         <div
           v-for="(tile, index) in tiles"
           :key="index"
@@ -162,18 +162,33 @@ const handleTileClick = (index) => {
 }
 
 const swapTiles = (index1, index2) => {
-  if (!completed.value) {
-    const temp = tiles.value[index1]
-    tiles.value[index1] = tiles.value[index2]
-    tiles.value[index2] = temp
-    if (puzzleCompleted()) {
-      completed.value = true
-      console.log('Congratulations! You solved the puzzle!')
-      const promptMessage = document.querySelector('.prompt-container')
-      promptMessage.style.opacity = 1
-      console.log('succeed')
+  requestAnimationFrame(() => {
+    if (!completed.value) {
+      const temp = tiles.value[index1]
+      const tile1 = document.querySelector(`.tile:nth-child(${index1 + 1})`)
+      const tile2 = document.querySelector(`.tile:nth-child(${index2 + 1})`)
+
+      tile1.classList.add('swap-out')
+      tile2.classList.add('swap-in')
+
+      tiles.value[index1] = tiles.value[index2]
+      tiles.value[index2] = temp
+
+      // Wait for the transition to complete before removing the classes
+      setTimeout(() => {
+        tile1.classList.remove('swap-out')
+        tile2.classList.remove('swap-in')
+
+        if (puzzleCompleted()) {
+          completed.value = true
+          console.log('Congratulations! You solved the puzzle!')
+          const promptMessage = document.querySelector('.prompt-container')
+          promptMessage.style.opacity = 1
+          console.log('succeed')
+        }
+      }, 200)
     }
-  }
+  })
 }
 
 const resetGame = () => {
@@ -198,8 +213,11 @@ shuffleTiles()
 
 <style scoped>
 .puzzle-game {
-  background: linear-gradient(205deg, rgba(60, 66, 55, 0.415) 38%, rgba(167, 167, 7, 0.41) 100%),
-    url('../assets/1puzzlebackground-2661283_1280.jpg');
+  background: linear-gradient(205deg, rgba(67, 15, 48, 0.704) 38%, rgba(72, 72, 47, 0.789) 100%),
+    url('../assets/forest-3119826_1280.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
   color: #fff;
   height: 100vh;
   /* overflow-y: auto; */
@@ -233,7 +251,8 @@ shuffleTiles()
   height: 34px;
   width: 40px;
   border: none;
-  background-color: #01010181;
+  background-color: #01010134;
+  /* background: transparent; */
   border-radius: 20px;
   cursor: pointer;
   color: #3570a7;
@@ -271,6 +290,16 @@ shuffleTiles()
   border: 1px solid black;
   cursor: pointer;
   background-size: 600px 600px;
+  transition: all 0.2s ease;
+}
+.swap-out {
+  transform: translateY(50%);
+  opacity: 0;
+}
+
+.swap-in {
+  transform: translateY(-50%);
+  opacity: 0;
 }
 .tile.empty {
   background-color: white;
@@ -284,7 +313,7 @@ shuffleTiles()
   margin-top: 0;
   margin-bottom: 0;
   text-align: center;
-  opacity: 0;
+  opacity: 1;
   transition: all 6s ease;
   transform: translateY(-50%);
 }
@@ -335,6 +364,7 @@ shuffleTiles()
   left: 25px;
   cursor: default;
   background-color: #98959581;
+  background: transparent;
   border-radius: 8px;
   transition: all 0.3s ease;
 }
