@@ -33,6 +33,13 @@ export default defineConfig({
           return createProxyMiddleware(proxy, options);
         },
       },
+      '/checkIndex': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        configure: (proxy, options) => {
+          return createProxyMiddleware(proxy, options);
+        },
+      },
     },
   },
 })

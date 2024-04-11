@@ -1,4 +1,4 @@
-<template>  
+<template>
   <div id="brailleContainer" @keydown="handleKeyPress" tabindex="0">
     <span v-for="(item, index) in characters" :key="index"
           :style="{ left: `${item.x}%`, top: `${item.y}%` }"
@@ -13,6 +13,7 @@ export default {
     return {
       brailleText: '⠃⠗⠁⠊⠇⠇⠑⠑⠍⠏⠕⠺⠑⠗⠎⠞⠓⠑⠃⠇⠊⠝⠙⠺⠊⠞⠓⠞⠓⠑⠋⠗⠑⠑⠙⠕⠍⠞⠕⠗⠑⠁⠙⠁⠝⠙⠉⠕⠍⠍⠥⠝⠊⠉⠁⠞⠑',
       characters: [],
+
       currentIndex: 0,
     };
   },
@@ -24,28 +25,52 @@ export default {
   },
   methods: {
     distributeText() {
+
       const chars = this.brailleText.split('');
       const columns = 10;
       const rows = Math.ceil(chars.length / columns);
       this.characters = chars.map((char, index) => {
         const row = Math.floor(index / columns);
+
         const col = index % columns;
+
         const x = (col / columns) * 100 + Math.random() * 5;
         const y = (row / rows) * 100 + Math.random() * 5;
         return { char, x, y, highlight: false };
+
       });
     },
-    handleKeyPress(event) {
+    async handleKeyPress(event) {
       const brailleAlphabet = {
         'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
+
         'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
         'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵', ' ': ' ',
       };
       const brailleChar = brailleAlphabet[event.key.toLowerCase()];
+
       if (brailleChar && this.characters[this.currentIndex] && brailleChar === this.characters[this.currentIndex].char) {
         this.characters[this.currentIndex].highlight = true;
         this.$forceUpdate(); // Force update to apply the style change
         this.currentIndex++;
+        //console.log(this.currentIndex);
+
+      }
+
+      if (event.key === 'Enter') {
+        const response = await fetch('/checkIndex', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ index: this.currentIndex }),
+        });
+
+        const data = await response.json();
+
+
+        // handle the response here
+        console.log(data);
       }
     },
     revealChar(event) {
@@ -62,7 +87,6 @@ export default {
   },
 };
 </script>
-
 <style>
 #brailleContainer {
   position: relative;

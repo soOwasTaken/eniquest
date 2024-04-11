@@ -94,6 +94,16 @@ app.post('/checkOrder', (req, res) => {
     }
 });
 
+app.post('/checkIndex', (req, res) => {
+
+  const { index } = req.body;
+
+  if (index === 57) {
+    res.json({ result: true });
+  } else {
+    res.json({ result: false });
+  }
+});
 
 function processLatestEntry() {
     const filePath = 'data.json';
