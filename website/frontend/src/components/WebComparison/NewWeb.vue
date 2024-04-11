@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!showWikipedia && !showMedium && !showNews" class="new-web">
+  <div v-auto-animate v-if="!showWikipedia && !showMedium && !showNews" class="new-web">
     <div class="header">
       <img src="../../assets/boogle.png" alt="Logo" class="logo" />
       <div class="searchBox">
@@ -107,7 +107,12 @@
           </div>
           <div v-else-if="item.type === 'peopleAlsoAsk'" class="people-also-ask">
             <h3 class="people-also-ask-title">People also ask</h3>
-            <div v-for="(question, qIndex) in item.questions" :key="qIndex" class="question">
+            <div
+              v-auto-animate
+              v-for="(question, qIndex) in item.questions"
+              :key="qIndex"
+              class="question"
+            >
               <div @click="toggleAnswer(question)" class="question-text">
                 <span class="question-symbol">{{ question.showAnswer ? '-' : '+' }}</span>
                 {{ question.text }}
@@ -171,10 +176,11 @@
         <p class="footer-text">Report inappropriate content</p>
       </footer>
     </div>
-    <div class="return">
-      <button class="return-button" @click="returnToNothing">&laquo;</button>
-    </div>
   </div>
+  <div class="return">
+    <button class="return-button" @click="returnToNothing">&laquo;</button>
+  </div>
+
   <div v-if="showWikipedia">
     <div class="wiki-container">
       <header class="wiki-header">
@@ -348,10 +354,10 @@
         <p>
           Freedom of speech is a controversial issue, and there are many debates surrounding its
           limits and boundaries.
-          <span id="here" @click="changeWikiKeyBackground">You might want to click here.</span> Some
-          argue that certain types of speech, such as hate speech or pornography, should be banned
-          outright, while others argue that any restrictions on speech are a slippery slope towards
-          censorship and authoritarianism.
+          <span id="here" @click="changeWikiKeyBackground">You might want to click here.</span>
+          Some argue that certain types of speech, such as hate speech or pornography, should be
+          banned outright, while others argue that any restrictions on speech are a slippery slope
+          towards censorship and authoritarianism.
         </p>
         <p>
           There are also debates surrounding the role of social media platforms in regulating
@@ -506,7 +512,7 @@
     </div>
   </div>
 
-  <div v-if="showNews">
+  <div v-auto-animate v-if="showNews">
     <div class="news-page">
       <!-- Header -->
       <header class="header">
@@ -971,12 +977,25 @@ function handleResultClick(link) {
   event.preventDefault()
   if (link === 'wackypedia.org') {
     showWikipedia.value = true
+    requestAnimationFrame(() => {
+      const wiki = document.querySelector('.wiki-container')
+      wiki.classList.add('show')
+    })
   }
   if (link === 'medimu.io') {
     showMedium.value = true
+    requestAnimationFrame(() => {
+      const wiki = document.querySelector('.medium-article')
+      wiki.classList.add('show')
+    })
   }
   if (link === 'news.com') {
     showNews.value = true
+    requestAnimationFrame(() => {
+      const wiki = document.querySelector('.news-page')
+      console.log(wiki)
+      wiki.classList.add('show')
+    })
   }
 }
 
@@ -1473,6 +1492,9 @@ hr {
   height: 100%;
   background-color: #fff;
   color: #000;
+  scroll-behavior: smooth;
+  opacity: 0.7;
+  transition: all 1s ease;
 }
 
 .wiki-container header {
@@ -1512,6 +1534,7 @@ hr {
   background-color: #666464f4;
   color: #fff;
   border-radius: 0 38px 38px 0;
+  transition: all 0.5s ease;
 }
 
 .wiki-container .table-of-contents h2 {
@@ -1619,7 +1642,8 @@ hr {
 }
 
 .hidden {
-  display: none;
+  /* display: none; */
+  opacity: 0;
 }
 #introduction,
 #implementation {
@@ -1690,6 +1714,8 @@ hr {
   max-width: 50%;
   background-color: #ffffff;
   color: #000000;
+  opacity: 0.7;
+  transition: all 1s ease;
 }
 
 /* Header Styles */
@@ -1891,8 +1917,12 @@ hr {
   height: 100%;
   background-color: rgb(75, 75, 75);
   color: rgb(255, 255, 255);
+  opacity: 0.6;
+  transition: all 1s ease;
 }
-
+.show {
+  opacity: 1;
+}
 /* Styles for the header */
 .news-page .header {
   font-size: 14px;

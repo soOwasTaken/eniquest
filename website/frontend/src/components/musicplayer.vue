@@ -18,13 +18,15 @@
     <div class="media-player">
       <div class="playlist-button">
         <button @click="togglePlaylist" class="hamburger">≡</button>
-        <div v-if="showPlaylist" class="playlist">
-          <ul>
-            <li v-for="(song, index) in songs" :key="index" @click="playSong(index)">
-              <span class="list-song-title">{{ song.title }}</span> -
-              <span class="list-song-artist">{{ song.artist }}</span>
-            </li>
-          </ul>
+        <div v-auto-animate>
+          <div v-if="showPlaylist" class="playlist">
+            <ul>
+              <li v-for="(song, index) in songs" :key="index" @click="playSong(index)">
+                <span class="list-song-title">{{ song.title }}</span> -
+                <span class="list-song-artist">{{ song.artist }}</span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -101,6 +103,8 @@
 </template>
 
 <script>
+// import { vAutoAnimate } from '@formkit/auto-animate'
+
 import typetheirfirstalbum from '../assets/music/unknown.mp3'
 import brokme from '../assets/music/broke-me-115146.mp3'
 import dirtypiano from '../assets/music/dirty-piano-vocal-hip-hop-175870.mp3'
@@ -334,6 +338,9 @@ export default {
     this.audio.removeEventListener('error', () => {})
     window.removeEventListener('resize', this.adjustStyles)
   }
+  // directives: {
+  //   vAutoAnimate
+  // }
 }
 </script>
 
@@ -350,6 +357,7 @@ export default {
   background-size: cover !important;
   background-attachment: fixed !important;
   background-color: #226d68 !important; /* 34, 109, 104, */
+  transition: all 5s ease;
 }
 .page-header {
   text-align: center;
@@ -373,7 +381,9 @@ export default {
   background-position: center center !important;
   background-size: cover !important;
   background-attachment: fixed !important;
+  transition: all 5s ease;
   color: #fff;
+  background-color: #111 !important;
   .controls .prev,
   .controls .next {
     color: #fff;

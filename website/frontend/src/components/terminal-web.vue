@@ -82,7 +82,7 @@
 </pre
       >
     </div>
-    <div class="output" ref="output">
+    <div v-auto-animate class="output" ref="output">
       <div v-for="line in outputLines" :key="line" v-html="line"></div>
     </div>
     <div class="input-line">
