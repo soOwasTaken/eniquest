@@ -578,8 +578,10 @@ export default {
 }
 .play-pause {
   border: none;
-  padding-bottom: 3px;
-  border-radius: 28px;
+  padding-bottom: 6px;
+  padding-left: 8px;
+  padding-right: 6px;
+  border-radius: 36px;
   font-size: 30px;
   opacity: 0.8;
   transition: all 0.3s ease;
