@@ -4,9 +4,11 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const fs = require("fs");
 const app = express();
+
 const port = 3000;
 const filePath = "data.json";
 app.use(bodyParser.json()); // to parse JSON body
+
 //app.use(express.static('public')); // if your frontend files are in 'public' directory
 
 app.post("/processPrompt", async (req, res) => {
@@ -15,6 +17,7 @@ app.post("/processPrompt", async (req, res) => {
   let data = JSON.stringify({
     model: "open-mistral-7b",
     messages: [
+
       {
         role: "user",
         content:
@@ -22,14 +25,17 @@ app.post("/processPrompt", async (req, res) => {
           userContent +
           "'\nCriteria:\n1)Reasoning Quality: Does the response demonstrate clear and logical reasoning?\n2)Ethical Consideration: How does the response deal with ethical implications?\n3)Respect for Diversity: Does the response acknowledge and respect diverse viewpoints?\nExample Relevance: How relevant and illustrative are the examples provided?\nInsight into Implications: Does the response discuss the implications of where free speech stops?\nYou should always use this specific pattern\nScore: [Insert x/10]\nSummary: [Insert a concise sentence (max. 7 words) capturing the essence of the evaluation]\n", // Insert user input here
       },
+
     ],
     temperature: 0.7,
     top_p: 1,
     max_tokens: 128,
+
     stream: false,
     safe_prompt: false,
     random_seed: 1337,
   });
+
 
   let config = {
     method: "post",
@@ -51,15 +57,18 @@ app.post("/processPrompt", async (req, res) => {
         response.data.usage.prompt_tokens +
         response.data.usage.total_tokens +
         response.data.usage.completion_tokens;
+
       const messageContent = response.data.choices[0].message.content; // Adjust according to the actual response structure
       const dataToStore = {
         id: response.data.id,
         userOutput: userOutput,
+
         totalTokens: totalTokens,
         messageContent: messageContent,
       };
 
       // Append to a file
+
 
       fs.appendFile("data.json", JSON.stringify(dataToStore) + ",\n", (err) => {
         if (err) throw err;
@@ -69,6 +78,7 @@ app.post("/processPrompt", async (req, res) => {
 
       if (result) {
         // Now we include both the score and summary in our response to the frontend
+
         res.json({ summary: result.summary, scoreResult: result.scoreResult });
       } else {
         res.status(404).send("Summary not found");
@@ -80,12 +90,23 @@ app.post("/processPrompt", async (req, res) => {
     });
 });
 
+app.post('/checkIndex', (req, res) => {
+  const { index } = req.body;
+
+  if (index === 57) {
+    res.json({ result: true });
+  } else {
+    res.json({ result: false });
+  }
+});
+
 // ----------------------------------------------------------------------------
 ////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 /// THIS IS WHERE WE CHECK ALL GAMES ANSWERS ///
 app.post("/checkOrder", (req, res) => {
+
   const { game, order } = req.body;
 
   /// WEB COMP ///
@@ -96,28 +117,36 @@ app.post("/checkOrder", (req, res) => {
 
     // Remove any trailing period from both user's answer and correct phrase
     const userAnswer = order.trim().replace(/\.$/, "").toLowerCase();
+
     const correctAnswer = correctPhrase.toLowerCase().replace(/\.$/, "");
 
     // Check if the provided string matches the correct phrase
     if (userAnswer === correctAnswer) {
       res.json({ feedback: "Correct! The phrase matches exactly." });
+
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
+
     }
   }
+
   /// TERMINAL GAME //
   else if (game === "game1") {
     // Define the correct answer array for the second game
     const correctAnswer = [
       "Elysir",
+
       "Xerxes",
       "Pyrothia",
+
       "Aetheria",
       "Emberfell",
     ];
 
+
     // Split the user's input into an array of names
     const userAnswer = order.trim().toLowerCase().split(" ");
+
 
     // Check if the user's answer contains all the correct names
     const correctNames = correctAnswer.filter((name) =>
@@ -143,6 +172,7 @@ app.post("/checkOrder", (req, res) => {
   /// PUZZLE GAME ///
   else if (game === "game4") {
     // Define the correct answer for the third game
+
     const correctAnswer = "4891";
 
     // Check if the user input matches the correct answer
@@ -151,10 +181,6 @@ app.post("/checkOrder", (req, res) => {
     } else {
       res.json({ feedback: "Incorrect." });
     }
-  }
-  /// BRAILLE GAME  ///
-  else if (game === "game3") {
-    // to do
   }
   /// MUSIC PLAYER ///
   else if (game === "game5") {
@@ -165,26 +191,26 @@ app.post("/checkOrder", (req, res) => {
     const alternativeString2 = "Thanks for the lovely words 🫶";
 
     if (
+
       order === expectedString.toLowerCase() ||
+
       order === alternativeString.toLowerCase() ||
       order === alternativeString2.toLowerCase()
     ) {
       res.json({ feedback: "Well done" });
     } else {
+
       res.json({ feedback: "Wrong... Try again." });
+
     }
   }
-  /// AI GENERATED IMAGE GAME ///
-  else if (game === "game6") {
-    // TO DO
-  } else {
-    res.status(400).json({ error: "Invalid game identifier." });
-  }
+
 });
 ////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 // -------------------------------------------------------------------------
+
 
 function processLatestEntry() {
   const filePath = "data.json";
@@ -192,7 +218,9 @@ function processLatestEntry() {
   fs.readFile(filePath, "utf8", (err, data) => {
     if (err) {
       console.error("Error reading the file:", err);
+
       return;
+
     }
 
     try {
@@ -220,10 +248,12 @@ function processEntryById(content, id) {
   const scoreMatch = content.match(scoreRegex);
   const summaryMatch = content.match(summaryRegex);
 
+
   if (scoreMatch && summaryMatch) {
     const score = parseInt(scoreMatch[1], 10);
     const summary = summaryMatch[1].trim();
     const scoreResult = score >= 6 ? 1 : 0;
+
 
     return { scoreResult, summary };
   } else {
@@ -232,5 +262,6 @@ function processEntryById(content, id) {
   }
 }
 app.listen(port, () => {
+
   console.log(`Server listening at http://localhost:${port}`);
 });
