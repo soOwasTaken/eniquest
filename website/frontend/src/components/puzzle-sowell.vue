@@ -313,7 +313,7 @@ shuffleTiles()
   margin-top: 0;
   margin-bottom: 0;
   text-align: center;
-  opacity: 1;
+  opacity: 0;
   transition: all 6s ease;
   transform: translateY(-50%);
 }
