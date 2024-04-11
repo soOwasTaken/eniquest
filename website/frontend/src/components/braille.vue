@@ -68,9 +68,13 @@ export default {
 
         const data = await response.json();
 
+        if (data.result) {
+          console.log('Correct!');
+          // Here we can setup later transition.
 
-        // handle the response here
-        console.log(data);
+        } else {
+          console.log('Incorrect. Please try again.');
+        }
       }
     },
     revealChar(event) {
