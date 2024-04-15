@@ -19,6 +19,7 @@ function toggleSuceedValue() {
 // Event listener to toggle suceedValue when "j" key is pressed
 window.addEventListener('keydown', function (event) {
   if (event.key === 'j') {
+    console.log(changeComponent)
     toggleSuceedValue()
     console.log(suceedValue.value) // Log the value for debugging
   }
