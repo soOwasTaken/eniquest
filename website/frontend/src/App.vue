@@ -19,7 +19,7 @@ import login from './components/login.vue'
 import Auth from './Auth.vue'
 // Import all the components you want to switch between
 
-let currentComponent = ref(App1) // Default component
+let currentComponent = ref(Auth) // Default component
 
 // Function to change the component
 const changeComponent = (newComponent) => {
@@ -28,7 +28,7 @@ const changeComponent = (newComponent) => {
 provide('changeComponent', changeComponent)
 // Example usage:
 //changeComponent(App2);
-changeComponent(App6)
+// changeComponent(App6)
 // changeComponent(App4);
 // etc.
 </script>

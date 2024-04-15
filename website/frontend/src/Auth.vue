@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import { ref, computed, onMounted, watch, inject } from 'vue'
+import App1 from './App1.vue'
 import LoginSignup from './components/login.vue'
 import axios from 'axios'
 
@@ -17,6 +19,7 @@ export default {
   },
   data() {
     return {
+      changeComponent: inject('changeComponent'),
       isLoggedIn: false
     }
   },
@@ -29,6 +32,7 @@ export default {
           /* alert('Login successful') */
           // Login successful, do something (e.g., store token, redirect user)
           this.isLoggedIn = true
+          this.changeComponent(App1)
         } else {
           // Login failed, display error message
           alert('Failed to login. Please try again.')
@@ -50,6 +54,7 @@ export default {
           console.log('Registration successful')
           alert('Registration successful, you are directly loged in')
           this.isLoggedIn = true
+          this.changeComponent(App1)
         } else {
           // Registration failed, display error message
           alert(response.data.message)
