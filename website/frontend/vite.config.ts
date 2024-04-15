@@ -7,11 +7,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    vueJsx(),
-    VueDevTools(),
-  ],
+  plugins: [vue(), vueJsx(), VueDevTools()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -23,17 +19,37 @@ export default defineConfig({
         target: 'http://localhost:3000',
         changeOrigin: true,
         configure: (proxy, options) => {
-          return createProxyMiddleware(proxy, options);
-        },
+          return createProxyMiddleware(proxy, options)
+        }
       },
       '/checkOrder': {
         target: 'http://localhost:3000',
         changeOrigin: true,
         configure: (proxy, options) => {
-          return createProxyMiddleware(proxy, options);
-        },
+          return createProxyMiddleware(proxy, options)
+        }
       },
-    },
-  },
+      '/checkIndex': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        configure: (proxy, options) => {
+          return createProxyMiddleware(proxy, options)
+        }
+      },
+      '/api/users/login': {
+        target: 'http://localhost:3000', // Assuming your Node.js server is running on port 3000
+        changeOrigin: true,
+        configure: (proxy, options) => {
+          return createProxyMiddleware(proxy, options)
+        }
+      },
+      '/api/users/register': {
+        target: 'http://localhost:3000', // Assuming your Node.js server is running on port 3000
+        changeOrigin: true,
+        configure: (proxy, options) => {
+          return createProxyMiddleware(proxy, options)
+        }
+      }
+    }
+  }
 })
-

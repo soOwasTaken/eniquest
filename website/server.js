@@ -6,6 +6,8 @@ const fs = require("fs");
 const app = express();
 const port = 3000;
 const filePath = "data.json";
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 app.use(bodyParser.json()); // to parse JSON body
 //app.use(express.static('public')); // if your frontend files are in 'public' directory
 
@@ -185,6 +187,62 @@ app.post("/checkOrder", (req, res) => {
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 // -------------------------------------------------------------------------
+
+// Dummy database for users (you'll replace this with a real database)
+const users = [];
+console.log("the current users: " + users);
+// Login endpoint
+app.post("/api/users/login", (req, res) => {
+  const { email, password } = req.body;
+
+  // Find user by email
+  const user = users.find((user) => user.email === email);
+
+  // If user not found or password doesn't match, return error
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Invalid email or password" });
+  }
+
+  // Generate JWT token
+  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+    expiresIn: "1h", // Token expires in 1 hour
+  });
+
+  // Return token to client
+  res.json({ success: true, token });
+});
+
+// Register endpoint
+app.post("/api/users/register", (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if user already exists
+  if (users.find((user) => user.email === email)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "User already exists" });
+  }
+
+  // Hash password
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  // Generate unique user id
+  const userId = Math.random().toString(36).substr(2, 9);
+
+  // Create new user object
+  const newUser = { id: userId, email, password: hashedPassword };
+
+  // Add user to the database
+  users.push(newUser);
+
+  // Return success message
+  res
+    .status(201)
+    .json({ success: true, message: "User registered successfully" });
+  console.log("the current users: ", users);
+});
 
 function processLatestEntry() {
   const filePath = "data.json";
