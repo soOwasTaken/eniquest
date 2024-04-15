@@ -56,6 +56,9 @@ export default {
           console.log('failed singing up')
         }
       } catch (error) {
+        if (error.response && error.response.status === 400) {
+          alert('email already exists')
+        }
         console.error('Error signing up:', error)
       }
     }
