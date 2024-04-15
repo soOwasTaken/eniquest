@@ -49,7 +49,7 @@ export default {
           // Registration successful, do something (e.g., redirect user to login)
           console.log('Registration successful')
           alert('Registration successful, you are directly loged in')
-          /* this.isLoggedIn = true */
+          this.isLoggedIn = true
         } else {
           // Registration failed, display error message
           alert(response.data.message)
