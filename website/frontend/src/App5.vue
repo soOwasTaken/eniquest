@@ -1,8 +1,20 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import terminalWeb from './components/terminal-web.vue'
 import anime from 'animejs/lib/anime.es.js'
+
+onMounted(() => {
+  anime({
+    targets: ['.terminal'],
+    scale: [0.001, 1], // Scale up to 100% of original size
+    translateX: ['100%', '-10%', '0%'],
+    translateY: ['100%', '0%'],
+    duration: 2500, // Duration of animation
+    backgroundColor: ['#fff', '#11151d'],
+    easing: 'easeInOutQuad'
+  })
+})
 </script>
 
 <template>

@@ -7,13 +7,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, provide } from 'vue'
 import App1 from './App1.vue'
 import App2 from './App2.vue'
 import App3 from './App3.vue'
 import App4 from './App4.vue'
 import App5 from './App5.vue'
 import App6 from './App6.vue'
+import App7 from './App7.vue'
 import login from './components/login.vue'
 import Auth from './Auth.vue'
 // Import all the components you want to switch between
@@ -24,10 +25,10 @@ let currentComponent = ref(App1) // Default component
 const changeComponent = (newComponent) => {
   currentComponent.value = newComponent
 }
-
+provide('changeComponent', changeComponent)
 // Example usage:
 //changeComponent(App2);
-changeComponent(Auth)
+changeComponent(App6)
 // changeComponent(App4);
 // etc.
 </script>

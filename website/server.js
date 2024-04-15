@@ -87,6 +87,18 @@ app.post("/processPrompt", async (req, res) => {
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 /// THIS IS WHERE WE CHECK ALL GAMES ANSWERS ///
+
+///BRAILLE///
+app.post("/checkIndex", (req, res) => {
+  const { index } = req.body;
+
+  if (index === 57) {
+    res.json({ result: true });
+  } else {
+    res.json({ result: false });
+  }
+});
+
 app.post("/checkOrder", (req, res) => {
   const { game, order } = req.body;
 

@@ -660,12 +660,24 @@
 <script setup>
 import { ref, watch } from 'vue'
 
+import { inject } from 'vue'
+import anime from '../../../node_modules/animejs/lib/anime.es'
+import App4 from '../../App4.vue'
+
 const showResults = ref(false) // Initially hide the search results
 const showWebsite = ref(false) // Initially hide the website content
 const showResultsContent = ref(false) // Initially hide the search results content
 const currentPage = ref('') // Initially, no specific page content is displayed
 const answer = ref('')
+const changeComponent = inject('changeComponent')
+let succeedWeb = false
 
+function setSucceedWeb(value) {
+  succeedWeb = value
+}
+function getSucceedWeb() {
+  return succeedWeb
+}
 function openPage(pageName) {
   currentPage.value = pageName
   showResults.value = false // Hide the search results when a page is opened
@@ -720,15 +732,60 @@ const submitAnswer = async () => {
   const data = await response.json()
   let feedback = data.feedback
   answer.value = feedback.toUpperCase()
+  if (data.feedback === 'Correct! The phrase matches exactly.') {
+    console.log('succeed web game')
+    setSucceedWeb(true)
+    document.body.style.backgroundColor = '#fff'
+    transition()
+  }
   // Display the feedback
   // alert(data.feedback)
+}
+const transition = () => {
+  setTimeout(() => {
+    anime
+      .timeline({
+        easing: 'easeInOutQuad',
+        duration: 2300,
+        complete: () => changeComponent(App4)
+      })
+      .add({
+        targets: '.old-web',
+        opacity: 0.5,
+        translateX: '100%'
+      })
+      .add(
+        {
+          targets: '.new-web',
+          opacity: 0.5,
+          translateX: '-100%'
+        },
+        0
+      )
+      .add({
+        targets: '.old-web',
+        translateX: '200%',
+        translateY: '-200%',
+        opacity: 0
+      })
+      .add(
+        {
+          targets: '.new-web',
+          translateX: '-200%',
+          translateY: '200%',
+          opacity: 0
+        },
+        '-=2500'
+      )
+  }, 1500)
 }
 </script>
 <style scoped>
 .old-web {
   font-family: 'Courier New', Courier, monospace;
   color: #000;
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */ /*We changed from grey to white to have a better looking animation when transitioning to next page*/
+  background-color: #fff;
   padding: 20px;
   height: 100%;
   overflow-y: auto;
@@ -737,6 +794,8 @@ const submitAnswer = async () => {
 .search-input {
   width: 350px;
   height: 30px;
+  background-color: #f5f5f5;
+  /* border: 2px solid #000; */
 }
 
 .top-bar {
@@ -1016,7 +1075,7 @@ li p {
 }
 
 .search-input {
-  border: none;
+  border: 1px solid #00000053;
   padding: 5px;
 }
 

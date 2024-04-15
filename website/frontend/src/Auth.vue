@@ -26,7 +26,7 @@ export default {
         const response = await axios.post('/api/users/login', userData)
         if (response.data.success) {
           console.log('Login successful')
-          alert('Login successful')
+          /* alert('Login successful') */
           // Login successful, do something (e.g., store token, redirect user)
           this.isLoggedIn = true
         } else {

@@ -105,6 +105,11 @@
 <script>
 // import { vAutoAnimate } from '@formkit/auto-animate'
 
+import { inject } from 'vue'
+import anime from '../../node_modules/animejs/lib/anime.es'
+import App2 from '../App2.vue'
+// import { getSucceedMusic, setSucceedMusic } from './succeedMusic'
+
 import typetheirfirstalbum from '../assets/music/unknown.mp3'
 import brokme from '../assets/music/broke-me-115146.mp3'
 import dirtypiano from '../assets/music/dirty-piano-vocal-hip-hop-175870.mp3'
@@ -116,7 +121,6 @@ import heart from '../assets/music/heart-ft-rfly-141378.mp3'
 import pleaseyou from '../assets/music/please-you-marilyn-ford-137328.mp3'
 import sayyoubemine from '../assets/music/say-you-be-mine-thebasspapa-3896.mp3'
 import stillalive from '../assets/music/still-alive-151278.mp3'
-
 import error from '../assets/errorbruh.png'
 import imagebrokeme from '../assets/newbrokeme.jpg'
 import imagedirtypiano from '../assets/rockot-dirtypiano.jpg'
@@ -134,6 +138,7 @@ export default {
     return {
       darkMode: false,
       showPlaylist: false,
+      succeedMusic: false,
 
       songs: [
         { title: 'Dirty Piano', artist: 'Rockot', image: imagedirtypiano, audio: dirtypiano },
@@ -167,7 +172,8 @@ export default {
       muted: false,
       previousVolume: null,
       userInput: '',
-      succeeded: false
+      succeeded: false,
+      changeComponent: inject('changeComponent')
     }
   },
 
@@ -254,6 +260,12 @@ export default {
       }
       this.changeVolume()
     },
+    setSucceedMusic(value) {
+      this.succeedMusic = value
+    },
+    getSucceedMusic() {
+      return this.succeedMusic
+    },
     //     cutVolume() {
     //       this.previousVolume = this.volume
     //       this.volume = 0
@@ -294,7 +306,16 @@ export default {
         })
         const data = await response.json()
         console.log(data.feedback + 'music player')
-        alert(data.feedback)
+        /* alert(data.feedback) */
+        if (data.feedback == 'Well done') {
+          console.log('Succeed')
+          this.setSucceedMusic(true)
+          document.body.style.backgroundColor = '#226d68'
+          console.log('this is the value of the js file: ' + this.getSucceedMusic())
+          setTimeout(() => {
+            this.transition()
+          }, 1000)
+        }
       } catch (error) {
         console.error('Error confirming input:', error)
       }
@@ -315,6 +336,39 @@ export default {
         player.style.marginTop = '15%'
         clue.style.marginLeft = '3%'
       }
+    },
+    transition() {
+      const element = document.querySelector('#app3')
+
+      // Define the animation timeline
+      const timeline = anime.timeline({
+        easing: 'easeInOutQuad',
+        duration: 2500
+      })
+
+      // Add animations to the timeline
+      timeline
+        .add({
+          targets: element,
+          scale: [1, 1.4], // Scale up slightly more than before
+          opacity: [1, 0.6], // Reduce opacity more gradually
+          translateY: ['0%', '-5%'] // Move the element upwards slightly
+        })
+        .add(
+          {
+            targets: element,
+            scale: [1.4, 0.1],
+            opacity: [0.6, 0],
+            translateX: ['0%', '-35%', '50%', '0%'],
+            translateY: ['-45%', '45%', '-45%', '0%'],
+            rotateY: 360
+          },
+          '-=50'
+        )
+
+      setTimeout(() => {
+        this.changeComponent(App2)
+      }, 3500)
     }
   },
 
@@ -345,10 +399,17 @@ export default {
 </script>
 
 <style>
+/* #app3 {
+  background-color: #226d68;
+} */
+#app3,
+#app {
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
 .music-page {
   /* height: 120vh; */
-  height: 100vh;
-  overflow-y: hidden;
+
   background: linear-gradient(205deg, rgba(34, 109, 104, 0.816) 38%, rgba(0, 251, 255, 0.48) 100%),
     url('../assets/ai-generated-bg.png') !important;
   /* animation: gradient-show-light 30s infinite !important; */
@@ -358,7 +419,15 @@ export default {
   background-attachment: fixed !important;
   background-color: #226d68 !important; /* 34, 109, 104, */
   transition: all 0.3s ease;
+  height: 100vh;
+  overflow-y: hidden;
 }
+/* .music-page {
+  height: 100vh;
+  overflow-y: hidden;
+  transition: all 0.3s ease;
+  background: transparent;
+} */
 .page-header {
   text-align: center;
   h1 {

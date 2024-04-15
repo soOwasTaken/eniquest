@@ -54,8 +54,12 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, Transition } from 'vue'
 import image from '../assets/george-modifieds.png'
+import image2 from '../assets/1puzzlebackground-2661283_1280.jpg'
+import { inject } from 'vue'
+import anime from '../../node_modules/animejs/lib/anime.es'
+import App5 from '../App5.vue'
 
 const ROWS = 5
 const COLS = 5
@@ -67,6 +71,15 @@ let selectedTileIndex = null
 let userInput = ref('')
 const timer = ref(90) // TIME //////////////////////
 const timerColor = ref('black')
+
+const changeComponent = inject('changeComponent')
+let succeedPuzzle = false
+function setSucceedPuzzle(value) {
+  succeedPuzzle = value
+}
+function getSucceedPuzzle() {
+  return succeedPuzzle
+}
 
 const startTimer = () => {
   const interval = setInterval(() => {
@@ -139,6 +152,12 @@ const handleInput = async () => {
   if (data.feedback === "Correct! You've solved the puzzle.") {
     inputbox.style.borderColor = 'green'
     inputtext.style.backgroundColor = 'green'
+    setSucceedPuzzle(true)
+    document.body.style.background =
+      'linear-gradient(205deg, rgba(44, 15, 48, 1) 38%, rgba(72, 72, 47, 0.789) 100%)'
+    setTimeout(() => {
+      transition()
+    }, 1000)
   } else {
     let feedback = data.feedback
     console.log(feedback)
@@ -150,6 +169,112 @@ const handleInput = async () => {
     inputbox.style.borderColor = '#8c0f08'
     inputtext.style.backgroundColor = '#8c0f08'
   }
+}
+// const transition = () => {
+//   setTimeout(() => {
+//     // Number of fragments to break the element into
+//     const numFragments = 20
+
+//     // Get the dimensions of the window
+//     const windowWidth = window.innerWidth
+//     const windowHeight = window.innerHeight
+
+//     // Create and append fragment elements to the body
+//     for (let i = 0; i < numFragments * 2; i++) {
+//       const fragment = document.createElement('div')
+//       fragment.classList.add('fragment')
+//       fragment.style.width = `${(windowWidth * 2) / numFragments}px`
+//       fragment.style.height = `${(windowHeight * 2) / numFragments}px`
+//       fragment.style.background = `url(${image2})`
+//       fragment.style.position = 'absolute'
+//       fragment.style.left = `${anime.random(0, windowWidth)}px`
+//       fragment.style.top = `${anime.random(0, windowHeight)}px`
+//       document.body.appendChild(fragment)
+//     }
+
+//     // Animate the fragments with randomized movement
+//     const fragments = document.querySelectorAll('.fragment')
+//     fragments.forEach((fragment) => {
+//       anime({
+//         targets: fragment,
+//         translateX: anime.random(-windowWidth, windowWidth),
+//         translateY: anime.random(-windowHeight, windowHeight),
+//         /* rotate: anime.random(0, 360), */
+//         opacity: 1,
+//         duration: anime.random(1000, 2000),
+//         easing: 'easeInOutQuad',
+//         complete: () => fragment.remove() // Remove the fragment after animation completes
+//       })
+//     })
+
+//     // Change component after animation completes
+//     setTimeout(() => {
+//       changeComponent(App5)
+//     }, 300)
+//   }, 2500)
+// }
+
+const transition = () => {
+  // Duration of tile animation
+  const tileDuration = 800
+
+  // Range for random translations
+  const translationRange = 500 // Adjust this value as needed
+
+  // Get the dimensions of the window
+  const windowWidth = window.innerWidth
+  const windowHeight = window.innerHeight
+
+  // Store initial positions of the tiles
+  const initialPositions = tiles.value.map((tile) => ({
+    translateX: tile.translateX,
+    translateY: tile.translateY
+  }))
+
+  // Animate each tile individually to different positions with staggered start times
+  tiles.value.forEach((tile, index) => {
+    anime({
+      targets: `.tile:nth-child(${index + 1})`,
+      translateX: anime.random(-translationRange, translationRange),
+      translateY: anime.random(-translationRange, translationRange),
+      duration: tileDuration,
+      easing: 'easeInOutQuad',
+      delay: index * 100, // Stagger the start time of each tile's animation
+      complete: () => {
+        // After the tile's animation completes, animate it back to its initial position
+        anime({
+          targets: `.tile:nth-child(${index + 1})`,
+          translateX: initialPositions[index].translateX,
+          translateY: initialPositions[index].translateY,
+          duration: tileDuration,
+          easing: 'easeInOutQuad',
+          complete: () => {
+            // After the tile returns to its initial position, if it's the last tile, start animating the whole .puzzle-game container
+            if (index === tiles.value.length - 1) {
+              anime({
+                targets: '.puzzle-game',
+                translateY: ['0%', '200%'],
+                rotateY: [360, 0],
+                elasticity: 600,
+                scale: [1, 0.1],
+                duration: 3000,
+                opacity: 0,
+                easing: 'easeInOutQuad',
+                begin: () => {
+                  // Start the second animation sooner by setting a negative delay
+                  anime.set('.puzzle-game', { translateY: '0%' }) // Reset translateY to initial position
+                },
+                complete: () => {
+                  // After the container animation completes, change component
+                  changeComponent(App5)
+                }
+              })
+            }
+          }
+        })
+      }
+    })
+  })
 }
 
 const handleTileClick = (index) => {

@@ -100,6 +100,10 @@
 </template>
 
 <script>
+import { inject } from 'vue'
+import anime from '../../node_modules/animejs/lib/anime.es'
+import App6 from '../App6.vue'
+
 export default {
   data() {
     return {
@@ -168,7 +172,9 @@ To the whims of those who rule as knaves.<br>`,
         ],
         clear: ''
       },
-      outputLines: []
+      outputLines: [],
+      succeedTerminal: false,
+      changeComponent: inject('changeComponent')
     }
   },
   methods: {
@@ -295,7 +301,9 @@ To the whims of those who rule as knaves.<br>`,
 
             // Check if the user has won
             if (data.feedback === 'Correct!') {
-              alert("Congratulations! You've guessed all the names correctly!")
+              /* alert("Congratulations! You've guessed all the names correctly!") */
+              this.setSucceedTerminal(true)
+              this.transition()
             }
           })
           .catch((error) => {
@@ -310,6 +318,21 @@ To the whims of those who rule as knaves.<br>`,
           terminal.scrollTop = terminal.scrollHeight
         })
       }
+    },
+    transition() {
+      setTimeout(() => {
+        anime({
+          targets: ['.terminal'],
+          scale: [1, 0], // Scale up to 100% of original size
+          translateX: ['0%', '-100%', '300%'],
+          translateY: ['0%', '100%'],
+          duration: 2500, // Duration of animation
+          borderRadius: ['0%', '70%'],
+          /* backgroundColor: ['#ffffff', '#ff0000'], */
+          easing: 'easeInOutQuad',
+          complete: () => this.changeComponent(App6)
+        })
+      }, 2500)
     },
     clearOutput() {
       this.outputLines = []
@@ -393,6 +416,12 @@ To the whims of those who rule as knaves.<br>`,
       if (!currentDirContent) return []
 
       return Object.keys(currentDirContent).filter((filename) => filename.startsWith(input))
+    },
+    setSucceedTerminal(value) {
+      this.succeedTerminal = value
+    },
+    getSucceedTerminal() {
+      return this.succeedTerminal
     }
   }
 }
