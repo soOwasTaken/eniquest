@@ -7,7 +7,7 @@
 <script>
 import soundFile from '../assets/rain-ambiant.mp3'
 import { computed, watch } from 'vue'
-import { suceedValue } from './summaryDisplay.vue'
+// import { suceedValue } from './summaryDisplay.vue'
 
 export default {
   data() {
@@ -15,19 +15,19 @@ export default {
       audio: new Audio(soundFile)
     }
   },
-  computed: {
-    tryPause: function () {
-      return this.suceedValue ? console.log('YESSSS') : ''
-    }
-  },
+  // computed: {
+  //   tryPause: function () {
+  //     return this.suceedValue ? console.log('YESSSS') : ''
+  //   }
+  // },
   mounted() {
     this.audio.volume = 0.1 // Set volume to 10%
     this.playSound()
-    watch(suceedValue, (newValue) => {
-      if (newValue) {
-        this.stopSound() // Stop the sound if suceedValue is true
-      }
-    })
+    // watch(suceedValue, (newValue) => {
+    //   if (newValue) {
+    //     this.stopSound() // Stop the sound if suceedValue is true
+    //   }
+    // })
   },
   methods: {
     playSound() {
