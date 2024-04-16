@@ -1,17 +1,23 @@
 <template>
-  <div id="summaryDisplay" ref="summaryDisplay"></div>
+  <div id="summaryDisplay" ref="summaryDisplayRef"></div>
 </template>
 
 <script>
-import { inject, ref } from 'vue'
-import App3 from '../App3.vue'
-const changeComponent = inject('changeComponent')
-export let suceedValue = ref(false)
+import { inject, ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import anime from 'animejs/lib/anime.es.js'
+import { useStore } from 'vuex'
+
 export default {
   name: 'SummaryDisplay',
-  inject: ['changeComponent'],
-  methods: {
-    setSummary(data) {
+  setup() {
+    const summaryDisplayRef = ref(null)
+    const store = useStore()
+    const router = useRouter()
+
+    const gameSuccess = computed(() => store.getters.gameSuccess)
+
+    const setSummary = (data) => {
       const summaryParagraph = document.createElement('p')
       summaryParagraph.textContent = data.summary
 
@@ -20,21 +26,38 @@ export default {
       } else {
         summaryParagraph.style.color = '#65B741'
         setTimeout(() => {
-           suceedValue.value =  ref(true);
-        }, 7000); //might change later the time here
+          console.log('newversionk7')
+          store.dispatch('updateGameSuccess', { gameIndex: 0, success: true })
+          anime({
+            targets: '#app1',
+            scale: [1, 0.1],
+            opacity: 0,
+            borderRadius: ['0%', '70%'],
+            duration: 2000,
+            easing: 'easeInOutQuad',
+            complete: () => {
+              setTimeout(() => {
+                router.push('/app2')
+              }, 1500)
+            }
+          })
+        }, 7000) //might change later the time here
       }
 
       summaryParagraph.classList.add('text-reveal')
-      this.$refs.summaryDisplay.innerHTML = ''
-      this.$refs.summaryDisplay.appendChild(summaryParagraph)
+      summaryDisplayRef.value.innerHTML = ''
+      summaryDisplayRef.value.appendChild(summaryParagraph)
 
       setTimeout(() => {
         summaryParagraph.style.animation = 'fadeOut 1s ease-in-out forwards'
       }, 6000)
     }
+
+    return { summaryDisplayRef, gameSuccess, setSummary }
   }
 }
 </script>
+
 <style>
 #summaryDisplay {
   text-align: center;
