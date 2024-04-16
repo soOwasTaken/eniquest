@@ -132,6 +132,8 @@ import imageballoons from '../assets/newballoons.png'
 import imagepleaseyou from '../assets/newpleaseyou.jpg'
 import imagesayyoubemine from '../assets/thebasspapa-sayyoubemine.jpg'
 import imagestillalive from '../assets/newstillalive.png'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default {
   data() {
@@ -173,7 +175,9 @@ export default {
       previousVolume: null,
       userInput: '',
       succeeded: false,
-      changeComponent: inject('changeComponent')
+      changeComponent: inject('changeComponent'),
+      router: useRouter(),
+      store: useStore()
     }
   },
 
@@ -315,6 +319,9 @@ export default {
           setTimeout(() => {
             this.transition()
           }, 1000)
+          const store = useStore()
+
+          this.store.dispatch('updateGameSuccess', { gameIndex: 1, success: true })
         }
       } catch (error) {
         console.error('Error confirming input:', error)
@@ -367,7 +374,7 @@ export default {
         )
 
       setTimeout(() => {
-        this.changeComponent(App2)
+        this.router.push('/app3')
       }, 3500)
     }
   },

@@ -103,6 +103,8 @@
 import { inject } from 'vue'
 import anime from '../../node_modules/animejs/lib/anime.es'
 import App6 from '../App6.vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default {
   data() {
@@ -174,7 +176,9 @@ To the whims of those who rule as knaves.<br>`,
       },
       outputLines: [],
       succeedTerminal: false,
-      changeComponent: inject('changeComponent')
+      changeComponent: inject('changeComponent'),
+      router: useRouter(),
+      store: useStore()
     }
   },
   methods: {
@@ -278,7 +282,7 @@ To the whims of those who rule as knaves.<br>`,
       let outputLine = `<p><span class="prompt" style="color: green;">${prompt}</span> <span class="command">${this.command}</span></p>`
 
       // Check if the command is a guess for the names
-      if (this.command.startsWith('answer ')) {
+      if (this.command.toLowerCase().trim().startsWith('answer ')) {
         // Extract the guessed names
         const guessedNames = this.command.substring(6).trim()
 
@@ -303,6 +307,7 @@ To the whims of those who rule as knaves.<br>`,
             if (data.feedback === 'Correct!') {
               /* alert("Congratulations! You've guessed all the names correctly!") */
               this.setSucceedTerminal(true)
+              this.store.dispatch('updateGameSuccess', { gameIndex: 5, success: true })
               this.transition()
             }
           })
@@ -330,7 +335,7 @@ To the whims of those who rule as knaves.<br>`,
           borderRadius: ['0%', '70%'],
           /* backgroundColor: ['#ffffff', '#ff0000'], */
           easing: 'easeInOutQuad',
-          complete: () => this.changeComponent(App6)
+          complete: () => this.router.push('/app7')
         })
       }, 2500)
     },

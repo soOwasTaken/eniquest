@@ -663,7 +663,11 @@ import { ref, watch } from 'vue'
 import { inject } from 'vue'
 import anime from '../../../node_modules/animejs/lib/anime.es'
 import App4 from '../../App4.vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
+const router = useRouter()
+const store = useStore()
 const showResults = ref(false) // Initially hide the search results
 const showWebsite = ref(false) // Initially hide the website content
 const showResultsContent = ref(false) // Initially hide the search results content
@@ -714,11 +718,7 @@ function returnToForumPage(forumPage) {
 }
 
 const submitAnswer = async () => {
-  // Assuming your server expects a property named 'order'
-  // and the user's input is a single string to be checked
   const fullAnswer = answer.value
-
-  // Set the game parameter based on the game being played (game1)
   const game = 'game2'
 
   const response = await fetch('/checkOrder', {
@@ -726,7 +726,7 @@ const submitAnswer = async () => {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ game, order: fullAnswer }) // Include the game parameter in the request
+    body: JSON.stringify({ game, order: fullAnswer })
   })
 
   const data = await response.json()
@@ -734,12 +734,11 @@ const submitAnswer = async () => {
   answer.value = feedback.toUpperCase()
   if (data.feedback === 'Correct! The phrase matches exactly.') {
     console.log('succeed web game')
-    setSucceedWeb(true)
+    // Dispatch action to update game success status
+    store.dispatch('updateGameSuccess', { gameIndex: 2, success: true })
     document.body.style.backgroundColor = '#fff'
     transition()
   }
-  // Display the feedback
-  // alert(data.feedback)
 }
 const transition = () => {
   setTimeout(() => {
@@ -747,7 +746,10 @@ const transition = () => {
       .timeline({
         easing: 'easeInOutQuad',
         duration: 2300,
-        complete: () => changeComponent(App4)
+        complete: () => {
+          console.log(777)
+          router.push('/app4')
+        }
       })
       .add({
         targets: '.old-web',

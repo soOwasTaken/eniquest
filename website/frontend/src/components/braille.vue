@@ -13,10 +13,11 @@
 
 <script>
 import { setActivePinia } from 'pinia'
-
+import { useRouter } from 'vue-router'
 import { Transition, inject } from 'vue'
 import anime from '../../node_modules/animejs/lib/anime.es'
 import App7 from '../App7.vue'
+import { useStore } from 'vuex'
 
 export default {
   data() {
@@ -26,7 +27,9 @@ export default {
 
       currentIndex: 0,
       succeedBraille: false,
-      changeComponent: inject('changeComponent')
+      changeComponent: inject('changeComponent'),
+      router: useRouter(),
+      store: useStore()
     }
   },
   created() {
@@ -121,6 +124,7 @@ export default {
           const allPage = document.querySelector('#brailleContainer')
           allPage.style.backgroundColor = '#232826'
           document.body.style.background = '#232826'
+          this.store.dispatch('updateGameSuccess', { gameIndex: 3, success: true })
           this.transition()
           // Here we can setup later transition.
         } else {
@@ -159,7 +163,7 @@ export default {
           /* borderRadius: ['0%', '70%'], */
           /* backgroundColor: ['#000', '#955149'], */
           easing: 'easeInOutQuad',
-          complete: () => this.changeComponent(App7)
+          complete: () => this.router.push('/app5')
         })
       }, 1500)
     }

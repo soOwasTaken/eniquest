@@ -60,6 +60,8 @@ import image2 from '../assets/1puzzlebackground-2661283_1280.jpg'
 import { inject } from 'vue'
 import anime from '../../node_modules/animejs/lib/anime.es'
 import App5 from '../App5.vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 const ROWS = 5
 const COLS = 5
@@ -73,6 +75,8 @@ const timer = ref(90) // TIME //////////////////////
 const timerColor = ref('black')
 
 const changeComponent = inject('changeComponent')
+const router = useRouter()
+const store = useStore()
 let succeedPuzzle = false
 function setSucceedPuzzle(value) {
   succeedPuzzle = value
@@ -158,6 +162,7 @@ const handleInput = async () => {
     setTimeout(() => {
       transition()
     }, 1000)
+    store.dispatch('updateGameSuccess', { gameIndex: 4, success: true })
   } else {
     let feedback = data.feedback
     console.log(feedback)
@@ -266,7 +271,7 @@ const transition = () => {
                 },
                 complete: () => {
                   // After the container animation completes, change component
-                  changeComponent(App5)
+                  router.push('/app6')
                 }
               })
             }
