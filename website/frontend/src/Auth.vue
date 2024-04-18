@@ -4,7 +4,7 @@
     <div v-else>
       <!-- Your main application content goes here -->
       <button @click="logoutUser">Logout</button>
-      <button @click="startAgain">Start Again</button>
+      <button @click="startAgain">Continue</button>
       <!-- Logout button -->
     </div>
   </div>
@@ -14,7 +14,8 @@
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router' // Import useRouter from Vue Router
-import LoginSignup from './components/login.vue'
+import LoginSignup from './components/ClassicLogin.vue'
+// import LoginSignup from './components/oldlogin.vue'
 import axios from 'axios'
 
 export default {
