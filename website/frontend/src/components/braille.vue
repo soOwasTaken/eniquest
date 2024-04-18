@@ -16,7 +16,7 @@ import { setActivePinia } from 'pinia'
 import { useRouter } from 'vue-router'
 import { Transition, inject } from 'vue'
 import anime from '../../node_modules/animejs/lib/anime.es'
-import App7 from '../App7.vue'
+import App7 from '../App8.vue'
 import { useStore } from 'vuex'
 
 export default {

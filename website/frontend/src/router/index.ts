@@ -6,7 +6,7 @@ import App3 from '../App3.vue'
 import App4 from '../App4.vue'
 import App5 from '../App5.vue'
 import App6 from '../App6.vue'
-import App7 from '../App7.vue'
+import App8 from '../App8.vue'
 import Auth from '../Auth.vue'
 import store from '../stores/store'
 
@@ -50,7 +50,7 @@ const router = createRouter({
     {
       path: '/app5',
       name: 'app5',
-      component: App7,
+      component: App8,
       meta: { requiresAuth: true, gameIndex: 4 }
     },
     {
