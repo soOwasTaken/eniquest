@@ -202,7 +202,7 @@ app.post("/checkOrder", (req, res) => {
 
 // Dummy database for users (you'll replace this with a real database)
 const users = [];
-console.log("the current users: " + users);
+
 // Login endpoint
 app.post("/api/users/login", (req, res) => {
   const { email, password } = req.body;
@@ -224,6 +224,9 @@ app.post("/api/users/login", (req, res) => {
 
   // Return token to client
   res.json({ success: true, token });
+
+  console.log(" users: ", users);
+  console.log("current user: ", user.email);
 });
 
 // Register endpoint
@@ -253,7 +256,8 @@ app.post("/api/users/register", (req, res) => {
   res
     .status(201)
     .json({ success: true, message: "User registered successfully" });
-  console.log("the current users: ", users);
+  console.log(" users: ", users);
+  console.log("current user: ", newUser.email);
 });
 
 function processLatestEntry() {

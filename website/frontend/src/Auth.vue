@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="auth">
     <login-signup @login="loginUser" @signup="signupUser" v-if="!isLoggedIn" />
     <div v-else>
       <!-- Your main application content goes here -->
@@ -101,3 +101,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.auth {
+  position: absolute;
+}
+</style>
