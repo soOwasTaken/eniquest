@@ -94,6 +94,7 @@ app.post("/checkIndex", (req, res) => {
 
   if (index === 57) {
     res.json({ result: true });
+    updateUserLevel();
   } else {
     res.json({ result: false });
   }
@@ -115,6 +116,7 @@ app.post("/checkOrder", (req, res) => {
     // Check if the provided string matches the correct phrase
     if (userAnswer === correctAnswer) {
       res.json({ feedback: "Correct! The phrase matches exactly." });
+      updateUserLevel();
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
     }
@@ -144,6 +146,7 @@ app.post("/checkOrder", (req, res) => {
     // Send the appropriate feedback to the client
     if (correctNames.length === 5) {
       res.json({ feedback: "Correct!" });
+      updateUserLevel();
     } else if (correctNames.length > 0) {
       res.json({
         feedback: `Partial correct. You only got ${
@@ -162,6 +165,7 @@ app.post("/checkOrder", (req, res) => {
     // Check if the user input matches the correct answer
     if (order === correctAnswer) {
       res.json({ feedback: "Correct! You've solved the puzzle." });
+      updateUserLevel();
     } else {
       res.json({ feedback: "Incorrect." });
     }
@@ -184,6 +188,8 @@ app.post("/checkOrder", (req, res) => {
       order === alternativeString2.toLowerCase()
     ) {
       res.json({ feedback: "Well done" });
+
+      updateUserLevel();
     } else {
       res.json({ feedback: "Wrong... Try again." });
     }
@@ -201,8 +207,33 @@ app.post("/checkOrder", (req, res) => {
 // -------------------------------------------------------------------------
 
 // Dummy database for users (you'll replace this with a real database)
-const users = [];
+let users = [];
+let currentUser;
 
+// Save users data to JSON file
+function saveUsersToFile() {
+  fs.writeFile("users.json", JSON.stringify(users, null, 2), (err) => {
+    if (err) {
+      console.error("Error saving users data:", err);
+    } else {
+      console.log("Users data saved to users.json");
+    }
+  });
+}
+
+// Load users data from JSON file (if exists)
+fs.readFile("users.json", "utf8", (err, data) => {
+  if (err) {
+    console.error("Error reading users data:", err);
+  } else {
+    try {
+      users = JSON.parse(data);
+      console.log("Users data loaded from users.json");
+    } catch (parseError) {
+      console.error("Error parsing users data:", parseError);
+    }
+  }
+});
 // Login endpoint
 app.post("/api/users/login", (req, res) => {
   const { email, password } = req.body;
@@ -224,9 +255,9 @@ app.post("/api/users/login", (req, res) => {
 
   // Return token to client
   res.json({ success: true, token });
-
+  currentUser = user;
   console.log(" users: ", users);
-  console.log("current user: ", user.email);
+  console.log("current user loged in: ", currentUser.email);
 });
 
 // Register endpoint
@@ -248,10 +279,11 @@ app.post("/api/users/register", (req, res) => {
 
   // Create new user object
   const newUser = { id: userId, email, password: hashedPassword };
-
+  newUser.level = 0;
+  currentUser = newUser;
   // Add user to the database
   users.push(newUser);
-
+  saveUsersToFile();
   // Return success message
   res
     .status(201)
@@ -284,7 +316,22 @@ function processLatestEntry() {
     }
   });
 }
+function updateUserLevel() {
+  // Find the index of the user with the same email
+  const existingUserIndex = users.findIndex(
+    (user) => user.email === currentUser.email
+  );
 
+  // If a user with the same email is found, remove it
+  if (existingUserIndex !== -1) {
+    users.splice(existingUserIndex, 1);
+  }
+  currentUser.level += 1;
+  // Add the new user to the array
+  users.push(currentUser);
+  saveUsersToFile();
+  console.log(currentUser);
+}
 function processEntryById(content, id) {
   console.log("Content received for processing:", content); // Debug: log the content
 
