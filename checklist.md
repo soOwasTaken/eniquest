@@ -48,4 +48,6 @@ x Attaquer la deuxieme enigme potentiellement.
   * Dans le forum a la place de Windows XP Support Thread.
 * Transition vers nouvelle Enigme après WebComparison.
 * Réfléchir à une nouvelle énigme.
+* Implémenter dans le Prompt un message d'erreur a renvoyer au front si l'API retourne une erreur (response was not ok)
 
+* Pour dot.vue peut être s'inspirer de cette page ? (https://codepen.io/sharnajh/pen/ExjpGwr)[codepen.io]

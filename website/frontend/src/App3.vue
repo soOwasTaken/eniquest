@@ -1,37 +1,47 @@
 <script setup>
-import { ref } from 'vue';
-import FireFly from './components/fireflies.vue';
-import RainEffect from './components/RainEffect.vue';
-import MiddleText from './components/MiddleText.vue';
-import RainMp3 from './components/RainMp3.vue';
-import InputField from './components/InputField.vue';
-import summaryDisplay from './components/summaryDisplay.vue';
-import gq from './components/gq.vue';
-const showApp1 = ref(false); // Initially set to false for App.vue 2
-
-const switchToApp1 = () => {
-  showApp1.value = true;
-};
+import { ref, computed, onMounted, watch, inject } from 'vue'
+import { RouterLink, RouterView } from 'vue-router'
+import musicPlayer from './components/musicplayer.vue'
+import anime from 'animejs/lib/anime.es.js'
+// import { getSucceedMusic, setSucceedMusic } from './components/succeedMusic'
+import App2 from './App2.vue'
+onMounted(() => {
+  anime
+    .timeline({
+      easing: 'easeInOutQuad',
+      duration: 3500
+    })
+    .add({
+      targets: '#app3',
+      scale: [0.1, 1], // Start slightly scaled down and scale up to 100% of original size
+      translateY: ['-100%', '30%', '0%'] // Start slightly above and move to original position
+    })
+})
 </script>
-
 <template>
-  <div id="app">
-    <transition name="fade">
-      <gq />
-    </transition>
-    <!-- Button to switch back to App.vue 1 -->
-    <button @click="switchToApp1">Switch to App.vue 1</button>
+  <div id="app3">
+    <musicPlayer />
   </div>
 </template>
 
-
-
-<style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.5s;
+<style>
+* {
+  box-sizing: border-box;
 }
-.fade-enter, .fade-leave-to {
-  opacity: 0;
+:root {
+  --text-color: hsl(0, 0%, 100%);
+}
+
+body {
+  background-color: black;
+  margin: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#app4 {
+  border-radius: 70%; /* Ensure that the initial border radius is set to 70% */
 }
 </style>
-
