@@ -17,7 +17,6 @@ app.post("/processPrompt", async (req, res) => {
   let data = JSON.stringify({
     model: "open-mistral-7b",
     messages: [
-
       {
         role: "user",
         content:
@@ -25,7 +24,6 @@ app.post("/processPrompt", async (req, res) => {
           userContent +
           "'\nCriteria:\n1)Reasoning Quality: Does the response demonstrate clear and logical reasoning?\n2)Ethical Consideration: How does the response deal with ethical implications?\n3)Respect for Diversity: Does the response acknowledge and respect diverse viewpoints?\nExample Relevance: How relevant and illustrative are the examples provided?\nInsight into Implications: Does the response discuss the implications of where free speech stops?\nYou should always use this specific pattern\nScore: [Insert x/10]\nSummary: [Insert a concise sentence (max. 7 words) capturing the essence of the evaluation]\n", // Insert user input here
       },
-
     ],
     temperature: 0.7,
     top_p: 1,
@@ -35,7 +33,6 @@ app.post("/processPrompt", async (req, res) => {
     safe_prompt: false,
     random_seed: 1337,
   });
-
 
   let config = {
     method: "post",
@@ -69,7 +66,6 @@ app.post("/processPrompt", async (req, res) => {
 
       // Append to a file
 
-
       fs.appendFile("data.json", JSON.stringify(dataToStore) + ",\n", (err) => {
         if (err) throw err;
         console.log("Data appended to file!");
@@ -90,7 +86,24 @@ app.post("/processPrompt", async (req, res) => {
     });
 });
 
-app.post('/checkIndex', (req, res) => {
+app.post("/checkIndex", (req, res) => {
+  const { index } = req.body;
+
+  if (index === 57) {
+    res.json({ result: true });
+  } else {
+    res.json({ result: false });
+  }
+});
+
+// ----------------------------------------------------------------------------
+////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+/// THIS IS WHERE WE CHECK ALL GAMES ANSWERS ///
+
+///BRAILLE///
+app.post("/checkIndex", (req, res) => {
   const { index } = req.body;
 
   if (index === 57) {
@@ -106,7 +119,6 @@ app.post('/checkIndex', (req, res) => {
 ///////////////////////////////////////////////////////
 /// THIS IS WHERE WE CHECK ALL GAMES ANSWERS ///
 app.post("/checkOrder", (req, res) => {
-
   const { game, order } = req.body;
 
   /// WEB COMP ///
@@ -124,9 +136,9 @@ app.post("/checkOrder", (req, res) => {
     if (userAnswer === correctAnswer) {
       res.json({ feedback: "Correct! The phrase matches exactly." });
 
+      if (currentUser.level < 3) updateUserLevel(3);
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
-
     }
   }
 
@@ -143,10 +155,8 @@ app.post("/checkOrder", (req, res) => {
       "Emberfell",
     ];
 
-
     // Split the user's input into an array of names
     const userAnswer = order.trim().toLowerCase().split(" ");
-
 
     // Check if the user's answer contains all the correct names
     const correctNames = correctAnswer.filter((name) =>
@@ -191,26 +201,135 @@ app.post("/checkOrder", (req, res) => {
     const alternativeString2 = "Thanks for the lovely words 🫶";
 
     if (
-
       order === expectedString.toLowerCase() ||
-
       order === alternativeString.toLowerCase() ||
       order === alternativeString2.toLowerCase()
     ) {
       res.json({ feedback: "Well done" });
     } else {
-
       res.json({ feedback: "Wrong... Try again." });
-
     }
   }
-
 });
 ////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 // -------------------------------------------------------------------------
 
+// Dummy database for users (you'll replace this with a real database)
+let users = [];
+let currentUser;
+
+// Save users data to JSON file
+function saveUsersToFile() {
+  fs.writeFile("users.json", JSON.stringify(users, null, 2), (err) => {
+    if (err) {
+      console.error("Error saving users data:", err);
+    } else {
+      console.log("Users data saved to users.json");
+    }
+  });
+}
+
+// Load users data from JSON file (if exists)
+fs.readFile("users.json", "utf8", (err, data) => {
+  if (err) {
+    console.error("Error reading users data:", err);
+  } else {
+    try {
+      users = JSON.parse(data);
+      console.log("Users data loaded from users.json");
+    } catch (parseError) {
+      console.error("Error parsing users data:", parseError);
+    }
+  }
+});
+// Login endpoint
+app.post("/api/users/login", (req, res) => {
+  const { email, password } = req.body;
+
+  // Find user by email
+  const user = users.find((user) => user.email === email);
+
+  // If user not found or password doesn't match, return error
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Invalid email or password" });
+  }
+
+  // Generate JWT token
+  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+    expiresIn: "1h", // Token expires in 1 hour
+  });
+
+  // Return token to client
+  res.json({ success: true, token });
+  currentUser = user;
+  console.log(" users: ", users);
+  console.log("current user loged in: ", currentUser.email);
+});
+
+// Register endpoint
+app.post("/api/users/register", async (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if user already exists
+  if (users.find((user) => user.email === email)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "User already exists" });
+  }
+
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  const userId = Math.random().toString(36).substr(2, 9);
+
+  const newUser = { id: userId, email, password: hashedPassword };
+  newUser.level = 0;
+
+  const verificationLink = `http://localhost:${port}/api/users/verify/${userId}`; // You might want to adjust this to your actual domain
+
+  await sendVerificationEmail(email, verificationLink);
+  currentUser = newUser;
+  users.push(newUser);
+
+  saveUsersToFile();
+
+  res.status(201).json({
+    success: true,
+    message:
+      "Verification email sent. Please check your email to complete registration.",
+  });
+});
+
+app.get("/api/current-user", (req, res) => {
+  res.json(currentUser);
+});
+
+app.get("/api/users/verify/:userId", (req, res) => {
+  const { userId } = req.params;
+  const user = users.find((user) => user.id === userId);
+
+  if (!user) {
+    return res.status(404).send("User not found.");
+  }
+
+  user.verified = true; // Add a verified property to the user
+  saveUsersToFile();
+
+  res.send("Email verified successfully! You can now login.");
+});
+
+app.get("/api/users/verify-status/:email", (req, res) => {
+  const { email } = req.params;
+  const user = users.find((user) => user.email === email);
+
+  if (!user) {
+    return res.status(404).send("User not found.");
+  }
+
+  res.json({ verified: user.verified || false });
+});
 
 function processLatestEntry() {
   const filePath = "data.json";
@@ -220,7 +339,6 @@ function processLatestEntry() {
       console.error("Error reading the file:", err);
 
       return;
-
     }
 
     try {
@@ -248,12 +366,10 @@ function processEntryById(content, id) {
   const scoreMatch = content.match(scoreRegex);
   const summaryMatch = content.match(summaryRegex);
 
-
   if (scoreMatch && summaryMatch) {
     const score = parseInt(scoreMatch[1], 10);
     const summary = summaryMatch[1].trim();
     const scoreResult = score >= 6 ? 1 : 0;
-
 
     return { scoreResult, summary };
   } else {
@@ -262,6 +378,5 @@ function processEntryById(content, id) {
   }
 }
 app.listen(port, () => {
-
   console.log(`Server listening at http://localhost:${port}`);
 });
