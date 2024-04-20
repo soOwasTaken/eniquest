@@ -7,6 +7,8 @@
       <button @click="startAgain">Continue where you left</button>
       <!-- Logout button -->
     </div>
+    <!-- Alert message for email verification -->
+    <div v-if="showVerifyEmailAlert" class="alert">Please verify your email to proceed.</div>
   </div>
 </template>
 
@@ -25,18 +27,31 @@ export default {
   setup() {
     const store = useStore()
     const router = useRouter() // Use useRouter hook to access the router
-
+    const showVerifyEmailAlert = ref(false)
+    // Reference to the OverlayComponent
     const loginUser = async (userData) => {
       try {
         const response = await axios.post('/api/users/login', userData)
         if (response.data.success) {
-          console.log('Login successful')
-          store.dispatch('login', {
-            token: response.data.token,
-            user: response.data.user
-          })
-          // Redirect to App1 after successful login
-          startAgain()
+          // Check if the user is verified
+          const isVerified = await checkEmailVerification(userData.email)
+          if (isVerified) {
+            console.log('Login successful')
+            store.dispatch('login', {
+              token: response.data.token,
+              user: response.data.user
+            })
+            // Redirect to App1 after successful login
+            startAgain()
+          } else {
+            // User is not verified, show alert message
+            showVerifyEmailAlert.value = true
+            // Log out the user
+            store.dispatch('logout')
+            setTimeout(() => {
+              showVerifyEmailAlert.value = false
+            }, 3000)
+          }
         } else {
           // Login failed, display error message
           alert('Failed to login. Please try again.')
@@ -55,15 +70,8 @@ export default {
       try {
         const response = await axios.post('/api/users/register', userData)
         if (response.data.success) {
-          // Registration successful, do something (e.g., redirect user to login)
-          console.log('Registration successful')
-          alert('Registration successful, you are directly logged in')
-          store.dispatch('login', {
-            token: response.data.token,
-            user: response.data.user
-          })
-          // Redirect to App1 after successful signup
-          router.push('/app1')
+          // Registration successful, show alert message to verify email
+          alert('Registration successful. Please verify your email.')
         } else {
           // Registration failed, display error message
           alert(response.data.message)
@@ -76,6 +84,18 @@ export default {
         console.error('Error signing up:', error)
       }
     }
+
+    // Function to check if the user's email is verified
+    const checkEmailVerification = async (email) => {
+      try {
+        const response = await axios.get(`/api/users/verify-status/${email}`)
+        return response.data.verified
+      } catch (error) {
+        console.error('Error checking email verification status:', error)
+        return false
+      }
+    }
+
     const logoutUser = () => {
       store.dispatch('logout') // Dispatch logout action
       router.push('/') // Redirect to home page after logout
@@ -118,6 +138,8 @@ export default {
       signupUser,
       logoutUser,
       startAgain,
+      showVerifyEmailAlert,
+
       isLoggedIn: computed(() => store.getters.isLoggedIn)
     }
   }
@@ -127,5 +149,13 @@ export default {
 <style>
 .auth {
   position: absolute;
+}
+.alert {
+  font-size: 16px;
+  text-transform: uppercase;
+  position: fixed;
+  width: 40vw;
+  top: 10%;
+  right: 11%;
 }
 </style>

@@ -1,121 +1,97 @@
+<!-- OverlayComponent.vue -->
 <template>
   <div class="overlay" v-show="isVisible">
     <div class="overlay-content">
       <form @submit.prevent="handleSubmit" class="login-form">
-        <div v-if="mode === 'login' || (!registrationSuccess && mode === 'signup')">
-          <div class="input-holder">
-            <i class="icon far fa-user"></i>
-            <input type="text" class="input" placeholder="Email" v-model="email" required />
-          </div>
-          <div class="input-holder" v-if="mode === 'login' || mode === 'signup'">
-            <i class="icon fas fa-lock"></i>
-            <input type="password" class="input" placeholder="Password" v-model="password" required />
-          </div>
-          <div class="input-holder" v-if="mode === 'signup'">
-            <i class="icon fas fa-lock"></i>
-            <input type="password" class="input" placeholder="Confirm Password" v-model="confirmPassword" required />
-          </div>
-          <div class="input-holder">
-            <input type="submit" class="button larger-button" :value="mode === 'login' ? 'Log In' : 'Sign Up'" />
-          </div>
+        <div class="input-holder">
+          <i class="icon far fa-user"></i>
+          <input type="email" class="input" placeholder="Email" v-model="email" required />
         </div>
-        <div class="success-message" v-if="registrationSuccess">
-          <p>User registered successfully. Please verify your email.</p>
-          <button @click="checkVerificationStatus" class="button">Check Verification Status</button>
+        <div class="input-holder" v-if="mode === 'login' || mode === 'signup'">
+          <i class="icon fas fa-lock"></i>
+          <input type="password" class="input" placeholder="Password" v-model="password" required />
+        </div>
+        <div class="input-holder" v-if="mode === 'signup'">
+          <i class="icon fas fa-lock"></i>
+          <input
+            type="password"
+            class="input"
+            placeholder="Confirm Password"
+            v-model="confirmPassword"
+            required
+          />
+        </div>
+
+        <div class="input-holder">
+          <input
+            type="submit"
+            class="button larger-button"
+            :value="mode === 'login' ? 'Log In' : 'Sign Up'"
+          />
         </div>
       </form>
     </div>
-    <div class="footer" v-if="!registrationSuccess">
-      <p v-if="mode === 'login' && !registrationSuccess">Don't have an account?</p>
-      <p v-else-if="mode === 'signup' && !registrationSuccess" class="message-spacing">Already have an account?</p>
-      <button v-if="!registrationSuccess" class="button" @click="toggleMode">{{ mode === 'login' ? 'Sign up' : 'Login' }}</button>
+    <div class="footer">
+      <p v-if="mode === 'login'">Don't have an account?</p>
+      <p v-else class="message-spacing">Already have an account?</p>
+      <button class="button" @click="toggleMode">
+        {{ mode === 'login' ? 'Sign up' : 'Login' }}
+      </button>
     </div>
   </div>
 </template>
 
-
 <script>
-import axios from 'axios';
-
 export default {
   data() {
     return {
-      mode: 'login',
+      mode: 'login', // 'login' or 'signup'
       email: '',
       password: '',
-      confirmPassword: '',
-      isVisible: false,
-
-      registrationSuccess: false,
-      pollingInterval: null
-    };
+      confirmPassword: '', // New field for sign-up
+      isVisible: true
+      // ... other data properties required for the overlay
+    }
   },
+
   methods: {
-    async handleSubmit() {
+    handleSubmit() {
       if (this.mode === 'login') {
-        const response = await axios.post('/api/users/login', {
-          email: this.email,
-          password: this.password
-
-        });
-        this.$emit('login', response.data);
+        // Handle login logic
+        this.$emit('login', { email: this.email, password: this.password })
       } else {
-        const response = await axios.post('/api/users/register', {
-          email: this.email,
-          password: this.password
-        });
+        // Handle sign-up logic with password confirmation check
 
-        if (response.status === 201) {
-          this.registrationSuccess = true;
-          this.startPolling();
-
+        if (this.password !== this.confirmPassword) {
+          alert('Passwords do not match')
+          return
         }
-      }
-
-    },
-    startPolling() {
-      this.stopPolling(); // Ensure no intervals are running before starting a new one
-      this.pollingInterval = setInterval(this.checkVerificationStatus, 10000);
-    },
-    stopPolling() {
-      if (this.pollingInterval) {
-        clearInterval(this.pollingInterval);
-
-        this.pollingInterval = null;
-      }
-    },
-    async checkVerificationStatus() {
-      try {
-
-        const response = await axios.get(`/api/users/verify-status/${this.email}`);
-
-        if (response.data.verified) {
-          alert('Your email has been verified!');
-          this.stopPolling();
-          this.registrationSuccess = false; // Optionally hide success message
-
-          // Perform any additional actions upon verification
-        }
-
-      } catch (error) {
-        console.error('Error checking verification status:', error);
+        this.$emit('signup', { email: this.email, password: this.password })
+        this.toggleMode()
       }
     },
     toggleMode() {
-      this.mode = this.mode === 'login' ? 'signup' : 'login';
-      this.registrationSuccess = false;
-
-      this.email = '';
-      this.password = '';
-      this.confirmPassword = '';
-      this.stopPolling();
+      this.mode = this.mode === 'login' ? 'signup' : 'login'
+      this.email = ''
+      this.password = ''
+      this.confirmPassword = '' // Clear confirm password field when switching modes
+    },
+    toggleVisibility() {
+      this.isVisible = !this.isVisible
+    },
+    mounted() {
+      // Define the animation on mount
+      anime({
+        targets: this.$refs.overlay,
+        opacity: [0, 1], // Start opacity at 0 and end at 1
+        translateY: ['-20px', '0px'], // Start translateY at -20px and end at 0px
+        duration: 800, // Animation duration in milliseconds
+        easing: 'easeInOutCubic' // Easing function for smooth transition
+      })
     }
-  },
-  beforeDestroy() {
-    this.stopPolling(); // Clean up the interval when the component is destroyed
+    // ... other methods required for the overlay
   }
-};
-
+}
 </script>
 
 <style scoped>
@@ -208,21 +184,19 @@ export default {
 }
 
 .footer {
-  font-family : 'Sedan' , serif;
+  font-family: 'Sedan', serif;
   font-size: 1.1rem;
   display: flex;
   justify-content: space-between;
-  padding:20px 50px 20px 50px;
+  padding: 20px 50px 20px 50px;
   text-align: center;
   height: 100%;
   width: 100%;
-  border-top : 0.5px solid #fff;
+  border-top: 0.5px solid #fff;
 }
-
 @media (max-width: 768px) {
   .overlay {
     width: 90%;
   }
 }
 </style>
-
