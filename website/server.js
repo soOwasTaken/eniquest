@@ -261,39 +261,62 @@ app.post("/api/users/login", (req, res) => {
 });
 
 // Register endpoint
-app.post("/api/users/register", (req, res) => {
+app.post("/api/users/register", async (req, res) => {
   const { email, password } = req.body;
 
   // Check if user already exists
-  if (users.find((user) => user.email === email)) {
-    return res
-      .status(400)
-      .json({ success: false, message: "User already exists" });
+  if (users.find(user => user.email === email)) {
+    return res.status(400).json({ success: false, message: "User already exists" });
   }
 
-  // Hash password
   const hashedPassword = bcrypt.hashSync(password, 10);
-
-  // Generate unique user id
   const userId = Math.random().toString(36).substr(2, 9);
 
-  // Create new user object
   const newUser = { id: userId, email, password: hashedPassword };
   newUser.level = 0;
-  currentUser = newUser;
-  // Add user to the database
+
+  const verificationLink = `http://localhost:${port}/api/users/verify/${userId}`; // You might want to adjust this to your actual domain
+
+  await sendVerificationEmail(email, verificationLink);
+
   users.push(newUser);
+
   saveUsersToFile();
-  // Return success message
-  res
-    .status(201)
-    .json({ success: true, message: "User registered successfully" });
-  console.log(" users: ", users);
-  console.log("current user: ", newUser.email);
+
+  res.status(201).json({ success: true, message: "Verification email sent. Please check your email to complete registration." });
 });
 
 app.get("/api/current-user", (req, res) => {
   res.json(currentUser);
+});
+
+
+app.get("/api/users/verify/:userId", (req, res) => {
+
+  const { userId } = req.params;
+  const user = users.find(user => user.id === userId);
+
+  if (!user) {
+    return res.status(404).send("User not found.");
+  }
+
+
+  user.verified = true; // Add a verified property to the user
+  saveUsersToFile();
+
+  res.send("Email verified successfully! You can now login.");
+});
+
+app.get("/api/users/verify-status/:email", (req, res) => {
+  const { email } = req.params;
+  const user = users.find(user => user.email === email);
+
+
+  if (!user) {
+    return res.status(404).send("User not found.");
+  }
+
+  res.json({ verified: user.verified || false });
 });
 
 function processLatestEntry() {
@@ -356,6 +379,26 @@ function processEntryById(content, id) {
     console.error("Pattern not found in content");
     return null;
   }
+}
+
+async function sendVerificationEmail(email, verificationLink) {
+  const apiKey = process.env.API_EMAIL;
+  const subject = encodeURIComponent('Verify Your Email Address');
+  const from = encodeURIComponent('444deph12@gmail.com');
+  const fromName = encodeURIComponent('Your Company Name');
+  const bodyHtml = encodeURIComponent(`<html><body>Please verify your email by clicking on this link: <a href="${verificationLink}">Verify Email</a></body></html>`);
+
+
+  const url = `https://api.elasticemail.com/v2/email/send?apikey=${apiKey}&subject=${subject}&from=${from}&fromName=${fromName}&to=${encodeURIComponent(email)}&bodyHtml=${bodyHtml}&isTransactional=true`;
+
+  try {
+
+    const response = await axios.get(url);
+    console.log('Email sent!', response.data);
+  } catch (error) {
+    console.error('Failed to send email:', error);
+  }
+
 }
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
