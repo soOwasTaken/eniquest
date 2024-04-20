@@ -3,8 +3,8 @@
     <login-signup @login="loginUser" @signup="signupUser" v-if="!isLoggedIn" />
     <div v-else>
       <!-- Your main application content goes here -->
-      <button @click="logoutUser">Logout</button>
-      <button @click="startAgain">Continue</button>
+      <button @click="logoutUser">Log out</button>
+      <button @click="startAgain">Continue where you left</button>
       <!-- Logout button -->
     </div>
   </div>
@@ -36,7 +36,7 @@ export default {
             user: response.data.user
           })
           // Redirect to App1 after successful login
-          router.push('/app1')
+          startAgain()
         } else {
           // Login failed, display error message
           alert('Failed to login. Please try again.')
@@ -80,15 +80,37 @@ export default {
       store.dispatch('logout') // Dispatch logout action
       router.push('/') // Redirect to home page after logout
     }
-    const startAgain = () => {
-      const gameSuccess = store.getters.gameSuccess
-      const unsucceededGameIndex = gameSuccess.findIndex((success) => !success)
-      if (unsucceededGameIndex !== -1) {
-        // Redirect to the first unsucceeded game
-        router.push(`/app${unsucceededGameIndex + 1}`)
-      } else {
-        // If all games are succeeded, redirect to the first game
+    // const startAgain = () => {
+    //   const gameSuccess = store.getters.gameSuccess
+    //   console.log(gameSuccess)
+    //   const unsucceededGameIndex = gameSuccess.findIndex((success) => !success)
+    //   if (unsucceededGameIndex !== -1) {
+    //     // Redirect to the first unsucceeded game
+    //     router.push(`/app${unsucceededGameIndex + 1}`)
+    //   } else {
+    //     // If all games are succeeded, redirect to the first game
+    //     router.push('/app1')
+    //   }
+    // }
+    const startAgain = async () => {
+      const currentUser = await fetchCurrentUser()
+      if (!currentUser) {
         router.push('/app1')
+        console.log('continue button failed')
+      } else router.push(`/app${currentUser.level + 1}`)
+    }
+    async function fetchCurrentUser() {
+      try {
+        const response = await fetch('/api/current-user')
+        if (response.ok) {
+          const currentUser = await response.json()
+          return currentUser
+        } else {
+          throw new Error('Failed to fetch current user')
+        }
+      } catch (error) {
+        console.error('Error fetching current user:', error)
+        return null
       }
     }
     return {

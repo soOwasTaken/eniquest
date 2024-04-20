@@ -94,7 +94,7 @@ app.post("/checkIndex", (req, res) => {
 
   if (index === 57) {
     res.json({ result: true });
-    updateUserLevel(4);
+    if (currentUser.level < 4) updateUserLevel(4);
   } else {
     res.json({ result: false });
   }
@@ -116,7 +116,7 @@ app.post("/checkOrder", (req, res) => {
     // Check if the provided string matches the correct phrase
     if (userAnswer === correctAnswer) {
       res.json({ feedback: "Correct! The phrase matches exactly." });
-      updateUserLevel(3);
+      if (currentUser.level < 3) updateUserLevel(3);
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
     }
@@ -146,7 +146,7 @@ app.post("/checkOrder", (req, res) => {
     // Send the appropriate feedback to the client
     if (correctNames.length === 5) {
       res.json({ feedback: "Correct!" });
-      updateUserLevel(6);
+      if (currentUser.level < 6) updateUserLevel(6);
     } else if (correctNames.length > 0) {
       res.json({
         feedback: `Partial correct. You only got ${
@@ -165,7 +165,7 @@ app.post("/checkOrder", (req, res) => {
     // Check if the user input matches the correct answer
     if (order === correctAnswer) {
       res.json({ feedback: "Correct! You've solved the puzzle." });
-      updateUserLevel(5);
+      if (currentUser.level < 5) updateUserLevel(5);
     } else {
       res.json({ feedback: "Incorrect." });
     }
@@ -189,7 +189,7 @@ app.post("/checkOrder", (req, res) => {
     ) {
       res.json({ feedback: "Well done" });
 
-      updateUserLevel(2);
+      if (currentUser.level < 2) updateUserLevel(2);
     } else {
       res.json({ feedback: "Wrong... Try again." });
     }
@@ -349,7 +349,7 @@ function processEntryById(content, id) {
     const score = parseInt(scoreMatch[1], 10);
     const summary = summaryMatch[1].trim();
     const scoreResult = score >= 6 ? 1 : 0;
-    if (scoreResult === 1) updateUserLevel(1);
+    if (scoreResult === 1 && currentUser.level < 1) updateUserLevel(1);
 
     return { scoreResult, summary };
   } else {
