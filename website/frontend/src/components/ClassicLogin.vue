@@ -3,36 +3,43 @@
   <div class="overlay" v-show="isVisible">
     <div class="overlay-content">
       <form @submit.prevent="handleSubmit" class="login-form">
-
         <div class="input-holder">
           <i class="icon far fa-user"></i>
-          <input type="text" class="input" placeholder="Email" v-model="email" required />
+          <input type="email" class="input" placeholder="Email" v-model="email" required />
         </div>
         <div class="input-holder" v-if="mode === 'login' || mode === 'signup'">
           <i class="icon fas fa-lock"></i>
           <input type="password" class="input" placeholder="Password" v-model="password" required />
-
         </div>
         <div class="input-holder" v-if="mode === 'signup'">
           <i class="icon fas fa-lock"></i>
-          <input type="password" class="input" placeholder="Confirm Password" v-model="confirmPassword" required />
+          <input
+            type="password"
+            class="input"
+            placeholder="Confirm Password"
+            v-model="confirmPassword"
+            required
+          />
         </div>
 
         <div class="input-holder">
-          <input type="submit" class="button larger-button" :value="mode === 'login' ? 'Log In' : 'Sign Up'" />
+          <input
+            type="submit"
+            class="button larger-button"
+            :value="mode === 'login' ? 'Log In' : 'Sign Up'"
+          />
         </div>
       </form>
     </div>
-        <div class="footer">
-        <p v-if="mode === 'login'">Don't have an account?</p>
-        <p v-else class="message-spacing">Already have an account?</p>
-        <button class="button" @click="toggleMode">{{ mode === 'login' ? 'Sign up' : 'Login' }}</button>
-      </div>
+    <div class="footer">
+      <p v-if="mode === 'login'">Don't have an account?</p>
+      <p v-else class="message-spacing">Already have an account?</p>
+      <button class="button" @click="toggleMode">
+        {{ mode === 'login' ? 'Sign up' : 'Login' }}
+      </button>
+    </div>
   </div>
 </template>
-
-
-
 
 <script>
 export default {
@@ -42,36 +49,35 @@ export default {
       email: '',
       password: '',
       confirmPassword: '', // New field for sign-up
-      isVisible: false
+      isVisible: true
       // ... other data properties required for the overlay
-    };
+    }
   },
 
   methods: {
     handleSubmit() {
       if (this.mode === 'login') {
-
         // Handle login logic
-        this.$emit('login', { email: this.email, password: this.password });
+        this.$emit('login', { email: this.email, password: this.password })
       } else {
         // Handle sign-up logic with password confirmation check
 
         if (this.password !== this.confirmPassword) {
-          alert('Passwords do not match');
-          return;
+          alert('Passwords do not match')
+          return
         }
-        this.$emit('signup', { email: this.email, password: this.password });
-
+        this.$emit('signup', { email: this.email, password: this.password })
+        this.toggleMode()
       }
     },
     toggleMode() {
-      this.mode = this.mode === 'login' ? 'signup' : 'login';
-      this.email = '';
-      this.password = '';
-      this.confirmPassword = ''; // Clear confirm password field when switching modes
+      this.mode = this.mode === 'login' ? 'signup' : 'login'
+      this.email = ''
+      this.password = ''
+      this.confirmPassword = '' // Clear confirm password field when switching modes
     },
     toggleVisibility() {
-      this.isVisible =!this.isVisible;
+      this.isVisible = !this.isVisible
     },
     mounted() {
       // Define the animation on mount
@@ -80,12 +86,12 @@ export default {
         opacity: [0, 1], // Start opacity at 0 and end at 1
         translateY: ['-20px', '0px'], // Start translateY at -20px and end at 0px
         duration: 800, // Animation duration in milliseconds
-        easing: 'easeInOutCubic', // Easing function for smooth transition
-      });
+        easing: 'easeInOutCubic' // Easing function for smooth transition
+      })
     }
     // ... other methods required for the overlay
   }
-};
+}
 </script>
 
 <style scoped>
@@ -101,7 +107,6 @@ export default {
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-
 .overlay-content {
   display: flex;
   flex-direction: column;
@@ -111,7 +116,6 @@ export default {
 .login-form {
   width: 100%;
 }
-
 
 .input-holder {
   display: flex;
@@ -169,28 +173,26 @@ export default {
   font-family: 'Sedan', serif;
   cursor: pointer;
   text-decoration: none;
-
 }
 
 .larger-button {
   font-size: 1.2rem; /* Adjust as needed */
 }
 
-
 .link:hover {
   color: #fff;
 }
 
 .footer {
-  font-family : 'Sedan' , serif;
+  font-family: 'Sedan', serif;
   font-size: 1.1rem;
   display: flex;
   justify-content: space-between;
-  padding:20px 50px 20px 50px;
+  padding: 20px 50px 20px 50px;
   text-align: center;
   height: 100%;
   width: 100%;
-  border-top : 0.5px solid #fff;
+  border-top: 0.5px solid #fff;
 }
 @media (max-width: 768px) {
   .overlay {
@@ -198,4 +200,3 @@ export default {
   }
 }
 </style>
-

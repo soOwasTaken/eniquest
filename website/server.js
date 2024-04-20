@@ -7,6 +7,8 @@ const app = express();
 
 const port = 3000;
 const filePath = "data.json";
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 app.use(bodyParser.json()); // to parse JSON body
 
 //app.use(express.static('public')); // if your frontend files are in 'public' directory
@@ -108,16 +110,12 @@ app.post("/checkIndex", (req, res) => {
 
   if (index === 57) {
     res.json({ result: true });
+    if (currentUser.level < 4) updateUserLevel(4);
   } else {
     res.json({ result: false });
   }
 });
 
-// ----------------------------------------------------------------------------
-////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
-///////////////////////////////////////////////////////
-/// THIS IS WHERE WE CHECK ALL GAMES ANSWERS ///
 app.post("/checkOrder", (req, res) => {
   const { game, order } = req.body;
 
@@ -169,6 +167,7 @@ app.post("/checkOrder", (req, res) => {
     // Send the appropriate feedback to the client
     if (correctNames.length === 5) {
       res.json({ feedback: "Correct!" });
+      if (currentUser.level < 6) updateUserLevel(6);
     } else if (correctNames.length > 0) {
       res.json({
         feedback: `Partial correct. You only got ${
@@ -188,6 +187,7 @@ app.post("/checkOrder", (req, res) => {
     // Check if the user input matches the correct answer
     if (order === correctAnswer) {
       res.json({ feedback: "Correct! You've solved the puzzle." });
+      if (currentUser.level < 5) updateUserLevel(5);
     } else {
       res.json({ feedback: "Incorrect." });
     }
@@ -206,6 +206,8 @@ app.post("/checkOrder", (req, res) => {
       order === alternativeString2.toLowerCase()
     ) {
       res.json({ feedback: "Well done" });
+
+      if (currentUser.level < 2) updateUserLevel(2);
     } else {
       res.json({ feedback: "Wrong... Try again." });
     }
@@ -356,7 +358,22 @@ function processLatestEntry() {
     }
   });
 }
+function updateUserLevel(level) {
+  // Find the index of the user with the same email
+  const existingUserIndex = users.findIndex(
+    (user) => user.email === currentUser.email
+  );
 
+  // If a user with the same email is found, remove it
+  if (existingUserIndex !== -1) {
+    users.splice(existingUserIndex, 1);
+  }
+  currentUser.level = level;
+  // Add the new user to the array
+  users.push(currentUser);
+  saveUsersToFile();
+  console.log(currentUser);
+}
 function processEntryById(content, id) {
   console.log("Content received for processing:", content); // Debug: log the content
 
@@ -370,11 +387,33 @@ function processEntryById(content, id) {
     const score = parseInt(scoreMatch[1], 10);
     const summary = summaryMatch[1].trim();
     const scoreResult = score >= 6 ? 1 : 0;
+    if (scoreResult === 1 && currentUser.level < 1) updateUserLevel(1);
 
     return { scoreResult, summary };
   } else {
     console.error("Pattern not found in content");
     return null;
+  }
+}
+
+async function sendVerificationEmail(email, verificationLink) {
+  const apiKey = process.env.API_EMAIL;
+  const subject = encodeURIComponent("Verify Your Email Address");
+  const from = encodeURIComponent("444deph12@gmail.com");
+  const fromName = encodeURIComponent("Your Company Name");
+  const bodyHtml = encodeURIComponent(
+    `<html><body>Please verify your email by clicking on this link: <a href="${verificationLink}">Verify Email</a></body></html>`
+  );
+
+  const url = `https://api.elasticemail.com/v2/email/send?apikey=${apiKey}&subject=${subject}&from=${from}&fromName=${fromName}&to=${encodeURIComponent(
+    email
+  )}&bodyHtml=${bodyHtml}&isTransactional=true`;
+
+  try {
+    const response = await axios.get(url);
+    console.log("Email sent!", response.data);
+  } catch (error) {
+    console.error("Failed to send email:", error);
   }
 }
 app.listen(port, () => {

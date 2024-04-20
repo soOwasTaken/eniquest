@@ -1,16 +1,24 @@
 <script setup>
-import { ref } from 'vue';
-import { RouterLink, RouterView } from 'vue-router';
-import dot from './components/dot.vue';
-import anime from 'animejs/lib/anime.es.js';
+import { ref, computed, onMounted, watch, inject } from 'vue'
+import { RouterLink, RouterView } from 'vue-router'
+import dot from './components/dot.vue'
+import anime from 'animejs/lib/anime.es.js'
+
+onMounted(() => {
+  anime({
+    targets: '.main-container',
+    scale: [0.001, 1], // Scale up to 100% of original size
+    duration: 1500, // Duration of animation
+    easing: 'easeInOutQuad'
+  })
+})
 </script>
 
 <template>
-  <div id="app4">
+  <div id="app6">
     <dot />
   </div>
 </template>
-
 
 <style>
 * {
@@ -21,7 +29,7 @@ import anime from 'animejs/lib/anime.es.js';
 }
 
 body {
-  background-color:black;
+  background-color: black;
   margin: 0;
   top: 0;
   left: 0;
@@ -29,4 +37,3 @@ body {
   height: 100%;
 }
 </style>
-

@@ -1,8 +1,19 @@
 <script setup>
-import { ref } from 'vue';
-import { RouterLink, RouterView } from 'vue-router';
-import braille from './components/braille.vue';
-import anime from 'animejs/lib/anime.es.js';
+import { ref, onMounted } from 'vue'
+import { RouterLink, RouterView } from 'vue-router'
+import braille from './components/braille.vue'
+import anime from 'animejs/lib/anime.es.js'
+
+onMounted(() => {
+  anime({
+    targets: '#brailleContainer',
+    scale: [0.001, 1], // Scale up to 100% of original size
+    duration: 1500, // Duration of animation
+    translateX: ['-50%', '50%', '0%'],
+    backgroundColor: ['#fff', '#000'],
+    easing: 'easeInOutQuad'
+  })
+})
 </script>
 
 <template>
@@ -10,7 +21,6 @@ import anime from 'animejs/lib/anime.es.js';
     <braille />
   </div>
 </template>
-
 
 <style>
 * {
@@ -21,7 +31,7 @@ import anime from 'animejs/lib/anime.es.js';
 }
 
 body {
-  background-color:black;
+  background-color: black;
   margin: 0;
   top: 0;
   left: 0;
@@ -29,4 +39,3 @@ body {
   height: 100%;
 }
 </style>
-
