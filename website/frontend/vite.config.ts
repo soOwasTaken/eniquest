@@ -49,6 +49,13 @@ export default defineConfig({
         configure: (proxy, options) => {
           return createProxyMiddleware(proxy, options)
         }
+      },
+      '/api/current-user': {
+        target: 'http://localhost:3000', // Assuming your Node.js server is running on port 3000
+        changeOrigin: true,
+        configure: (proxy, options) => {
+          return createProxyMiddleware(proxy, options)
+        }
       }
     }
   }

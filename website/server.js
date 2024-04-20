@@ -94,7 +94,7 @@ app.post("/checkIndex", (req, res) => {
 
   if (index === 57) {
     res.json({ result: true });
-    updateUserLevel();
+    updateUserLevel(4);
   } else {
     res.json({ result: false });
   }
@@ -116,7 +116,7 @@ app.post("/checkOrder", (req, res) => {
     // Check if the provided string matches the correct phrase
     if (userAnswer === correctAnswer) {
       res.json({ feedback: "Correct! The phrase matches exactly." });
-      updateUserLevel();
+      updateUserLevel(3);
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
     }
@@ -146,7 +146,7 @@ app.post("/checkOrder", (req, res) => {
     // Send the appropriate feedback to the client
     if (correctNames.length === 5) {
       res.json({ feedback: "Correct!" });
-      updateUserLevel();
+      updateUserLevel(6);
     } else if (correctNames.length > 0) {
       res.json({
         feedback: `Partial correct. You only got ${
@@ -165,7 +165,7 @@ app.post("/checkOrder", (req, res) => {
     // Check if the user input matches the correct answer
     if (order === correctAnswer) {
       res.json({ feedback: "Correct! You've solved the puzzle." });
-      updateUserLevel();
+      updateUserLevel(5);
     } else {
       res.json({ feedback: "Incorrect." });
     }
@@ -189,7 +189,7 @@ app.post("/checkOrder", (req, res) => {
     ) {
       res.json({ feedback: "Well done" });
 
-      updateUserLevel();
+      updateUserLevel(2);
     } else {
       res.json({ feedback: "Wrong... Try again." });
     }
@@ -292,6 +292,10 @@ app.post("/api/users/register", (req, res) => {
   console.log("current user: ", newUser.email);
 });
 
+app.get("/api/current-user", (req, res) => {
+  res.json(currentUser);
+});
+
 function processLatestEntry() {
   const filePath = "data.json";
 
@@ -316,7 +320,7 @@ function processLatestEntry() {
     }
   });
 }
-function updateUserLevel() {
+function updateUserLevel(level) {
   // Find the index of the user with the same email
   const existingUserIndex = users.findIndex(
     (user) => user.email === currentUser.email
@@ -326,7 +330,7 @@ function updateUserLevel() {
   if (existingUserIndex !== -1) {
     users.splice(existingUserIndex, 1);
   }
-  currentUser.level += 1;
+  currentUser.level = level;
   // Add the new user to the array
   users.push(currentUser);
   saveUsersToFile();
@@ -345,6 +349,7 @@ function processEntryById(content, id) {
     const score = parseInt(scoreMatch[1], 10);
     const summary = summaryMatch[1].trim();
     const scoreResult = score >= 6 ? 1 : 0;
+    if (scoreResult === 1) updateUserLevel(1);
 
     return { scoreResult, summary };
   } else {
