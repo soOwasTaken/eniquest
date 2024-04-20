@@ -34,37 +34,37 @@ const router = createRouter({
       path: '/app2',
       name: 'app2',
       component: App3,
-      meta: { requiresAuth: true, gameIndex: 1 }
+      meta: { requiresAuth: true, minLevel: 1 }
     },
     {
       path: '/app3',
       name: 'app3',
       component: App2,
-      meta: { requiresAuth: true, gameIndex: 2 }
+      meta: { requiresAuth: true, minLevel: 2 }
     },
     {
       path: '/app4',
       name: 'app4',
       component: App4,
-      meta: { requiresAuth: true, gameIndex: 3 }
+      meta: { requiresAuth: true, minLevel: 3 }
     },
     {
       path: '/app5',
       name: 'app5',
       component: App8,
-      meta: { requiresAuth: true, gameIndex: 4 }
+      meta: { requiresAuth: true, minLevel: 4 }
     },
     {
       path: '/app6',
       name: 'app6',
       component: App5,
-      meta: { requiresAuth: true, gameIndex: 5 }
+      meta: { requiresAuth: true, minLevel: 5 }
     },
     {
       path: '/app7',
       name: 'app7',
       component: App6,
-      meta: { requiresAuth: true, gameIndex: 6 }
+      meta: { requiresAuth: true, minLevel: 6 }
     },
     {
       path: '/auth',
@@ -74,39 +74,40 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!isLoggedIn()) {
+    const currentUser = await fetchCurrentUser()
+    if (!currentUser) {
       next('/')
     } else {
-      const gameIndex = to.meta.gameIndex as number // Cast gameIndex to number
-      if (gameIndex !== undefined) {
-        const previousGameSuccess = store.state.gameSuccess[gameIndex - 1]
-        if (previousGameSuccess) {
-          next()
-        } else {
-          if (to.path !== from.path || from.path === '/') {
-            next(false) // Redirect to the same path if the URL is manually changed or if coming from the home page
-            alert('nothing to see here, click the back button')
-          } else {
-            next({ path: from.path }) // Redirect to the current path if the previous game is not succeeded
-          }
-        }
+      const minLevel = to.meta.minLevel
+      if (minLevel && currentUser.level < minLevel) {
+        // Redirect to home if the user's level is not sufficient
+        /* next('/') */
+        next(false) // Redirect to the same path if the URL is manually changed or if coming from the home page
+        alert('nothing to see here, click the back button')
       } else {
         next()
       }
     }
   } else {
-    if (to.path !== from.path) {
-      next(false) // Do nothing if navigating to a non-authenticated route from another non-authenticated route
-    } else {
-      next()
-    }
+    next()
   }
 })
 
-function isLoggedIn() {
-  return store.getters.isLoggedIn
+async function fetchCurrentUser() {
+  try {
+    const response = await fetch('/api/current-user')
+    if (response.ok) {
+      const currentUser = await response.json()
+      return currentUser
+    } else {
+      throw new Error('Failed to fetch current user')
+    }
+  } catch (error) {
+    console.error('Error fetching current user:', error)
+    return null
+  }
 }
 
 export default router
