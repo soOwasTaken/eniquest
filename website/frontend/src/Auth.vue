@@ -1,12 +1,12 @@
 <template>
   <div class="auth">
     <login-signup @login="loginUser" @signup="signupUser" v-if="!isLoggedIn" />
-    <div v-else>
-      <!-- Your main application content goes here -->
-      <button @click="logoutUser">Log out</button>
-      <button @click="startAgain">Continue where you left</button>
-      <!-- Logout button -->
-    </div>
+    <!-- <div v-else> -->
+    <!-- Your main application content goes here -->
+    <!-- <button @click="logoutUser">Log out</button> -->
+    <!-- <button @click="startAgain">Continue where you left</button> -->
+    <!-- Logout button -->
+    <!-- </div> -->
     <!-- Alert message for email verification -->
     <div v-if="showVerifyEmailAlert" class="alert">Please verify your email to proceed.</div>
   </div>
@@ -96,10 +96,20 @@ export default {
       }
     }
 
-    const logoutUser = () => {
-      store.dispatch('logout') // Dispatch logout action
-      router.push('/') // Redirect to home page after logout
+    const logoutUser = async () => {
+      try {
+        const response = await axios.post('/api/logout')
+        console.log(response.data.message) // Log success message
+      } catch (error) {
+        console.error('Error logging out:', error.response.data) // Log error message
+      }
+      store.dispatch('logout')
+      router.push('/')
     }
+    // const logoutUser = () => {
+    //   store.dispatch('logout') // Dispatch logout action
+    //   router.push('/') // Redirect to home page after logout
+    // }
     // const startAgain = () => {
     //   const gameSuccess = store.getters.gameSuccess
     //   console.log(gameSuccess)
@@ -140,6 +150,7 @@ export default {
       startAgain,
       showVerifyEmailAlert,
 
+      /* isLoggedIn: computed(() => store.getters.isLoggedIn) */
       isLoggedIn: computed(() => store.getters.isLoggedIn)
     }
   }

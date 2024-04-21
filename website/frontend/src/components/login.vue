@@ -101,11 +101,12 @@
         :disabled="!showButton || !paragraphAnimationCompleted"
         :class="{ 'invisible-button': !showButton }"
         style="opacity: 0"
-        @click="enterSite"
+        @click="store.getters.isLoggedIn ? continueSite() : enterSite()"
         class="enter-button"
       >
-        Enter the Arena
+        {{ store.getters.isLoggedIn ? 'Continue' : 'Enter the Arena' }}
       </button>
+      <button v-if="store.getters.isLoggedIn" @click="logout" class="logout-button">Log Out</button>
       <OverlayComponent v-show="isVisible" :style="{ opacity: overlayOpacity }" />
     </div>
   </div>
@@ -114,6 +115,9 @@
 <script>
 import anime from 'animejs'
 import OverlayComponent from '../Auth.vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
 export default {
   components: {
     OverlayComponent
@@ -130,7 +134,9 @@ export default {
       showParagraph: true,
       paragraphAnimationCompleted: false,
       isVisible: false,
-      overlayOpacity: 0
+      overlayOpacity: 0,
+      router: useRouter(),
+      store: useStore()
     }
   },
   mounted() {
@@ -172,22 +178,62 @@ export default {
         duration: 4000,
         complete: () => {
           this.paragraphAnimationCompleted = true
-          this.animateButton() // Trigger button animation when text animation is complete
+          /* this.animateButton() */ // Trigger button animation when text animation is complete
         }
       })
+      setTimeout(this.animateButton, 2500)
     },
     animateButton() {
       anime({
-        targets: '.enter-button',
+        targets: ['.enter-button', '.logout-button'],
         opacity: [0, 1], // Fade in the button
         easing: 'easeInOutSine',
-        duration: 1000 // Adjust duration as needed
+        duration: 1500 // Adjust duration as needed
       })
     },
     enterSite() {
       if (!this.showButton) return
       this.animateHideElements()
       this.animateSVGMove() // Move SVG to the new position
+      console.log('ok')
+    },
+    async continueSite() {
+      try {
+        const currentUser = await this.fetchCurrentUser()
+        if (!currentUser) {
+          this.router.push('/app1')
+          console.log('continue button failed')
+        } else {
+          this.router.push(`/app${currentUser.level + 1}`)
+        }
+      } catch (error) {
+        console.error('Error while continuing site:', error)
+      }
+    },
+    async fetchCurrentUser() {
+      try {
+        const response = await fetch('/api/current-user')
+        if (response.ok) {
+          const currentUser = await response.json()
+          return currentUser
+        } else {
+          throw new Error('Failed to fetch current user')
+        }
+      } catch (error) {
+        console.error('Error fetching current user:', error)
+        return null
+      }
+    },
+    async logout() {
+      try {
+        const response = await axios.post('/api/logout')
+        console.log(response.data.message) // Log success message
+      } catch (error) {
+        console.error('Error logging out:', error) // Log error message
+      }
+      console.log('trylogout')
+      this.store.dispatch('logout')
+      this.router.push('/')
     },
     animateHideElements() {
       // Animate and then hide the paragraph
@@ -201,7 +247,7 @@ export default {
 
       // Animate and then hide the button
       anime({
-        targets: '.enter-button',
+        targets: ['.enter-button', '.logout-button'],
         opacity: [1, 0], // Fade out
         easing: 'easeInOutSine',
         duration: 1000,
@@ -236,6 +282,11 @@ export default {
       })
     }
   }
+  // computed: {
+  //   isLogin() {
+  //     return this.store.getters.isLoggedIn // Using store.getters.isLoggedIn directly
+  //   }
+  // }
 }
 </script>
 <style scoped>
@@ -247,7 +298,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.57);
   flex-direction: column; /* Centering in column direction */
 }
 
@@ -291,16 +342,18 @@ p {
   animation: flashAnimation 0.2s forwards; /* Quick flash */
 }
 
-.enter-button {
+.enter-button,
+.logout-button {
   padding: 10px 20px;
   border: 2px solid white;
   background: transparent;
   color: white;
   font-family: 'Sedan', serif;
   font-size: 20px;
+  /* text-transform: uppercase; */
   cursor: pointer;
   transition:
-    background-color 0.3s,
+    all 0.3s,
     color 0.3s;
   position: absolute;
   bottom: 20%; /* Distance from bottom */
@@ -308,10 +361,29 @@ p {
   transform: translateX(-50%);
   border-radius: 3px;
 }
+.logout-button {
+  /* top: -10%; */
+  /* left: 1%; */
+  bottom: 7%;
+  margin: 0;
+  padding: 0;
+  height: 4%;
+  font-size: 16px;
+  opacity: 0;
+  border-color: rgba(255, 255, 255, 0.256);
+  color: rgba(255, 255, 255, 0.256);
+}
 
-.enter-button:hover {
+.enter-button:hover,
+.logout-button:hover {
   background-color: white;
   color: black;
+}
+.logout-button:hover {
+  opacity: 1;
+  background-color: rgba(165, 42, 42, 0.733);
+  font-weight: bold;
+  color: aliceblue;
 }
 
 .invisible-button {

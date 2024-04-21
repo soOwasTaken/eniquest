@@ -4,13 +4,11 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const fs = require("fs");
 const app = express();
-
 const port = 3000;
 const filePath = "data.json";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 app.use(bodyParser.json()); // to parse JSON body
-
 //app.use(express.static('public')); // if your frontend files are in 'public' directory
 
 app.post("/processPrompt", async (req, res) => {
@@ -30,7 +28,6 @@ app.post("/processPrompt", async (req, res) => {
     temperature: 0.7,
     top_p: 1,
     max_tokens: 128,
-
     stream: false,
     safe_prompt: false,
     random_seed: 1337,
@@ -56,12 +53,10 @@ app.post("/processPrompt", async (req, res) => {
         response.data.usage.prompt_tokens +
         response.data.usage.total_tokens +
         response.data.usage.completion_tokens;
-
       const messageContent = response.data.choices[0].message.content; // Adjust according to the actual response structure
       const dataToStore = {
         id: response.data.id,
         userOutput: userOutput,
-
         totalTokens: totalTokens,
         messageContent: messageContent,
       };
@@ -76,7 +71,6 @@ app.post("/processPrompt", async (req, res) => {
 
       if (result) {
         // Now we include both the score and summary in our response to the frontend
-
         res.json({ summary: result.summary, scoreResult: result.scoreResult });
       } else {
         res.status(404).send("Summary not found");
@@ -86,16 +80,6 @@ app.post("/processPrompt", async (req, res) => {
       console.log(error);
       res.status(500).send("Error processing the prompt");
     });
-});
-
-app.post("/checkIndex", (req, res) => {
-  const { index } = req.body;
-
-  if (index === 57) {
-    res.json({ result: true });
-  } else {
-    res.json({ result: false });
-  }
 });
 
 // ----------------------------------------------------------------------------
@@ -127,28 +111,23 @@ app.post("/checkOrder", (req, res) => {
 
     // Remove any trailing period from both user's answer and correct phrase
     const userAnswer = order.trim().replace(/\.$/, "").toLowerCase();
-
     const correctAnswer = correctPhrase.toLowerCase().replace(/\.$/, "");
 
     // Check if the provided string matches the correct phrase
     if (userAnswer === correctAnswer) {
       res.json({ feedback: "Correct! The phrase matches exactly." });
-
       if (currentUser.level < 3) updateUserLevel(3);
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
     }
   }
-
   /// TERMINAL GAME //
   else if (game === "game1") {
     // Define the correct answer array for the second game
     const correctAnswer = [
       "Elysir",
-
       "Xerxes",
       "Pyrothia",
-
       "Aetheria",
       "Emberfell",
     ];
@@ -181,7 +160,6 @@ app.post("/checkOrder", (req, res) => {
   /// PUZZLE GAME ///
   else if (game === "game4") {
     // Define the correct answer for the third game
-
     const correctAnswer = "4891";
 
     // Check if the user input matches the correct answer
@@ -191,6 +169,10 @@ app.post("/checkOrder", (req, res) => {
     } else {
       res.json({ feedback: "Incorrect." });
     }
+  }
+  /// BRAILLE GAME  ///
+  else if (game === "game3") {
+    // to do
   }
   /// MUSIC PLAYER ///
   else if (game === "game5") {
@@ -211,6 +193,12 @@ app.post("/checkOrder", (req, res) => {
     } else {
       res.json({ feedback: "Wrong... Try again." });
     }
+  }
+  /// AI GENERATED IMAGE GAME ///
+  else if (game === "game6") {
+    // TO DO
+  } else {
+    res.status(400).json({ error: "Invalid game identifier." });
   }
 });
 ////////////////////////////////////////////////////////
@@ -267,9 +255,14 @@ app.post("/api/users/login", (req, res) => {
 
   // Return token to client
   res.json({ success: true, token });
+  if (user.verified) {
+    user.loggedin = true;
+    console.log(user.email, " is logged in");
+  } else user.loggedin = false;
+  console.log("needs to be verify: ", user.email);
+  saveUsersToFile();
   currentUser = user;
   console.log(" users: ", users);
-  console.log("current user loged in: ", currentUser.email);
 });
 
 // Register endpoint
@@ -287,6 +280,7 @@ app.post("/api/users/register", async (req, res) => {
   const userId = Math.random().toString(36).substr(2, 9);
 
   const newUser = { id: userId, email, password: hashedPassword };
+  newUser.verified = false;
   newUser.level = 0;
 
   const verificationLink = `http://localhost:${port}/api/users/verify/${userId}`; // You might want to adjust this to your actual domain
@@ -302,6 +296,14 @@ app.post("/api/users/register", async (req, res) => {
     message:
       "Verification email sent. Please check your email to complete registration.",
   });
+});
+// Define a route handler for setting user.loggedin to false
+app.post("/api/logout", (req, res) => {
+  // Assuming you have access to the currentUser object
+  currentUser.loggedin = false;
+  saveUsersToFile();
+  console.log("logged out");
+  res.json({ message: "User logged out successfully." });
 });
 
 app.get("/api/current-user", (req, res) => {
@@ -339,7 +341,6 @@ function processLatestEntry() {
   fs.readFile(filePath, "utf8", (err, data) => {
     if (err) {
       console.error("Error reading the file:", err);
-
       return;
     }
 
