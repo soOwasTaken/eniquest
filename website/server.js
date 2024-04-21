@@ -255,9 +255,14 @@ app.post("/api/users/login", (req, res) => {
 
   // Return token to client
   res.json({ success: true, token });
+  if (user.verified) {
+    user.loggedin = true;
+    console.log(user.email, " is logged in");
+  } else user.loggedin = false;
+  console.log("needs to be verify: ", user.email);
+  saveUsersToFile();
   currentUser = user;
   console.log(" users: ", users);
-  console.log("current user loged in: ", currentUser.email);
 });
 
 // Register endpoint
@@ -275,6 +280,7 @@ app.post("/api/users/register", async (req, res) => {
   const userId = Math.random().toString(36).substr(2, 9);
 
   const newUser = { id: userId, email, password: hashedPassword };
+  newUser.verified = false;
   newUser.level = 0;
 
   const verificationLink = `http://localhost:${port}/api/users/verify/${userId}`; // You might want to adjust this to your actual domain
@@ -285,13 +291,19 @@ app.post("/api/users/register", async (req, res) => {
 
   saveUsersToFile();
 
-  res
-    .status(201)
-    .json({
-      success: true,
-      message:
-        "Verification email sent. Please check your email to complete registration.",
-    });
+  res.status(201).json({
+    success: true,
+    message:
+      "Verification email sent. Please check your email to complete registration.",
+  });
+});
+// Define a route handler for setting user.loggedin to false
+app.post("/api/logout", (req, res) => {
+  // Assuming you have access to the currentUser object
+  currentUser.loggedin = false;
+  saveUsersToFile();
+  console.log("logged out");
+  res.json({ message: "User logged out successfully." });
 });
 
 app.get("/api/current-user", (req, res) => {
