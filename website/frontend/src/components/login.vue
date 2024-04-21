@@ -365,9 +365,9 @@ p {
   /* top: -10%; */
   /* left: 1%; */
   bottom: 7%;
-  margin: 0;
+  width: 6%;
   padding: 0;
-  height: 4%;
+  height: 5%;
   font-size: 16px;
   opacity: 0;
   border-color: rgba(255, 255, 255, 0.256);
