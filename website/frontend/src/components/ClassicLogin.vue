@@ -3,45 +3,94 @@
   <div class="overlay" v-show="isVisible">
     <div class="overlay-content">
       <form @submit.prevent="handleSubmit" class="login-form">
-        <div class="input-holder">
-          <i class="icon far fa-user"></i>
-          <input type="email" class="input" placeholder="Email" v-model="email" required />
-        </div>
-        <div class="input-holder" v-if="mode === 'login' || mode === 'signup'">
-          <i class="icon fas fa-lock"></i>
-          <input type="password" class="input" placeholder="Password" v-model="password" required />
-        </div>
-        <div class="input-holder" v-if="mode === 'signup'">
-          <i class="icon fas fa-lock"></i>
-          <input
-            type="password"
-            class="input"
-            placeholder="Confirm Password"
-            v-model="confirmPassword"
-            required
-          />
+        <!-- New Password Inputs for passwordChange Mode -->
+        <div v-if="mode === 'passwordChange'">
+          <div class="input-holder">
+            <i class="icon fas fa-lock"></i>
+            <input
+              type="password"
+              class="input"
+              placeholder="New Password"
+              v-model="newPassword"
+              required
+            />
+          </div>
+          <div class="input-holder">
+            <i class="icon fas fa-lock"></i>
+            <input
+              type="password"
+              class="input"
+              placeholder="Confirm New Password"
+              v-model="confirmNewPassword"
+              required
+            />
+          </div>
+          <div class="input-holder">
+            <input type="submit" class="button larger-button" value="Confirm New Password" />
+          </div>
         </div>
 
-        <div class="input-holder">
-          <input
-            type="submit"
-            class="button larger-button"
-            :value="mode === 'login' ? 'Log In' : 'Sign Up'"
-          />
-        </div>
+        <!-- Inputs for Forgot Password Mode -->
+        <template v-else>
+          <div v-if="mode === 'forgotPassword'">
+            <p class="email-recovery">{{ resetPasswordParagraph }}</p>
+          </div>
+          <div
+            class="input-holder"
+            v-if="mode !== 'enterKey' && !showResetKeyInput && mode !== 'passwordChange'"
+          >
+            <i class="icon far fa-user"></i>
+            <input type="email" class="input" placeholder="Email" v-model="email" required />
+          </div>
+          <div class="input-holder" v-if="showResetKeyInput && mode !== 'passwordChange'">
+            <i class="icon fas fa-key"></i>
+            <input type="text" class="input" placeholder="Reset Key" v-model="resetKey" required />
+          </div>
+          <div
+            class="input-holder"
+            v-if="(mode === 'login' || mode === 'signup') && mode !== 'passwordChange'"
+          >
+            <i class="icon fas fa-lock"></i>
+            <input
+              type="password"
+              class="input"
+              placeholder="Password"
+              v-model="password"
+              required
+            />
+          </div>
+          <div class="input-holder" v-if="mode === 'signup' && mode !== 'passwordChange'">
+            <i class="icon fas fa-lock"></i>
+            <input
+              type="password"
+              class="input"
+              placeholder="Confirm Password"
+              v-model="confirmPassword"
+              required
+            />
+          </div>
+          <div class="input-holder" v-if="mode !== 'passwordChange'">
+            <input type="submit" class="button larger-button" :value="getButtonValue()" />
+            <p class="link" v-if="mode === 'login'" @click="toggleForgotPassword">
+              Forget your password?
+            </p>
+          </div>
+        </template>
       </form>
     </div>
     <div class="footer">
-      <p v-if="mode === 'login'">Don't have an account?</p>
-      <p v-else class="message-spacing">Already have an account?</p>
+      <p v-if="mode === 'login' || mode === 'forgotPassword'">Don't have an account?</p>
+      <p v-else>Already have an account?</p>
       <button class="button" @click="toggleMode">
-        {{ mode === 'login' ? 'Sign up' : 'Login' }}
+        {{ mode === 'login' || mode === 'forgotPassword' ? 'Sign up' : 'Login' }}
       </button>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
@@ -49,7 +98,13 @@ export default {
       email: '',
       password: '',
       confirmPassword: '', // New field for sign-up
-      isVisible: true
+      isVisible: true,
+      emailValid: false,
+      resetKey: '',
+      resetPasswordParagraph: 'Please enter your email to reset your password.',
+      showResetKeyInput: false,
+      newPassword: '',
+      confirmNewPassword: ''
       // ... other data properties required for the overlay
     }
   },
@@ -57,27 +112,52 @@ export default {
   methods: {
     handleSubmit() {
       if (this.mode === 'login') {
-        // Handle login logic
         this.$emit('login', { email: this.email, password: this.password })
-      } else {
-        // Handle sign-up logic with password confirmation check
-
+      } else if (this.mode === 'signup') {
         if (this.password !== this.confirmPassword) {
           alert('Passwords do not match')
           return
         }
         this.$emit('signup', { email: this.email, password: this.password })
-        this.toggleMode()
+        this.toggleMode('login') // Assuming toggleMode can take a specific mode as an argument
+      } else if (this.mode === 'forgotPassword') {
+        if (this.showResetKeyInput) {
+          this.verifyResetKey(this.email, this.resetKey)
+        } else {
+          this.checkEmail(this.email)
+        }
+      } else if (this.mode === 'passwordChange') {
+        if (this.newPassword !== this.confirmNewPassword) {
+          alert('New passwords do not match')
+          return
+        }
+        this.resetPassword() // Call to reset the password using the new password
       }
     },
     toggleMode() {
-      this.mode = this.mode === 'login' ? 'signup' : 'login'
+      this.mode = this.mode === 'login' || this.mode === 'forgotPassword' ? 'signup' : 'login'
       this.email = ''
       this.password = ''
-      this.confirmPassword = '' // Clear confirm password field when switching modes
+      this.confirmPassword = ''
+      this.resetPasswordParagraph = 'Please enter your email to reset your password.'
+      this.showResetKeyInput = false
+      this.emailValid = false
+      this.resetKey = ''
     },
     toggleVisibility() {
       this.isVisible = !this.isVisible
+    },
+    getButtonValue() {
+      switch (this.mode) {
+        case 'login':
+          return 'Log In'
+        case 'signup':
+          return 'Sign Up'
+        case 'forgotPassword':
+          return this.showResetKeyInput ? 'Verify Key' : 'Send Reset Email'
+        default:
+          return 'Submit'
+      }
     },
     mounted() {
       // Define the animation on mount
@@ -88,8 +168,74 @@ export default {
         duration: 800, // Animation duration in milliseconds
         easing: 'easeInOutCubic' // Easing function for smooth transition
       })
+    },
+    toggleForgotPassword() {
+      this.mode = 'forgotPassword'
+    },
+    checkEmail(email) {
+      axios
+        .post('/api/request-reset', { email })
+        .then((response) => {
+          if (response.data) {
+            this.resetPasswordParagraph = 'Email found. A reset key will be sent to your email.'
+            this.showResetKeyInput = true
+          } else {
+            this.resetPasswordParagraph = 'No account found with that email.'
+            this.showresetKeyInput = false
+          }
+        })
+        .catch((error) => {
+          console.error('Error checking email:', error)
+          this.resetPasswordParagraph = 'No account registered on that email.'
+          this.showResetKeyInput = false
+        })
+    },
+    verifyResetKey() {
+      // Data includes the email and the key from the component's data properties
+      const payload = {
+        email: this.email,
+        key: this.resetKey
+      }
+
+      axios
+        .post('/api/verify-reset-key', payload)
+        .then((response) => {
+          if (response.data.success) {
+            this.mode = 'passwordChange' // Switch mode to allow password reset
+            this.resetpasswordParagraph = 'Please enter your new password'
+          } else {
+            alert(response.data.message) // Show why the key is invalid
+          }
+        })
+
+        .catch((error) => {
+          console.error('Error verifying reset key:', error)
+          alert('There was an error processing your request.')
+        })
+    },
+    resetPassword() {
+      const payload = {
+        email: this.email,
+        key: this.resetKey,
+        newPassword: this.newPassword
+      }
+
+      axios
+        .post('/api/reset-password', payload)
+        .then((response) => {
+          if (response.data.success) {
+            alert('Your password has been successfully reset.')
+            this.toggleMode()
+            this.mode = 'login' // Redirect user to login page
+          } else {
+            alert(response.data.message)
+          }
+        })
+        .catch((error) => {
+          console.error('Error resetting password:', error)
+          alert('Failed to reset password.')
+        })
     }
-    // ... other methods required for the overlay
   }
 }
 </script>
@@ -121,6 +267,7 @@ export default {
   display: flex;
   position: relative;
   justify-content: center;
+  gap: 20px;
   color: #ffffffc4;
   padding-top: 30px;
 }
@@ -169,6 +316,7 @@ export default {
 }
 
 .link {
+  padding-top: 5px;
   color: #ffffffb2;
   font-family: 'Sedan', serif;
   cursor: pointer;
@@ -183,6 +331,10 @@ export default {
   color: #fff;
 }
 
+.email-recovery {
+  font-family: 'Sedan', serif;
+  font-size: 1.1rem;
+}
 .footer {
   font-family: 'Sedan', serif;
   font-size: 1.1rem;
