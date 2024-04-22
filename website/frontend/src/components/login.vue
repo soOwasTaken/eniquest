@@ -204,7 +204,15 @@ export default {
           this.router.push('/app1')
           console.log('continue button failed')
         } else {
-          this.router.push(`/app${currentUser.level + 1}`)
+          anime({
+            targets: '.full-page',
+            opacity: [1, 0], // Fade out
+            easing: 'easeInOutSine',
+            duration: 2000,
+            complete: () => {
+              this.router.push(`/app${currentUser.level + 1}`)
+            }
+          })
         }
       } catch (error) {
         console.error('Error while continuing site:', error)
