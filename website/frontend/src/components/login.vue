@@ -146,7 +146,14 @@ export default {
       router: useRouter(),
       store: useStore(),
       currentUser: null,
-      gameOptions: ['question', 'musicplayer', 'old and new web', 'braille', 'puzzle', 'terminal']
+      gameOptions: [
+        'ai question',
+        'music player',
+        'old and new web',
+        'braille',
+        'puzzle',
+        'terminal'
+      ]
     }
   },
   mounted() {
@@ -198,7 +205,7 @@ export default {
         targets: ['.enter-button', '.logout-button', '.completed-games'],
         opacity: [0, 1], // Fade in the button
         easing: 'easeInOutSine',
-        duration: 1500 // Adjust duration as needed
+        duration: 750 // Adjust duration as needed
       })
     },
     enterSite() {
@@ -251,7 +258,20 @@ export default {
         console.error('Error logging out:', error) // Log error message
       }
       console.log('trylogout')
+
       this.store.dispatch('logout')
+      console.log(this.store.getters.isLoggedIn)
+      requestAnimationFrame(() => {
+        /* const text = document.getElementById('animated-text') */
+        /* text.style.opacity = 1 */
+        // anime({
+        //   targets: 'svg',
+        //   translateX: '10%', // Adjust this value based on your layout
+        //   easing: 'easeInElastic(1, .6)',
+        //   duration: 300,
+        // })
+        this.animateText()
+      })
       this.router.push('/')
     },
     animateHideElements() {
@@ -426,6 +446,7 @@ p {
 
 .completed-games {
   opacity: 0;
+  width: 552.95px;
 }
 
 .succeeded-title,
@@ -437,14 +458,14 @@ p {
   letter-spacing: 10px;
   margin: 7%;
   text-align: left;
-  width: 70%;
+  width: 40%;
 
   cursor: pointer;
   transition: all 0.3s ease;
   color: rgba(240, 248, 255, 0.273);
 }
 .succeeded-title {
-  width: 62%;
+  width: 40%;
   border-bottom: 1px solid rgba(158, 150, 3, 0.532);
   border-left: 2px solid rgba(158, 150, 3, 0.436);
   color: rgba(158, 150, 3, 0.436);
