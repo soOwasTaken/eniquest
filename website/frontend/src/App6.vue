@@ -3,7 +3,7 @@ import { ref, computed, onMounted, watch, inject } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import dot from './components/dot.vue'
 import anime from 'animejs/lib/anime.es.js'
-
+import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime({
     targets: '.main-container',
@@ -16,6 +16,7 @@ onMounted(() => {
 
 <template>
   <div id="app6">
+    <svgLogo class="svg-logo" />
     <dot />
   </div>
 </template>

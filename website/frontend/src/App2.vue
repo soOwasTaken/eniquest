@@ -4,7 +4,7 @@ import { RouterLink, RouterView } from 'vue-router'
 import OldWeb from './components/WebComparison/OldWeb.vue'
 import NewWeb from './components/WebComparison/NewWeb.vue'
 import anime from 'animejs/lib/anime.es.js'
-
+import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime
   anime
@@ -32,6 +32,7 @@ onMounted(() => {
 })
 </script>
 <template>
+  <svgLogo class="svg-logo" />
   <div id="app2">
     <div class="web-container">
       <OldWeb />
@@ -40,7 +41,14 @@ onMounted(() => {
     </div>
   </div>
 </template>
-<style>
+<style scoped>
+.svg-logo {
+  z-index: 999;
+}
+#app {
+  background-color: aqua;
+}
+
 .web-container {
   display: flex;
   height: 100vh; /* Use 100% of the viewport height */
@@ -58,6 +66,6 @@ onMounted(() => {
 .divider {
   background-color: #ccc; /* Light grey line for separation */
   width: 2px; /* Thickness of the divider line */
-  height: auto; /* Take the full height available */
+  height: 100vh; /* Take the full height available */
 }
 </style>

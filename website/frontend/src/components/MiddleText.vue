@@ -16,13 +16,13 @@ export default {
 <style scoped>
 
 .wrapper {
+  margin-top: 18vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   color: white;
   font-family: "Oswald", sans-serif;
   align-items: center;
-  min-height: 65vh;
   position: relative; /* Add position relative here */
   font-size: clamp(1.5rem, 1rem + 18vw, 7rem);
   font-weight: 700;

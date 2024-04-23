@@ -5,6 +5,7 @@ import musicPlayer from './components/musicplayer.vue'
 import anime from 'animejs/lib/anime.es.js'
 // import { getSucceedMusic, setSucceedMusic } from './components/succeedMusic'
 import App2 from './App2.vue'
+import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime
     .timeline({
@@ -20,6 +21,7 @@ onMounted(() => {
 </script>
 <template>
   <div id="app3">
+    <svgLogo class="svg-logo" />
     <musicPlayer />
   </div>
 </template>
@@ -43,5 +45,8 @@ body {
 
 #app4 {
   border-radius: 70%; /* Ensure that the initial border radius is set to 70% */
+}
+.svg-logo {
+  z-index: 9999;
 }
 </style>

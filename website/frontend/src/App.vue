@@ -11,14 +11,16 @@ import { useRoute } from 'vue-router'
 provide('changeComponent', useRoute)
 </script>
 
-<style>
+<style scoped>
 :root {
   --background-color: black;
   --text-color: hsl(0, 0%, 100%);
 }
-
+/* #app {
+  background-color: rgb(255, 255, 255);
+} */
 body {
-  background-color: black;
+  background-color: rgb(255, 255, 255);
   margin: 0;
   top: 0;
   left: 0;

@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import terminalWeb from './components/terminal-web.vue'
 import anime from 'animejs/lib/anime.es.js'
-
+import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime({
     targets: ['.terminal'],
@@ -19,6 +19,7 @@ onMounted(() => {
 
 <template>
   <div id="app5">
+    <svgLogo class="svg-logo" />
     <terminalWeb />
   </div>
 </template>
