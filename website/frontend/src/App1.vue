@@ -11,6 +11,10 @@ import App3 from './App3.vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
+
+function testButtonClick() {
+  console.log('Button clicked!');
+}
 // const changeComponent = inject('changeComponent')
 
 // // Function to toggle the value of suceedValue
@@ -59,8 +63,8 @@ import { useStore } from 'vuex'
 <template>
   <div id="app1" :class="backgroundClass">
     <!-- Other components and elements -->
-    <FireFly />
-    <RainEffect />
+    <FireFly class="absolute"/>
+    <RainEffect  class="absolute"/>
     <MiddleText />
     <RainMp3 />
     <InputField />
@@ -78,6 +82,10 @@ import { useStore } from 'vuex'
 }
 
 #app1 {
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
   margin: 0;
   top: 0;
   left: 0;
@@ -86,5 +94,9 @@ import { useStore } from 'vuex'
   transition:
     transform 1s,
     opacity 1s; /* Add transition for smoother effect */
+}
+
+.absolute {
+  display:absolute;
 }
 </style>
