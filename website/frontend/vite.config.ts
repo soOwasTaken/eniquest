@@ -70,7 +70,21 @@ export default defineConfig({
         configure: (proxy, options) => {
           return createProxyMiddleware(proxy, options)
         }
-      }
+      },
+      '/api/request-reset': {
+        target: 'http://localhost:3000', // Assuming your Node.js server is running on port 3000
+        changeOrigin: true,
+        configure: (proxy, options) => {
+          return createProxyMiddleware(proxy, options)
+        }
+      },
+      '/api/verify-reset-key': {
+        target: 'http://localhost:3000', // Assuming your Node.js server is running on port 3000
+        changeOrigin: true,
+        configure: (proxy, options) => {
+          return createProxyMiddleware(proxy, options)
+        }
+      },
     }
   }
 })
