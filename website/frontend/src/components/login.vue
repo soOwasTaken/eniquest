@@ -5,7 +5,7 @@
     </video>
     <div class="content">
       <ul class="completed-games" v-if="store.getters.isLoggedIn && currentUser">
-        <li v-if="filteredGameOptions.length > 0" class="succeeded-title">Succeeded:</li>
+        <li v-if="filteredGameOptions.length > 0" class="succeeded-title">&nbsp;Succeeded:</li>
         <li v-for="(game, index) in filteredGameOptions" :key="index">
           <button class="completed-games-element" @click="navigateToGame(index)">
             {{ game }}
@@ -465,11 +465,11 @@ p {
   color: rgba(240, 248, 255, 0.273);
 }
 .succeeded-title {
-  width: 40%;
-  border-bottom: 1px solid rgba(158, 150, 3, 0.532);
-  border-left: 2px solid rgba(158, 150, 3, 0.436);
-  color: rgba(158, 150, 3, 0.436);
-  margin-left: 0;
+  width: 42%;
+  border-bottom: 3px solid rgba(158, 150, 3, 0.532);
+  border-left: 3px solid rgba(158, 150, 3, 0.532);
+  color: rgba(158, 150, 3, 0.532);
+  margin-left: -4%;
   font-style: italic;
   cursor: default;
 }

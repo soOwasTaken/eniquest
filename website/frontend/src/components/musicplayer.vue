@@ -489,8 +489,8 @@ export default {
 }
 .dark-mode-toggle {
   position: fixed;
-  top: 10px;
-  right: 10px;
+  bottom: 3%;
+  right: 2.5%;
   z-index: 9999;
   padding: 10px 10px;
   border: none;

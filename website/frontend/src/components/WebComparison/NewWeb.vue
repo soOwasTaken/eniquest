@@ -1403,7 +1403,7 @@ function increaseCountsAndChangeBackGround() {
 /* SEARCH BUTTON */
 .searchBox {
   display: flex;
-  width: 430px;
+  width: 330px;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
@@ -1419,6 +1419,7 @@ function increaseCountsAndChangeBackGround() {
 }
 .searchButton {
   color: white;
+  cursor: pointer;
   position: absolute;
   right: 0.5px;
   width: 50px;
@@ -1464,6 +1465,7 @@ button:active {
   color: rgb(0, 0, 0);
   font-size: 17px;
   padding: 14px 15px 14px 26px;
+  cursor: not-allowed;
 }
 
 .group {
