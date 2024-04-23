@@ -145,8 +145,6 @@ export default {
       overlayOpacity: 0,
       router: useRouter(),
       store: useStore(),
-
-      store: useStore(),
       currentUser: null,
       gameOptions: [
         'ai question',
@@ -464,7 +462,7 @@ p {
 
   cursor: pointer;
   transition: all 0.3s ease;
-  color: rgba(240, 248, 255, 0.273);
+  color: rgba(240, 248, 255, 0.423);
 }
 .succeeded-title {
   width: 42%;
