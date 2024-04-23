@@ -198,14 +198,14 @@ export default {
           /* this.animateButton() */ // Trigger button animation when text animation is complete
         }
       })
-      setTimeout(this.animateButton, 2500)
+      setTimeout(this.animateButton, 1500)
     },
     animateButton() {
       anime({
         targets: ['.enter-button', '.logout-button', '.completed-games'],
         opacity: [0, 1], // Fade in the button
         easing: 'easeInOutSine',
-        duration: 750 // Adjust duration as needed
+        duration: 1550 // Adjust duration as needed
       })
     },
     enterSite() {
