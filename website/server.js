@@ -1,5 +1,5 @@
 require("dotenv").config(); // at the top of your file
-const crypto = require('crypto');
+const crypto = require("crypto");
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
@@ -423,123 +423,143 @@ async function sendVerificationEmail(email, verificationLink) {
 // password change
 
 function generateRandomKey() {
-    return crypto.randomBytes(3).toString('hex').toUpperCase();  // Generates a 6-character hexadecimal string
+  return crypto.randomBytes(3).toString("hex").toUpperCase(); // Generates a 6-character hexadecimal string
 }
 
-app.post('/api/users/request-reset', async (req, res) => {
-    const { email } = req.body;
-    const user = users.find(user => user.email === email);
+app.post("/api/users/request-reset", async (req, res) => {
+  const { email } = req.body;
+  const user = users.find((user) => user.email === email);
 
-    if (!user) {
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
 
-        return res.status(404).json({ success: false, message: 'User not found' });
-    }
+  // Generate and store the reset key
+  const resetKey = generateRandomKey();
+  user.resetKey = resetKey;
+  user.resetKeyExpires = Date.now() + 3600000; // Key expires in 1 hour
 
-    // Generate and store the reset key
-    const resetKey = generateRandomKey();
-    user.resetKey = resetKey;
-    user.resetKeyExpires = Date.now() + 3600000; // Key expires in 1 hour
+  await sendResetKeyEmail(user.email, resetKey);
 
-    await sendResetKeyEmail(user.email, resetKey);
+  saveUsersToFile(); // Assuming you have a function to save the state
 
-    saveUsersToFile();  // Assuming you have a function to save the state
-
-
-    res.json({ success: true, message: 'Reset key sent to your email address.' });
+  res.json({ success: true, message: "Reset key sent to your email address." });
 });
 
 async function sendResetKeyEmail(email, key) {
-    const apiKey = process.env.API_EMAIL;
-    const subject = encodeURIComponent("Your Password Reset Key");
-    const from = encodeURIComponent("444deph12@gmail.com");
-    const fromName = encodeURIComponent("Your Company Name");
-    const bodyHtml = encodeURIComponent(
-        `<html><body>Your password reset key is: <strong>${key}</strong>. It expires in 1 hour.</body></html>`
-    );
+  const apiKey = process.env.API_EMAIL;
+  const subject = encodeURIComponent("Your Password Reset Key");
+  const from = encodeURIComponent("444deph12@gmail.com");
+  const fromName = encodeURIComponent("Your Company Name");
+  const bodyHtml = encodeURIComponent(
+    `<html><body>Your password reset key is: <strong>${key}</strong>. It expires in 1 hour.</body></html>`
+  );
 
-    const url = `https://api.elasticemail.com/v2/email/send?apikey=${apiKey}&subject=${subject}&from=${from}&fromName=${fromName}&to=${encodeURIComponent(
-        email
-    )}&bodyHtml=${bodyHtml}&isTransactional=true`;
+  const url = `https://api.elasticemail.com/v2/email/send?apikey=${apiKey}&subject=${subject}&from=${from}&fromName=${fromName}&to=${encodeURIComponent(
+    email
+  )}&bodyHtml=${bodyHtml}&isTransactional=true`;
 
-
-    try {
-        const response = await axios.get(url);
-        console.log("Reset key email sent!", response.data);
-    } catch (error) {
-        console.error("Failed to send reset key email:", error);
-    }
+  try {
+    const response = await axios.get(url);
+    console.log("Reset key email sent!", response.data);
+  } catch (error) {
+    console.error("Failed to send reset key email:", error);
+  }
 }
 
 // Endpoint to verify the reset key
-app.post('/api/verify-reset-key', (req, res) => {
-    const { email, key } = req.body;
-    const user = users.find(user => user.email === email);
+app.post("/api/verify-reset-key", (req, res) => {
+  const { email, key } = req.body;
+  const user = users.find((user) => user.email === email);
 
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
 
-    if (!user) {
-        return res.status(404).json({ success: false, message: 'User not found' });
-    }
+  const isKeyValid = user.resetKey === key && user.resetKeyExpires > Date.now();
 
-    const isKeyValid = user.resetKey === key && user.resetKeyExpires > Date.now();
-
-
-    if (isKeyValid) {
-        res.json({ success: true, message: 'Key is valid' });
-    } else {
-
-        res.json({ success: false, message: 'Invalid or expired key' });
-    }
-
+  if (isKeyValid) {
+    res.json({ success: true, message: "Key is valid" });
+  } else {
+    res.json({ success: false, message: "Invalid or expired key" });
+  }
 });
 
-app.post('/api/request-reset', async (req, res) => {
-    const { email } = req.body;
-    const user = users.find(user => user.email === email);
+app.post("/api/request-reset", async (req, res) => {
+  const { email } = req.body;
+  const user = users.find((user) => user.email === email);
 
-    if (!user) {
-        return res.status(404).json({ success: false, message: 'User not found' });
-    }
-    console.log('key genered');
-    const resetKey = generateRandomKey();
-    user.resetKey = resetKey;
-    user.resetKeyExpires = Date.now() + 3600000; // Key expires in 1 hour
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
+  console.log("key genered");
+  const resetKey = generateRandomKey();
+  user.resetKey = resetKey;
+  user.resetKeyExpires = Date.now() + 3600000; // Key expires in 1 hour
 
-    try {
-        await sendResetKeyEmail(user.email, resetKey);
-        saveUsersToFile();  // Save state, assuming you have this function
+  try {
+    await sendResetKeyEmail(user.email, resetKey);
+    saveUsersToFile(); // Save state, assuming you have this function
 
-        res.json({ success: true, message: 'Reset key sent to your email address.' });
-    } catch (error) {
-
-        console.error("Failed to send reset key email:", error);
-        res.status(500).json({ success: false, message: 'Failed to send reset key email.' });
-    }
+    res.json({
+      success: true,
+      message: "Reset key sent to your email address.",
+    });
+  } catch (error) {
+    console.error("Failed to send reset key email:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to send reset key email." });
+  }
 });
 
+app.post("/api/reset-password", async (req, res) => {
+  const { email, key, newPassword } = req.body;
+  const user = users.find((user) => user.email === email);
 
-app.post('/api/reset-password', async (req, res) => {
-    const { email, key, newPassword } = req.body;
-    const user = users.find(user => user.email === email);
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" });
+  }
 
-    if (!user) {
-        return res.status(404).json({ success: false, message: 'User not found' });
-    }
+  if (user.resetKey === key && user.resetKeyExpires > Date.now()) {
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    user.password = hashedPassword;
+    delete user.resetKey;
+    delete user.resetKeyExpires;
 
-    if (user.resetKey === key && user.resetKeyExpires > Date.now()) {
-        const hashedPassword = bcrypt.hashSync(newPassword, 10);
-        user.password = hashedPassword;
-        user.resetKey = null;
-        user.resetKeyExpires = null;
+    saveUsersToFile();
 
-        saveUsersToFile();
-
-        res.json({ success: true, message: 'Password has been reset successfully.' });
-    } else {
-        res.status(400).json({ success: false, message: 'Invalid or expired reset key' });
-    }
+    res.json({
+      success: true,
+      message: "Password has been reset successfully.",
+    });
+  } else {
+    res
+      .status(400)
+      .json({ success: false, message: "Invalid or expired reset key" });
+  }
 });
 
 // server running
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
+});
+
+process.on("SIGINT", () => {
+  server.close(() => {
+    fs.readFile("users.json", "utf8", (err, data) => {
+      if (err) {
+        console.error("Error reading users data:", err);
+      } else {
+        try {
+          users = JSON.parse(data);
+          users.forEach((user) => (user.loggedin = false));
+          saveUsersToFile();
+          console.log("Logged every user out");
+        } catch (parseError) {
+          console.error("Error parsing users data:", parseError);
+        }
+      }
+    });
+  });
 });
