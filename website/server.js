@@ -524,8 +524,8 @@ app.post("/api/reset-password", async (req, res) => {
   if (user.resetKey === key && user.resetKeyExpires > Date.now()) {
     const hashedPassword = bcrypt.hashSync(newPassword, 10);
     user.password = hashedPassword;
-    delete user.resetKey;
-    delete user.resetKeyExpires;
+    user.resetKey = null;
+    user.resetKeyExpires = null;
 
     saveUsersToFile();
 
@@ -541,7 +541,7 @@ app.post("/api/reset-password", async (req, res) => {
 });
 
 // server running
-const server = app.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
 

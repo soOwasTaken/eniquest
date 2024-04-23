@@ -15,7 +15,6 @@ import { useStore } from 'vuex'
 function testButtonClick() {
   console.log('Button clicked!')
 }
-
 // const changeComponent = inject('changeComponent')
 
 // // Function to toggle the value of suceedValue
@@ -85,7 +84,6 @@ function testButtonClick() {
 }
 
 #app1 {
-  overflow-y: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -103,9 +101,4 @@ function testButtonClick() {
 .absolute {
   display: absolute;
 }
-/* .svg-logo {
-  position: absolute;
-  top: 0.5%;
-
-} */
 </style>
