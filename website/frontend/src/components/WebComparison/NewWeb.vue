@@ -1,5 +1,6 @@
 <template>
   <div v-auto-animate v-if="!showWikipedia && !showMedium && !showNews" class="new-web">
+    <svgLogo class="svg-logo" />
     <div class="header">
       <img src="../../assets/boogle.png" alt="Logo" class="logo" />
       <div class="searchBox">
@@ -728,6 +729,7 @@ import { ref } from 'vue'
 import wikilogo from '../../assets/wiki-logo.png'
 import mediumlogo from '../../assets/medium-logo.png'
 import studilogo from '../../assets/stud.png'
+import svgLogo from '../svgLogo.vue'
 
 const showResults = ref(false)
 const showWikipedia = ref(false)
@@ -1107,7 +1109,11 @@ function increaseCountsAndChangeBackGround() {
   margin-bottom: 50px;
   margin-top: 20px;
 }
-
+.svg-logo {
+  /* position: absolute;
+  right: 3%; */
+  z-index: 999;
+}
 .logo {
   width: 200px;
   height: 60px;
@@ -1403,7 +1409,7 @@ function increaseCountsAndChangeBackGround() {
 /* SEARCH BUTTON */
 .searchBox {
   display: flex;
-  width: 430px;
+  width: 330px;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
@@ -1419,6 +1425,7 @@ function increaseCountsAndChangeBackGround() {
 }
 .searchButton {
   color: white;
+  cursor: pointer;
   position: absolute;
   right: 0.5px;
   width: 50px;
@@ -1464,6 +1471,7 @@ button:active {
   color: rgb(0, 0, 0);
   font-size: 17px;
   padding: 14px 15px 14px 26px;
+  cursor: not-allowed;
 }
 
 .group {

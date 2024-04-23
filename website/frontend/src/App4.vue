@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import braille from './components/braille.vue'
 import anime from 'animejs/lib/anime.es.js'
-
+import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime({
     targets: '#brailleContainer',
@@ -17,6 +17,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <svgLogo class="svg-logo" />
   <div id="app4">
     <braille />
   </div>
@@ -37,5 +38,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+}
+#app4 {
+  scale: 0.9;
 }
 </style>

@@ -1,8 +1,6 @@
 <template>
-  <div id="container">
-    <div id="input" ref="input"></div>
-    <input type="text" id="hiddenInput" ref="hiddenInput" />
-  </div>
+  <div id="input" ref="input"></div>
+  <input type="text" id="hiddenInput" ref="hiddenInput" />
 </template>
 <script>
 export default {
@@ -99,10 +97,7 @@ export default {
       if (!this.isIE) {
         this.$refs.hiddenInput.addEventListener('input', this.onInput);
       } else {
-        this.autoWriteTimer = setInterval(() => {
-          this.targetContent = this.$refs.hiddenInput.value;
-          if (this.targetContent !== this.lastContent && !this.inputLock) this.refresh();
-        }, 10);
+        this.autoWriteTimer = this.targetContent = this.$refs.hiddenInput.value;
       }
     },
     removeEventListeners() {
@@ -119,8 +114,9 @@ export default {
       this.targetContent = this.lastContent;
     },
     onClick() {
-      clearInterval(this.autoWriteTimer);
-      this.targetContent = this.lastContent;
+      if (this.targetContent === "You can type here to answer the above question" && this.lastContent !== "") {
+        this.targetContent = this.lastContent;
+      }
       this.$refs.hiddenInput.focus();
     },
     onInput(e) {
@@ -160,26 +156,18 @@ export default {
     font-family: "Oswald", sans-serif;
     font-size: 32px;
     background-color: #808080;
-    position: absolute;
     align-content:center;
     opacity: 0.4;
     margin-top: -22px;
     margin-left: -125px;
     opacity: 0;
     filter: alpha(opacity = 0);
-
+    pointer-events: none;
 }
 
-
-#container {
-    position: absolute;
-    top: 50%;
-    left: 26.5%;
-}
 
 #input {
     font-family: "Oswald", sans-serif;
-    position: absolute;
     color: #ffffff;
     align-content:center;
     font-size:32px;
@@ -187,6 +175,7 @@ export default {
     word-wrap:break-word;
     text-transform:uppercase;
     width:1000px;
+    margin-bottom:20px;
 }
 
 .letterContainer {

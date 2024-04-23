@@ -7,9 +7,14 @@ import RainEffect from './components/RainEffect.vue'
 import summaryDisplay from './components/summaryDisplay.vue'
 import RainMp3 from './components/RainMp3.vue'
 import FireFly from './components/fireflies.vue'
+import svgLogo from './components/svgLogo.vue'
 import App3 from './App3.vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+
+function testButtonClick() {
+  console.log('Button clicked!')
+}
 
 // const changeComponent = inject('changeComponent')
 
@@ -58,13 +63,15 @@ import { useStore } from 'vuex'
 
 <template>
   <div id="app1" :class="backgroundClass">
+    <svgLogo class="svg-logo" />
     <!-- Other components and elements -->
-    <FireFly />
-    <RainEffect />
+    <FireFly class="absolute" />
+    <RainEffect class="absolute" />
     <MiddleText />
     <RainMp3 />
     <InputField />
     <summaryDisplay ref="summaryDisplay" />
+
     <!-- Other components and elements -->
   </div>
 </template>
@@ -78,6 +85,11 @@ import { useStore } from 'vuex'
 }
 
 #app1 {
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
   margin: 0;
   top: 0;
   left: 0;
@@ -87,4 +99,13 @@ import { useStore } from 'vuex'
     transform 1s,
     opacity 1s; /* Add transition for smoother effect */
 }
+
+.absolute {
+  display: absolute;
+}
+/* .svg-logo {
+  position: absolute;
+  top: 0.5%;
+
+} */
 </style>

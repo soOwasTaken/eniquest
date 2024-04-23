@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import puzzle from './components/puzzle-sowell.vue'
 import anime from 'animejs/lib/anime.es.js'
-
+import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime
     .timeline({
@@ -23,6 +23,7 @@ onMounted(() => {
 
 <template>
   <div id="app5">
+    <svgLogo class="svg-logo" />
     <puzzle />
   </div>
 </template>

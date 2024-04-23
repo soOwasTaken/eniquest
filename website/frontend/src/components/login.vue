@@ -4,7 +4,15 @@
       <source src="../assets/bgvid.mp4" type="video/mp4" />
     </video>
     <div class="content">
-      <p v-show="showParagraph" id="animated-text">{{ displayText }}</p>
+      <ul class="completed-games" v-if="store.getters.isLoggedIn && currentUser">
+        <li v-if="filteredGameOptions.length > 0" class="succeeded-title">&nbsp;Succeeded:</li>
+        <li v-for="(game, index) in filteredGameOptions" :key="index">
+          <button class="completed-games-element" @click="navigateToGame(index)">
+            {{ game }}
+          </button>
+        </li>
+      </ul>
+      <p v-else id="animated-text">{{ displayText }}</p>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="666.7"
@@ -136,7 +144,18 @@ export default {
       isVisible: false,
       overlayOpacity: 0,
       router: useRouter(),
-      store: useStore()
+      store: useStore(),
+
+      store: useStore(),
+      currentUser: null,
+      gameOptions: [
+        'ai question',
+        'music player',
+        'old and new web',
+        'braille',
+        'puzzle',
+        'terminal'
+      ]
     }
   },
   mounted() {
@@ -181,14 +200,14 @@ export default {
           /* this.animateButton() */ // Trigger button animation when text animation is complete
         }
       })
-      setTimeout(this.animateButton, 2500)
+      setTimeout(this.animateButton, 1500)
     },
     animateButton() {
       anime({
-        targets: ['.enter-button', '.logout-button'],
+        targets: ['.enter-button', '.logout-button', '.completed-games'],
         opacity: [0, 1], // Fade in the button
         easing: 'easeInOutSine',
-        duration: 1500 // Adjust duration as needed
+        duration: 1550 // Adjust duration as needed
       })
     },
     enterSite() {
@@ -204,7 +223,15 @@ export default {
           this.router.push('/app1')
           console.log('continue button failed')
         } else {
-          this.router.push(`/app${currentUser.level + 1}`)
+          anime({
+            targets: '.full-page',
+            opacity: [1, 0], // Fade out
+            easing: 'easeInOutSine',
+            duration: 2000,
+            complete: () => {
+              this.router.push(`/app${currentUser.level + 1}`)
+            }
+          })
         }
       } catch (error) {
         console.error('Error while continuing site:', error)
@@ -214,13 +241,14 @@ export default {
       try {
         const response = await fetch('/api/current-user')
         if (response.ok) {
-          const currentUser = await response.json()
-          return currentUser
+          this.currentUser = await response.json()
+          return this.currentUser
         } else {
           throw new Error('Failed to fetch current user')
         }
       } catch (error) {
         console.error('Error fetching current user:', error)
+        this.currentUser = null
         return null
       }
     },
@@ -232,7 +260,20 @@ export default {
         console.error('Error logging out:', error) // Log error message
       }
       console.log('trylogout')
+
       this.store.dispatch('logout')
+      console.log(this.store.getters.isLoggedIn)
+      requestAnimationFrame(() => {
+        /* const text = document.getElementById('animated-text') */
+        /* text.style.opacity = 1 */
+        // anime({
+        //   targets: 'svg',
+        //   translateX: '10%', // Adjust this value based on your layout
+        //   easing: 'easeInElastic(1, .6)',
+        //   duration: 300,
+        // })
+        this.animateText()
+      })
       this.router.push('/')
     },
     animateHideElements() {
@@ -280,8 +321,36 @@ export default {
           }, 1100)
         }
       })
+    },
+    async navigateToGame(index) {
+      const gameRoute = `/app${index + 1}` // Since index is 0-based, add 1 to match the route
+      this.router.push(gameRoute)
+    }
+  },
+  watch: {
+    'store.getters.isLoggedIn': {
+      immediate: true,
+      handler(value, oldValue) {
+        if (value && value !== oldValue) {
+          this.fetchCurrentUser()
+        }
+      }
+    }
+  },
+  computed: {
+    filteredGameOptions() {
+      if (this.currentUser) {
+        const maxLevel = this.currentUser.level
+        return this.gameOptions.slice(0, maxLevel)
+      } else {
+        // If currentUser is not yet available, return an empty array
+        return []
+      }
     }
   }
+  // mounted() {
+  //   this.fetchCurrentUser()
+  // }
   // computed: {
   //   isLogin() {
   //     return this.store.getters.isLoggedIn // Using store.getters.isLoggedIn directly
@@ -300,6 +369,9 @@ export default {
   justify-content: center;
   background: rgba(0, 0, 0, 0.57);
   flex-direction: column; /* Centering in column direction */
+}
+ul {
+  list-style: none;
 }
 
 .content {
@@ -372,6 +444,41 @@ p {
   opacity: 0;
   border-color: rgba(255, 255, 255, 0.256);
   color: rgba(255, 255, 255, 0.256);
+}
+
+.completed-games {
+  opacity: 0;
+  width: 552.95px;
+}
+
+.succeeded-title,
+.completed-games-element {
+  background: none;
+  border: none;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 10px;
+  margin: 7%;
+  text-align: left;
+  width: 40%;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: rgba(240, 248, 255, 0.273);
+}
+.succeeded-title {
+  width: 42%;
+  border-bottom: 3px solid rgba(158, 150, 3, 0.532);
+  border-left: 3px solid rgba(158, 150, 3, 0.532);
+  color: rgba(158, 150, 3, 0.532);
+  margin-left: -4%;
+  font-style: italic;
+  cursor: default;
+}
+.completed-games-element:hover {
+  background-color: rgba(158, 150, 3, 0.399);
+  color: black;
+  font-weight: bold;
 }
 
 .enter-button:hover,
