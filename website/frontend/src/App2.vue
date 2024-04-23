@@ -32,7 +32,6 @@ onMounted(() => {
 })
 </script>
 <template>
-  <svgLogo class="svg-logo" />
   <div id="app2">
     <div class="web-container">
       <OldWeb />
@@ -42,9 +41,9 @@ onMounted(() => {
   </div>
 </template>
 <style scoped>
-.svg-logo {
+/* .svg-logo {
   z-index: 999;
-}
+} */
 #app {
   background-color: aqua;
 }
