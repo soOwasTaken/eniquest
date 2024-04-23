@@ -99,10 +99,7 @@ export default {
       if (!this.isIE) {
         this.$refs.hiddenInput.addEventListener('input', this.onInput);
       } else {
-        this.autoWriteTimer = setInterval(() => {
-          this.targetContent = this.$refs.hiddenInput.value;
-          if (this.targetContent !== this.lastContent && !this.inputLock) this.refresh();
-        }, 10);
+        this.autoWriteTimer = this.targetContent = this.$refs.hiddenInput.value;
       }
     },
     removeEventListeners() {
@@ -119,8 +116,9 @@ export default {
       this.targetContent = this.lastContent;
     },
     onClick() {
-      clearInterval(this.autoWriteTimer);
-      this.targetContent = this.lastContent;
+      if (this.targetContent === "You can type here to answer the above question" && this.lastContent !== "") {
+        this.targetContent = this.lastContent;
+      }
       this.$refs.hiddenInput.focus();
     },
     onInput(e) {
@@ -167,7 +165,7 @@ export default {
     margin-left: -125px;
     opacity: 0;
     filter: alpha(opacity = 0);
-
+    pointer-events: none;
 }
 
 

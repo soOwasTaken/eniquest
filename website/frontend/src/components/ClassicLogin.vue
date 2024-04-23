@@ -191,7 +191,7 @@ export default {
         .then(response => {
           if (response.data.success) {
             alert('Your password has been successfully reset.');
-            toggleMode();
+            this.toggleMode();
             this.mode = 'login'; // Redirect user to login page
           } else {
 
