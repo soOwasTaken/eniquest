@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import anime from 'animejs'
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router' // Import useRouter from Vue Router
@@ -36,13 +37,21 @@ export default {
           // Check if the user is verified
           const isVerified = await checkEmailVerification(userData.email)
           if (isVerified) {
+            anime({
+              targets: '.full-page',
+              opacity: [1, 0], // Fade out
+              easing: 'easeInOutSine',
+              duration: 2000,
+              complete: () => {
+                startAgain()
+              }
+            })
             console.log('Login successful')
             store.dispatch('login', {
               token: response.data.token,
               user: response.data.user
             })
             // Redirect to App1 after successful login
-            startAgain()
           } else {
             // User is not verified, show alert message
             showVerifyEmailAlert.value = true
