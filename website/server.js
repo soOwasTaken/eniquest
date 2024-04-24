@@ -260,8 +260,10 @@ app.post("/api/users/login", (req, res) => {
   if (user.verified) {
     user.loggedin = true;
     console.log(user.email, " is logged in");
-  } else user.loggedin = false;
-  console.log("needs to be verify: ", user.email);
+  } else {
+    user.loggedin = false;
+    console.log("needs to be verify: ", user.email);
+  }
   saveUsersToFile();
   currentUser = user;
   console.log(" current user: ", user);
@@ -304,7 +306,7 @@ app.post("/api/logout", (req, res) => {
   // Assuming you have access to the currentUser object
   currentUser.loggedin = false;
   saveUsersToFile();
-  console.log("logged out");
+  console.log(currentUser.email, " has logged out");
   res.json({ message: "User logged out successfully." });
 });
 
