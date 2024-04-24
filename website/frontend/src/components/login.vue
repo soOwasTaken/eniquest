@@ -470,16 +470,18 @@ p {
   width: 42%;
   border-bottom: 3px solid rgba(158, 150, 3, 0.532);
   border-left: 3px solid rgba(158, 150, 3, 0.532);
-  color: rgba(158, 150, 3, 0.532);
+  color: rgba(158, 150, 3, 0.363);
   margin-left: -4%;
-  font-style: italic;
+  font-weight: 600;
+  /* font-style: italic; */
   cursor: default;
+  transform: skewX(-32deg);
 }
 .completed-games-element:hover {
   background-color: rgba(158, 150, 3, 0.399);
   color: black;
   font-weight: bold;
-  transform: translateX(10%);
+  transform: translateX(10%) translateY(20%) skewX(-22deg);
 }
 
 .enter-button:hover,
