@@ -1,13 +1,15 @@
 <template>
-  <div id="brailleContainer" @keydown="handleKeyPress" tabindex="0">
-    <span
-      v-for="(item, index) in characters"
-      :key="index"
-      :style="{ left: `${item.x}%`, top: `${item.y}%` }"
-      @mouseover="revealChar"
-      :class="{ brailleChar: true, highlight: item.highlight }"
-      >{{ item.char }}</span
-    >
+  <div class="braille-app">
+    <div id="brailleContainer" @keydown="handleKeyPress" tabindex="0">
+      <span
+        v-for="(item, index) in characters"
+        :key="index"
+        :style="{ left: `${item.x}%`, top: `${item.y}%` }"
+        @mouseover="revealChar"
+        :class="{ brailleChar: true, highlight: item.highlight }"
+        >{{ item.char }}</span
+      >
+    </div>
   </div>
 </template>
 
@@ -121,7 +123,9 @@ export default {
         if (data.result) {
           console.log('Correct!')
           this.setSucceedBraille(true)
-          const allPage = document.querySelector('#brailleContainer')
+          const allPage1 = document.querySelector('#brailleContainer')
+          const allPage = document.querySelector('.braille-app')
+          allPage1.style.backgroundColor = '#232826'
           allPage.style.backgroundColor = '#232826'
           document.body.style.background = '#232826'
           this.store.dispatch('updateGameSuccess', { gameIndex: 3, success: true })
@@ -171,12 +175,17 @@ export default {
 }
 </script>
 <style>
+.braille-app {
+  height: 100vh;
+  background-color: black;
+}
 #brailleContainer {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background: black;
+  background: rgb(0, 0, 0);
   outline: none; /* Ensure the div is focusable */
+  scale: 0.9;
 }
 
 .brailleChar:not(.highlight) {

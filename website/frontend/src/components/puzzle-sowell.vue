@@ -386,7 +386,7 @@ shuffleTiles()
   border-radius: 20px;
   cursor: pointer;
   color: #3570a7;
-  transform: translate(25px, 45px);
+  transform: translate(25px, 100%);
 }
 .button .svg-icon {
   scale: 1.5;
