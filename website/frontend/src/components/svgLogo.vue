@@ -105,6 +105,10 @@ svg {
   top: 1%;
   right: 0%;
   cursor: pointer;
+  transition: all 0.5s ease;
+}
+svg:hover {
+  transform: translateY(6%);
 }
 /* svg:hover {
   left: 50%;

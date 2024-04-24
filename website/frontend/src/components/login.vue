@@ -1,7 +1,7 @@
 <template>
   <div class="full-page">
     <video autoplay muted loop id="myVideo">
-      <source src="../assets/bgvid.mp4" type="video/mp4" />
+      <source src="../assets/145433-787039464_small(1).mp4" type="video/mp4" />
     </video>
     <div class="content">
       <ul class="completed-games" v-if="store.getters.isLoggedIn && currentUser">
@@ -365,7 +365,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.57);
+  background: rgba(0, 0, 0, 0.861);
   flex-direction: column; /* Centering in column direction */
 }
 ul {
@@ -419,6 +419,7 @@ p {
   background: transparent;
   color: white;
   font-family: 'Sedan', serif;
+  /* font-family: monospace; */
   font-size: 20px;
   /* text-transform: uppercase; */
   cursor: pointer;
@@ -428,6 +429,7 @@ p {
   position: absolute;
   bottom: 20%; /* Distance from bottom */
   left: 50%;
+  text-transform: uppercase;
   transform: translateX(-50%);
   border-radius: 3px;
 }
@@ -477,18 +479,24 @@ p {
   background-color: rgba(158, 150, 3, 0.399);
   color: black;
   font-weight: bold;
+  transform: translateX(10%);
 }
 
 .enter-button:hover,
 .logout-button:hover {
-  background-color: white;
-  color: black;
+  /* background-color: white; */
+  /* color: black; */
+  transform: translate(-50%, -15%);
+  background-color: rgb(31, 108, 31);
 }
 .logout-button:hover {
   opacity: 1;
   background-color: rgba(165, 42, 42, 0.733);
   font-weight: bold;
   color: aliceblue;
+  transform: translate(-50%, 25%);
+  text-transform: uppercase;
+  /* scale: 1.3; */
 }
 
 .invisible-button {
