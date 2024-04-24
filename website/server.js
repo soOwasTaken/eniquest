@@ -264,7 +264,7 @@ app.post("/api/users/login", (req, res) => {
   console.log("needs to be verify: ", user.email);
   saveUsersToFile();
   currentUser = user;
-  console.log(" users: ", users);
+  console.log(" current user: ", user);
 });
 
 // Register endpoint
@@ -524,8 +524,8 @@ app.post("/api/reset-password", async (req, res) => {
   if (user.resetKey === key && user.resetKeyExpires > Date.now()) {
     const hashedPassword = bcrypt.hashSync(newPassword, 10);
     user.password = hashedPassword;
-    user.resetKey = null;
-    user.resetKeyExpires = null;
+    delete user.resetKey;
+    delete user.resetKeyExpires;
 
     saveUsersToFile();
 
@@ -541,7 +541,7 @@ app.post("/api/reset-password", async (req, res) => {
 });
 
 // server running
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
 
