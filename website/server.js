@@ -264,7 +264,7 @@ app.post("/api/users/login", (req, res) => {
   console.log("needs to be verify: ", user.email);
   saveUsersToFile();
   currentUser = user;
-  console.log(" users: ", users);
+  console.log(" current user: ", user);
 });
 
 // Register endpoint
