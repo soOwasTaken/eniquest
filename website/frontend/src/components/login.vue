@@ -1,7 +1,7 @@
 <template>
   <div class="full-page">
     <video autoplay muted loop id="myVideo">
-      <source src="../assets/bgvid.mp4" type="video/mp4" />
+      <source src="../assets/145433-787039464_small(1).mp4" type="video/mp4" />
     </video>
     <div class="content">
       <ul class="completed-games" v-if="store.getters.isLoggedIn && currentUser">
@@ -365,7 +365,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.57);
+  background: rgba(0, 0, 0, 0.861);
   flex-direction: column; /* Centering in column direction */
 }
 ul {
