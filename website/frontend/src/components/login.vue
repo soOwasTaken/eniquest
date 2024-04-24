@@ -481,7 +481,7 @@ p {
   background-color: rgba(158, 150, 3, 0.399);
   color: black;
   font-weight: bold;
-  transform: translateX(10%);
+  transform: translateX(10%) translateY(20%) skewX(-22deg);
 }
 
 .enter-button:hover,

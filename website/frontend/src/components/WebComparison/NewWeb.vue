@@ -366,7 +366,7 @@
           other harmful content, while others argue that this would amount to censorship.
         </p>
         <h2 id="see-also">See Also</h2>
-        <ul>
+        <ul class="see-also-list">
           <li><a href="#">Freedom of speech</a></li>
           <li><a href="#">Collateral censorship</a></li>
           <li><a href="#">Hate speech</a></li>
@@ -401,7 +401,7 @@
       <header class="header">
         <div class="left">
           <img src="../../assets/medium-logo.png" alt="Medium Logo" class="logo" />
-          <input type="text" placeholder="Search" class="search-bar" />
+          <input type="text" placeholder="Search" class="search-bar" readonly />
         </div>
         <div class="right">
           <button class="btn">Sign Up</button>
@@ -489,7 +489,7 @@
           />
           <p>Written by {{ articleData.author.name }}</p>
           <p id="author-descrip">{{ articleData.author.description }}</p>
-          <button class="btn" @click="increaseCountsAndChangeBackGround">Follow</button>
+          <button class="btn btn-follow" @click="increaseCountsAndChangeBackGround">Follow</button>
         </div>
       </div>
       <div class="return">
@@ -534,7 +534,7 @@
         <!-- Search bar -->
         <div class="search-bar">
           <div class="container-input">
-            <input type="text" placeholder="Search" name="text" class="input-news" />
+            <input type="text" placeholder="Search" name="text" class="input-news" readonly />
             <svg
               fill="#000000"
               width="20px"
@@ -1343,7 +1343,9 @@ function increaseCountsAndChangeBackGround() {
   padding: 10px;
   border-radius: 5px;
 }
-
+.ad .link {
+  cursor: not-allowed;
+}
 .people-also-ask {
   border-top: 1px solid #ccc;
   padding-top: 10px;
@@ -1403,7 +1405,7 @@ function increaseCountsAndChangeBackGround() {
   font-size: 14px;
   color: #666;
   margin: 0;
-  cursor: pointer;
+  cursor: not-allowed;
 }
 
 /* SEARCH BUTTON */
@@ -1602,6 +1604,7 @@ hr {
 .wiki-container .article ul li a {
   color: rgb(3, 71, 209);
   font-size: 13px;
+  cursor: not-allowed;
 }
 .wiki-container .toc-toggle {
   position: fixed;
@@ -1697,6 +1700,7 @@ hr {
 .wiki-footer {
   background-color: #0000002d;
 }
+
 .wiki-footer ul {
   font-size: 11px;
   list-style: none;
@@ -1709,6 +1713,7 @@ hr {
 .wiki-footer ul li a {
   text-decoration: none;
   color: #000;
+  cursor: not-allowed;
 }
 
 /* MEDIUM */
@@ -1750,11 +1755,13 @@ hr {
   vertical-align: middle;
 }
 
-.medium-article .search-bar {
+.medium-article .search-bar,
+.medium-article .search-bar:focus-visible {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 200px;
+  cursor: not-allowed;
 }
 
 /* Article Header Styles */
@@ -1870,8 +1877,11 @@ hr {
   color: #000000;
   border: none;
   border-radius: 25px;
-  cursor: pointer;
+  cursor: not-allowed;
   border: 1px solid #0f0f0f34;
+}
+.btn.btn-follow {
+  cursor: pointer;
 }
 .medium-article .header .btn {
   background-color: #000000;
@@ -1914,6 +1924,7 @@ hr {
   font-size: 12px;
   text-decoration: none;
   color: #ffffffb8;
+  cursor: not-allowed;
 }
 /* NEWS STYLE */
 
@@ -1963,7 +1974,7 @@ hr {
 .news-page .navigation ul li a {
   text-decoration: none;
   color: rgb(0, 0, 0);
-
+  cursor: not-allowed;
   transition: all 0.5s ease;
 }
 .news-page .navigation ul li a:hover {
@@ -2032,13 +2043,14 @@ hr {
   height: 50%; /* Ensure images maintain aspect ratio */
   border-radius: 8px;
   transition: all 0.3s ease;
+  cursor: default;
 }
 .news-page .image-wrapper img:hover {
   scale: 1.1;
 }
 .news-page .image-wrapper p {
   font-size: 18px;
-  cursor: pointer;
+  cursor: default;
   transition: all 0.3s ease;
 }
 .news-page .image-wrapper p:hover {
@@ -2071,7 +2083,7 @@ hr {
 .news-page .socials img {
   width: 30px;
   margin-right: 10px;
-  cursor: pointer;
+  cursor: not-allowed;
   transition: all 0.3s ease;
 }
 .news-page .socials img:hover {
@@ -2104,7 +2116,7 @@ hr {
 }
 .first-ad {
   width: 100%;
-  cursor: pointer;
+  cursor: not-allowed;
 }
 .second-ad {
   width: 100%;
@@ -2130,6 +2142,7 @@ hr {
   transition: all 0.2s ease-in-out;
   outline: none;
   opacity: 0.8;
+  cursor: not-allowed;
 }
 
 .news-page .container-input svg {
@@ -2137,12 +2150,13 @@ hr {
   top: 50%;
   left: 10px;
   transform: translate(0, -50%);
+  cursor: not-allowed;
 }
 
-.news-page .input-news:focus {
+/* .news-page .input-news:focus {
   opacity: 1;
   width: 190px;
-}
+} */
 .return .return-button {
   position: fixed;
   top: 1px;
