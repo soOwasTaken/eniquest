@@ -463,7 +463,7 @@ p {
   width: 40%;
 
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
   color: rgba(240, 248, 255, 0.423);
 }
 .succeeded-title {
@@ -481,7 +481,7 @@ p {
   background-color: rgba(158, 150, 3, 0.399);
   color: black;
   font-weight: bold;
-  transform: translateX(10%) translateY(20%) skewX(-22deg);
+  transform: translateX(5%) translateY(15%) skewX(-22deg);
 }
 
 .enter-button:hover,
