@@ -48,6 +48,22 @@ x Endroit sur WebComparison ou rentrer la phrase secrète.
   x Dans le forum a la place de Windows XP Support Thread.
 * Réfléchir à une nouvelle énigme.
 * Implémenter dans le Prompt un message d'erreur a renvoyer au front si l'API retourne une erreur (response was not ok)
-* Pour dot.vue peut être s'inspirer de cette page ? (https://codepen.io/sharnajh/pen/ExjpGwr)[codepen.io]
+* Pour dot.vue peut être s'inspirer de cette page ? (https://codepen.io/sharnajh/pen/ExjpGwr)(codepen.io)
 * Finir la page du braille.
 
+
+
+
+_____
+
+1) Verification intégrale de notre projet avant deployement.
+  - Régler éventuellement des petit details etc.
+  - Voir les éventuelles détails et changement à faire.
+
+
+Potentiel fix a faire :
+
+
+2) Changer la plus part des chemins qui sont en localhost pour être déployer, et voir comment on va pouvoir setup ça.
+
+3) Une fois qu'on a une version déployer fonctionelle, s'orienter vers le déploiement d'une DB en utilisant potentiellement [trevor.io](https://trevor.io/)
