@@ -193,11 +193,7 @@
           <span class="toc-toggle-icon"></span>
         </button>
       </header>
-      <nav
-        ref="tableOfContents"
-        class="table-of-contents"
-        :class="{ hidden: isTableOfContentsHidden }"
-      >
+      <nav v-if="!isTableOfContentsHidden" ref="tableOfContents" class="table-of-contents">
         <h2>menu</h2>
         <hr />
         <ul>
@@ -1003,9 +999,11 @@ function handleResultClick(link) {
 }
 
 const isTableOfContentsHidden = ref(true)
+const ishidden = true
 
 function toggleTableOfContents() {
   isTableOfContentsHidden.value = !isTableOfContentsHidden.value
+  ishidden = !ishidden
 }
 
 function toggleTableOfContentsAndScrollToId(id) {
@@ -1653,10 +1651,9 @@ hr {
   bottom: -8px;
 }
 
-.hidden {
-  /* display: none; */
-  opacity: 0;
-}
+/* .hidden {
+  opacity: 1;
+} */
 #introduction,
 #implementation {
   display: flex;
