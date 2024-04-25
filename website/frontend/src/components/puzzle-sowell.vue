@@ -1,5 +1,9 @@
 <template>
+
   <div class="puzzle-game">
+    <video autoplay muted loop id="myVideo">
+      <source src="../assets/bgvid/5.mp4" type="video/mp4" />
+    </video>
     <button @click="resetGame" class="button">
       <svg
         class="svg-icon"
@@ -63,15 +67,15 @@ import App5 from '../App5.vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-const ROWS = 5
-const COLS = 5
+const ROWS = 7
+const COLS = 7
 const EMPTY_TILE = ROWS * COLS - 1
 
 const tiles = ref([])
 const completed = ref(false)
 let selectedTileIndex = null
 let userInput = ref('')
-const timer = ref(90) // TIME //////////////////////
+const timer = ref(150) // TIME //////////////////////
 const timerColor = ref('black')
 
 const changeComponent = inject('changeComponent')
@@ -158,7 +162,7 @@ const handleInput = async () => {
     inputtext.style.backgroundColor = 'green'
     setSucceedPuzzle(true)
     document.body.style.background =
-      'linear-gradient(205deg, rgba(44, 15, 48, 1) 38%, rgba(72, 72, 47, 0.789) 100%)'
+      'linear-gradient(205deg, rgba(44, 15, 48, 0.4) 38%, rgba(72, 72, 47, 0.789) 100%)'
     setTimeout(() => {
       transition()
     }, 1000)
@@ -324,7 +328,7 @@ const swapTiles = (index1, index2) => {
 const resetGame = () => {
   completed.value = false
   shuffleTiles()
-  timer.value = 90 // TIME ///////////////////////////////
+  timer.value = 150 // TIME ///////////////////////////////
   timerColor.value = 'yellow'
 }
 
@@ -343,30 +347,26 @@ shuffleTiles()
 
 <style scoped>
 .puzzle-game {
-  background: linear-gradient(205deg, rgba(67, 15, 48, 0.704) 38%, rgba(72, 72, 47, 0.789) 100%),
-    url('../assets/forest-3119826_1280.jpg');
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
   color: #fff;
   height: 100vh;
   /* overflow-y: auto; */
   width: 100%;
+  background: rgba(0, 0, 0, 0.200);
   /* transform: translateY(-10%); */
 }
 .grid-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  transform: translateY(-50px);
-  scale: 0.7;
+  transform: translateY(10%);
+  scale: 1;
 }
 
 /* DIMENSIONS */
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 120px);
-  grid-template-rows: repeat(5, 120px);
+  grid-template-columns: repeat(7, 85.7142857px);
+  grid-template-rows: repeat(7, 85.7142857px);
   gap: 2px;
 }
 
@@ -374,6 +374,9 @@ shuffleTiles()
   scale: 1;
   display: flex;
   justify-content: center;
+  position: absolute;
+  top:20%;
+  left:20%;
   align-items: center;
   margin-bottom: 10px;
   padding: 6px 12px;
@@ -414,8 +417,8 @@ shuffleTiles()
 
 /* DIMENSIONS */
 .tile {
-  width: 120px;
-  height: 120px;
+  width: 85.7142857px;
+  height: 85.7142857px;
   background-color: lightblue;
   border: 1px solid black;
   cursor: pointer;
@@ -440,7 +443,7 @@ shuffleTiles()
 .prompt-container {
   position: relative;
   margin: 5%;
-  margin-top: 0;
+  margin-top: 7%;
   margin-bottom: 0;
   text-align: center;
   opacity: 0;
@@ -457,14 +460,14 @@ shuffleTiles()
   margin-left: 36%;
   padding: 0;
   width: 28%;
-  color: #ffffffb6;
+  color: #3D3B40;
   border-radius: 20px;
 
   /* border: 0.1px solid#3570a7;
   background-color: #3570a76b; */
 }
 .input-puzzle {
-  color: #ffffff;
+  color: white;
   font-size: 16px;
   text-align: center;
   border: 2px solid transparent;
@@ -473,7 +476,7 @@ shuffleTiles()
   padding-left: 0.8em;
   outline: none;
   overflow: hidden;
-  background-color: #886a8195;
+  background: rgba(61, 59, 64, 0.4);
   border-radius: 10px;
   transition: all 0.5s;
   font-weight: bold;
@@ -497,8 +500,20 @@ shuffleTiles()
   background: transparent;
   border-radius: 8px;
   transition: all 0.3s ease;
+  top: 20%;
+  left:20%
 }
 .timer:hover {
   font-size: 28px;
+}
+
+#myVideo {
+  position: fixed; /* Fixed position to cover all the page */
+  right: 0;
+  bottom: 0;
+  min-width: 100%; /* Minimum width 100% */
+  min-height: 100%; /* Minimum height 100% */
+  z-index: -1; /* Positioned behind all other elements */
+  opacity:0.7;
 }
 </style>
