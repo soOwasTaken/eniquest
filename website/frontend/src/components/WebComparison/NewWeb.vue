@@ -726,7 +726,7 @@ import { ref } from 'vue'
 import wikilogo from '../../assets/wiki-logo.png'
 import mediumlogo from '../../assets/medium-logo.png'
 import studilogo from '../../assets/stud.png'
-import svgLogo from '../svgLogo.vue'
+import svgLogo from '../blacksvglogo.vue'
 
 const showResults = ref(false)
 const showWikipedia = ref(false)
