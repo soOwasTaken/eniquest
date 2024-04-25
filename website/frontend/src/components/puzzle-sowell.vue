@@ -160,8 +160,8 @@ const handleInput = async () => {
     inputbox.style.borderColor = 'green'
     inputtext.style.backgroundColor = 'green'
     setSucceedPuzzle(true)
-    document.body.style.background =
-      'linear-gradient(205deg, rgba(32, 98, 19, 0.4) 38%, rgba(72, 72, 47, 0.789) 100%)'
+    //    document.body.style.background =
+    //      'linear-gradient(205deg, rgba(32, 98, 19, 0.4) 38%, rgba(72, 72, 47, 0.789) 100%)'
     setTimeout(() => {
       transition()
     }, 1000)
@@ -454,6 +454,7 @@ shuffleTiles()
   opacity: 0;
   transition: all 4s ease;
   transform: translateY(-50%);
+  cursor: default;
 }
 .prompt-container p {
   text-align: center;

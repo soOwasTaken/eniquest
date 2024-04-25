@@ -10,25 +10,24 @@ onMounted(() => {
   anime
     .timeline({
       easing: 'easeInOutQuad',
-      duration: 1000
+      duration: 1500
     })
     .add({
       targets: '.web-container',
-      scale: [0.8, 1], // Start slightly scaled down and scale up to 100% of original size
+      scale: [0, 1], // Start slightly scaled down and scale up to 100% of original size
       opacity: [0, 1] // Fade in
     })
     .add({
-      targets: '.old-web',
-      scale: [0.1, 1], // Start slightly scaled up and scale down to 100% of original size
-      opacity: [0, 1], // Fade in
-      rotate: '1turn' // Rotate twice during the animation
+      targets: ['.old-web', '.new-web'],
+      scale: [0, 1], // Start slightly scaled up and scale down to 100% of original size
+      opacity: [0, 1] // Fade in
+      // rotate: '1turn' // Rotate twice during the animation
     })
-    .add({
-      targets: '.new-web',
-      scale: [0.1, 1], // Start slightly scaled up and scale down to 100% of original size
-      opacity: [0, 1], // Fade in
-      rotate: '-1turn' // Rotate twice in the opposite direction
-    })
+  // .add({
+  //   targets: ',
+  //   scale: [0.1, 1] // Start slightly scaled up and scale down to 100% of original size
+  /* opacity: [0, 1] // Fade in */
+  // rotate: '-1turn' // Rotate twice in the opposite direction
 })
 </script>
 <template>
