@@ -89,7 +89,14 @@
     />
   </svg>
 </template>
-
+<script setup>
+import { useRouter } from 'vue-router'
+const router = useRouter()
+function goHome() {
+  console.log('going home via svg')
+  router.push('/')
+}
+</script>
 <style scoped>
 svg {
   position: absolute;
