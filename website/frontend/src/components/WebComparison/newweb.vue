@@ -1,6 +1,5 @@
 <template>
-  <div v-auto-animate v-if="!showWikipedia && !showMedium && !showNews" class="new-web">
-    <svgLogo class="svg-logo" />
+  <div v-if="!showWikipedia && !showMedium && !showNews" class="new-web">
     <div class="header">
       <img src="../../assets/boogle.png" alt="Logo" class="logo" />
       <div class="searchBox">
@@ -108,12 +107,7 @@
           </div>
           <div v-else-if="item.type === 'peopleAlsoAsk'" class="people-also-ask">
             <h3 class="people-also-ask-title">People also ask</h3>
-            <div
-              v-auto-animate
-              v-for="(question, qIndex) in item.questions"
-              :key="qIndex"
-              class="question"
-            >
+            <div v-for="(question, qIndex) in item.questions" :key="qIndex" class="question">
               <div @click="toggleAnswer(question)" class="question-text">
                 <span class="question-symbol">{{ question.showAnswer ? '-' : '+' }}</span>
                 {{ question.text }}
@@ -177,11 +171,10 @@
         <p class="footer-text">Report inappropriate content</p>
       </footer>
     </div>
+    <div class="return">
+      <button class="return-button" @click="returnToNothing">&laquo;</button>
+    </div>
   </div>
-  <div class="return">
-    <button class="return-button" @click="returnToNothing">&laquo;</button>
-  </div>
-
   <div v-if="showWikipedia">
     <div class="wiki-container">
       <header class="wiki-header">
@@ -193,7 +186,11 @@
           <span class="toc-toggle-icon"></span>
         </button>
       </header>
-      <nav v-if="!isTableOfContentsHidden" ref="tableOfContents" class="table-of-contents">
+      <nav
+        ref="tableOfContents"
+        class="table-of-contents"
+        :class="{ hidden: isTableOfContentsHidden }"
+      >
         <h2>menu</h2>
         <hr />
         <ul>
@@ -351,10 +348,10 @@
         <p>
           Freedom of speech is a controversial issue, and there are many debates surrounding its
           limits and boundaries.
-          <span id="here" @click="changeWikiKeyBackground">You might want to click here.</span>
-          Some argue that certain types of speech, such as hate speech or pornography, should be
-          banned outright, while others argue that any restrictions on speech are a slippery slope
-          towards censorship and authoritarianism.
+          <span id="here" @click="changeWikiKeyBackground">You might want to click here.</span> Some
+          argue that certain types of speech, such as hate speech or pornography, should be banned
+          outright, while others argue that any restrictions on speech are a slippery slope towards
+          censorship and authoritarianism.
         </p>
         <p>
           There are also debates surrounding the role of social media platforms in regulating
@@ -362,7 +359,7 @@
           other harmful content, while others argue that this would amount to censorship.
         </p>
         <h2 id="see-also">See Also</h2>
-        <ul class="see-also-list">
+        <ul>
           <li><a href="#">Freedom of speech</a></li>
           <li><a href="#">Collateral censorship</a></li>
           <li><a href="#">Hate speech</a></li>
@@ -397,7 +394,7 @@
       <header class="header">
         <div class="left">
           <img src="../../assets/medium-logo.png" alt="Medium Logo" class="logo" />
-          <input type="text" placeholder="Search" class="search-bar" readonly />
+          <input type="text" placeholder="Search" class="search-bar" />
         </div>
         <div class="right">
           <button class="btn">Sign Up</button>
@@ -485,7 +482,7 @@
           />
           <p>Written by {{ articleData.author.name }}</p>
           <p id="author-descrip">{{ articleData.author.description }}</p>
-          <button class="btn btn-follow" @click="increaseCountsAndChangeBackGround">Follow</button>
+          <button class="btn" @click="increaseCountsAndChangeBackGround">Follow</button>
         </div>
       </div>
       <div class="return">
@@ -509,7 +506,7 @@
     </div>
   </div>
 
-  <div v-auto-animate v-if="showNews">
+  <div v-if="showNews">
     <div class="news-page">
       <!-- Header -->
       <header class="header">
@@ -530,7 +527,7 @@
         <!-- Search bar -->
         <div class="search-bar">
           <div class="container-input">
-            <input type="text" placeholder="Search" name="text" class="input-news" readonly />
+            <input type="text" placeholder="Search" name="text" class="input" />
             <svg
               fill="#000000"
               width="20px"
@@ -559,7 +556,7 @@
             <!-- Images with descriptions -->
 
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/1-11.jpg" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/1-1.jpg" alt="#" /></a>
               <div class="description">
                 <p>
                   <span>Top 5</span> movies that circumvented censorship, when directors are
@@ -579,7 +576,7 @@
               </p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/1-44.jpg" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/1-4.jpg" alt="#" /></a>
               <p>
                 <span>Top 5</span> movies that sparked controversy in France (censorship holding us
                 back)
@@ -601,8 +598,7 @@
               </p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img class="madmax" src="../../assets/topico/1-8.jpg" alt="#" /></a>
-
+              <a href="#"><img src="../../assets/topico/1-8.jpg" alt="#" /></a>
               <p><span>Top 10</span> movies banned in France, censorship underneath</p>
             </div>
             <div class="image-wrapper">
@@ -633,11 +629,11 @@
               </div>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/2-2.webp" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/2-2.jpg" alt="#" /></a>
               <p><span>Top 10</span> most controversial video games</p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/2-33.jpg" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/2-3.jpg" alt="#" /></a>
               <p><span>Top 20</span> songs that have been banned in certain countries</p>
             </div>
             <div class="image-wrapper">
@@ -661,17 +657,17 @@
               </p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/2-8.webp" alt="but I will" /></a>
+              <a href="#"><img src="../../assets/topico/2-8.jpg" alt="but I will" /></a>
               <p><span>Top 12</span> hidden messages in websites' images</p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/2-91.jpg" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/2-9.jpg" alt="#" /></a>
               <p>
                 <span>Top 10</span> biggest scandals around Facebook, we are sold, we are plundered
               </p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/2-100.webp" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/2-10.jpg" alt="#" /></a>
               <p>
                 <span>Top 12</span> most homophobic countries, the ones where you risk your life
               </p>
@@ -726,7 +722,6 @@ import { ref } from 'vue'
 import wikilogo from '../../assets/wiki-logo.png'
 import mediumlogo from '../../assets/medium-logo.png'
 import studilogo from '../../assets/stud.png'
-import svgLogo from '../svgLogo.vue'
 
 const showResults = ref(false)
 const showWikipedia = ref(false)
@@ -976,34 +971,19 @@ function handleResultClick(link) {
   event.preventDefault()
   if (link === 'wackypedia.org') {
     showWikipedia.value = true
-    requestAnimationFrame(() => {
-      const wiki = document.querySelector('.wiki-container')
-      wiki.classList.add('show')
-    })
   }
   if (link === 'medimu.io') {
     showMedium.value = true
-    requestAnimationFrame(() => {
-      const wiki = document.querySelector('.medium-article')
-      wiki.classList.add('show')
-    })
   }
   if (link === 'news.com') {
     showNews.value = true
-    requestAnimationFrame(() => {
-      const wiki = document.querySelector('.news-page')
-      console.log(wiki)
-      wiki.classList.add('show')
-    })
   }
 }
 
 const isTableOfContentsHidden = ref(true)
-const ishidden = true
 
 function toggleTableOfContents() {
   isTableOfContentsHidden.value = !isTableOfContentsHidden.value
-  ishidden = !ishidden
 }
 
 function toggleTableOfContentsAndScrollToId(id) {
@@ -1108,11 +1088,7 @@ function increaseCountsAndChangeBackGround() {
   margin-bottom: 50px;
   margin-top: 20px;
 }
-.svg-logo {
-  /* position: absolute;
-  right: 3%; */
-  z-index: 999;
-}
+
 .logo {
   width: 200px;
   height: 60px;
@@ -1342,9 +1318,7 @@ function increaseCountsAndChangeBackGround() {
   padding: 10px;
   border-radius: 5px;
 }
-.ad .link {
-  cursor: not-allowed;
-}
+
 .people-also-ask {
   border-top: 1px solid #ccc;
   padding-top: 10px;
@@ -1404,13 +1378,13 @@ function increaseCountsAndChangeBackGround() {
   font-size: 14px;
   color: #666;
   margin: 0;
-  cursor: not-allowed;
+  cursor: pointer;
 }
 
 /* SEARCH BUTTON */
 .searchBox {
   display: flex;
-  width: 330px;
+  width: 430px;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
@@ -1426,7 +1400,6 @@ function increaseCountsAndChangeBackGround() {
 }
 .searchButton {
   color: white;
-  cursor: pointer;
   position: absolute;
   right: 0.5px;
   width: 50px;
@@ -1472,7 +1445,6 @@ button:active {
   color: rgb(0, 0, 0);
   font-size: 17px;
   padding: 14px 15px 14px 26px;
-  cursor: not-allowed;
 }
 
 .group {
@@ -1501,9 +1473,6 @@ hr {
   height: 100%;
   background-color: #fff;
   color: #000;
-  scroll-behavior: smooth;
-  opacity: 0.7;
-  transition: all 1s ease;
 }
 
 .wiki-container header {
@@ -1543,7 +1512,6 @@ hr {
   background-color: #666464f4;
   color: #fff;
   border-radius: 0 38px 38px 0;
-  transition: all 0.5s ease;
 }
 
 .wiki-container .table-of-contents h2 {
@@ -1603,7 +1571,6 @@ hr {
 .wiki-container .article ul li a {
   color: rgb(3, 71, 209);
   font-size: 13px;
-  cursor: not-allowed;
 }
 .wiki-container .toc-toggle {
   position: fixed;
@@ -1651,9 +1618,9 @@ hr {
   bottom: -8px;
 }
 
-/* .hidden {
-  opacity: 1;
-} */
+.hidden {
+  display: none;
+}
 #introduction,
 #implementation {
   display: flex;
@@ -1698,7 +1665,6 @@ hr {
 .wiki-footer {
   background-color: #0000002d;
 }
-
 .wiki-footer ul {
   font-size: 11px;
   list-style: none;
@@ -1711,7 +1677,6 @@ hr {
 .wiki-footer ul li a {
   text-decoration: none;
   color: #000;
-  cursor: not-allowed;
 }
 
 /* MEDIUM */
@@ -1725,8 +1690,6 @@ hr {
   max-width: 50%;
   background-color: #ffffff;
   color: #000000;
-  opacity: 0.7;
-  transition: all 1s ease;
 }
 
 /* Header Styles */
@@ -1753,13 +1716,11 @@ hr {
   vertical-align: middle;
 }
 
-.medium-article .search-bar,
-.medium-article .search-bar:focus-visible {
+.medium-article .search-bar {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 200px;
-  cursor: not-allowed;
 }
 
 /* Article Header Styles */
@@ -1875,11 +1836,8 @@ hr {
   color: #000000;
   border: none;
   border-radius: 25px;
-  cursor: not-allowed;
-  border: 1px solid #0f0f0f34;
-}
-.btn.btn-follow {
   cursor: pointer;
+  border: 1px solid #0f0f0f34;
 }
 .medium-article .header .btn {
   background-color: #000000;
@@ -1922,7 +1880,6 @@ hr {
   font-size: 12px;
   text-decoration: none;
   color: #ffffffb8;
-  cursor: not-allowed;
 }
 /* NEWS STYLE */
 
@@ -1934,12 +1891,8 @@ hr {
   height: 100%;
   background-color: rgb(75, 75, 75);
   color: rgb(255, 255, 255);
-  opacity: 0.6;
-  transition: all 1s ease;
 }
-.show {
-  opacity: 1;
-}
+
 /* Styles for the header */
 .news-page .header {
   font-size: 14px;
@@ -1972,7 +1925,7 @@ hr {
 .news-page .navigation ul li a {
   text-decoration: none;
   color: rgb(0, 0, 0);
-  cursor: not-allowed;
+
   transition: all 0.5s ease;
 }
 .news-page .navigation ul li a:hover {
@@ -2034,7 +1987,6 @@ hr {
   margin-bottom: 10px;
   /* Adjusted height for the image wrapper */
   overflow: hidden;
-  position: relative;
 }
 
 .news-page .image-wrapper img {
@@ -2042,16 +1994,13 @@ hr {
   height: 50%; /* Ensure images maintain aspect ratio */
   border-radius: 8px;
   transition: all 0.3s ease;
-  cursor: default;
-  object-fit: cover;
 }
-
 .news-page .image-wrapper img:hover {
   scale: 1.1;
 }
 .news-page .image-wrapper p {
   font-size: 18px;
-  cursor: default;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 .news-page .image-wrapper p:hover {
@@ -2073,7 +2022,6 @@ hr {
   padding: 20px;
   text-align: center;
   text-transform: uppercase;
-  height: 95px;
 }
 
 .news-page .socials {
@@ -2084,7 +2032,7 @@ hr {
 .news-page .socials img {
   width: 30px;
   margin-right: 10px;
-  cursor: not-allowed;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 .news-page .socials img:hover {
@@ -2117,7 +2065,7 @@ hr {
 }
 .first-ad {
   width: 100%;
-  cursor: not-allowed;
+  cursor: pointer;
 }
 .second-ad {
   width: 100%;
@@ -2133,9 +2081,9 @@ hr {
   transition: all 0.3s ease;
 }
 .news-page .container-input:hover {
-  scale: 1.15;
+  scale: 1.3;
 }
-.news-page .input-news {
+.news-page .input {
   width: 150px;
   padding: 10px 0px 10px 40px;
   border-radius: 9999px;
@@ -2143,7 +2091,6 @@ hr {
   transition: all 0.2s ease-in-out;
   outline: none;
   opacity: 0.8;
-  cursor: not-allowed;
 }
 
 .news-page .container-input svg {
@@ -2151,13 +2098,12 @@ hr {
   top: 50%;
   left: 10px;
   transform: translate(0, -50%);
-  cursor: not-allowed;
 }
 
-/* .news-page .input-news:focus {
+.news-page .input:focus {
   opacity: 1;
-  width: 190px;
-} */
+  width: 250px;
+}
 .return .return-button {
   position: fixed;
   top: 1px;
