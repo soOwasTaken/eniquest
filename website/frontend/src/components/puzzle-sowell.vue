@@ -1,5 +1,4 @@
 <template>
-
   <div class="puzzle-game">
     <video autoplay muted loop id="myVideo">
       <source src="../assets/bgvid/5.mp4" type="video/mp4" />
@@ -162,7 +161,7 @@ const handleInput = async () => {
     inputtext.style.backgroundColor = 'green'
     setSucceedPuzzle(true)
     document.body.style.background =
-      'linear-gradient(205deg, rgba(44, 15, 48, 0.4) 38%, rgba(72, 72, 47, 0.789) 100%)'
+      'linear-gradient(205deg, rgba(32, 98, 19, 0.4) 38%, rgba(72, 72, 47, 0.789) 100%)'
     setTimeout(() => {
       transition()
     }, 1000)
@@ -263,7 +262,7 @@ const transition = () => {
               anime({
                 targets: '.puzzle-game',
                 translateY: ['0%', '200%'],
-                rotateY: [360, 0],
+                /* rotateY: [360, 0], */
                 elasticity: 600,
                 scale: [1, 0.1],
                 duration: 3000,
@@ -351,7 +350,7 @@ shuffleTiles()
   height: 100vh;
   /* overflow-y: auto; */
   width: 100%;
-  background: rgba(0, 0, 0, 0.200);
+  background: rgba(0, 0, 0, 0.2);
   /* transform: translateY(-10%); */
 }
 .grid-container {
@@ -375,8 +374,8 @@ shuffleTiles()
   display: flex;
   justify-content: center;
   position: absolute;
-  top:20%;
-  left:20%;
+  top: 25%;
+  left: 25%;
   align-items: center;
   margin-bottom: 10px;
   padding: 6px 12px;
@@ -389,7 +388,13 @@ shuffleTiles()
   border-radius: 20px;
   cursor: pointer;
   color: #3570a7;
-  transform: translate(25px, 100%);
+  scale: 1.5;
+  /* transform: translate(25px, 100%); */
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+.button:hover {
+  transform: translateY(15%);
 }
 .button .svg-icon {
   scale: 1.5;
@@ -447,7 +452,7 @@ shuffleTiles()
   margin-bottom: 0;
   text-align: center;
   opacity: 0;
-  transition: all 6s ease;
+  transition: all 4s ease;
   transform: translateY(-50%);
 }
 .prompt-container p {
@@ -460,11 +465,11 @@ shuffleTiles()
   margin-left: 36%;
   padding: 0;
   width: 28%;
-  color: #3D3B40;
+  color: #3d3b40;
   border-radius: 20px;
 
   /* border: 0.1px solid#3570a7;
-  background-color: #3570a76b; */
+  background-color: #2062136b; */
 }
 .input-puzzle {
   color: white;
@@ -486,11 +491,16 @@ shuffleTiles()
   scale: 1.2;
   border: 2px solid #3570a7;
   box-shadow: 0px 0px 0px 7px rgba(74, 157, 236, 20%);
+  cursor: text;
+}
+.input-puzzle:hover:not(:focus) {
+  cursor: default;
 }
 .timer {
   margin-top: 10px;
   text-align: center;
   font-size: 24px;
+  font-family: math;
   font-weight: bold;
   position: absolute;
   top: 80px;
@@ -500,11 +510,12 @@ shuffleTiles()
   background: transparent;
   border-radius: 8px;
   transition: all 0.3s ease;
-  top: 20%;
-  left:20%
+  top: 12%;
+  left: 24.8%;
+  scale: 2;
 }
 .timer:hover {
-  font-size: 28px;
+  transform: translateY(-10%);
 }
 
 #myVideo {
@@ -514,6 +525,6 @@ shuffleTiles()
   min-width: 100%; /* Minimum width 100% */
   min-height: 100%; /* Minimum height 100% */
   z-index: -1; /* Positioned behind all other elements */
-  opacity:0.7;
+  opacity: 0.7;
 }
 </style>

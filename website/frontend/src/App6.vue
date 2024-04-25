@@ -16,12 +16,14 @@ onMounted(() => {
 
 <template>
   <div id="app6">
-    <svgLogo class="svg-logo" />
+    <div class="logowrap">
+      <svgLogo class="svg-logo" />
+    </div>
     <dot />
   </div>
 </template>
 
-<style>
+<style scoped>
 * {
   box-sizing: border-box;
 }
@@ -30,7 +32,7 @@ onMounted(() => {
 }
 
 body {
-  background-color: black;
+  background-color: rgba(32, 98, 19, 0.67);
   margin: 0;
   top: 0;
   left: 0;
