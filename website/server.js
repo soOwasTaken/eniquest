@@ -110,13 +110,16 @@ app.post("/checkOrder", (req, res) => {
     // Define the correct phrase for the first game
     const correctPhrase =
       "I disapprove of what you say, but I will defend to the death your right to say it";
+    const correctPhrase2 =
+      "I disapprove of what you say but I will defend to the death your right to say it";
 
     // Remove any trailing period from both user's answer and correct phrase
     const userAnswer = order.trim().replace(/\.$/, "").toLowerCase();
     const correctAnswer = correctPhrase.toLowerCase().replace(/\.$/, "");
+    const correctAnswer2 = correctPhrase2.toLowerCase().replace(/\.$/, "");
 
     // Check if the provided string matches the correct phrase
-    if (userAnswer === correctAnswer) {
+    if (userAnswer === correctAnswer || userAnswer === correctAnswer2) {
       res.json({ feedback: "Correct! The phrase matches exactly." });
       if (currentUser.level < 3) updateUserLevel(3);
     } else {

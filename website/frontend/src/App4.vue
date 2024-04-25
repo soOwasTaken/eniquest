@@ -6,13 +6,21 @@ import anime from 'animejs/lib/anime.es.js'
 import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime({
-    targets: '#brailleContainer',
+    targets: ['.braille-app'],
     scale: [0.001, 1], // Scale up to 100% of original size
     duration: 1500, // Duration of animation
     translateX: ['-50%', '50%', '0%'],
-    backgroundColor: ['#fff', '#000'],
+    /* backgroundColor: ['#fff', '#000'], */
     easing: 'easeInOutQuad'
   })
+  // anime({
+  //   targets: ['body'],
+
+  //   duration: 10, // Duration of animation
+
+  //   backgroundColor: ['#fff'],
+  //   easing: 'easeInOutQuad'
+  // })
 })
 </script>
 
@@ -23,7 +31,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style>
+<style scoped>
 * {
   box-sizing: border-box;
 }
@@ -32,14 +40,11 @@ onMounted(() => {
 }
 
 body {
-  background-color: black;
+  background-color: rgb(0, 0, 0);
   margin: 0;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-}
-#app4 {
-  scale: 0.9;
 }
 </style>
