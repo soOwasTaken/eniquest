@@ -117,8 +117,11 @@
             The advent of social media platforms transformed the landscape once again. Initially
             celebrated as tools for further democratization, these platforms soon faced criticism
             for facilitating echo chambers, spreading misinformation, and enabling surveillance and
-            censorship.<span class="whatever">I disapprove</span>
+            censorship.
           </p>
+          <span class="whatever">I disapprove</span>
+          <br>
+          <br>
           <h2>Legal and Ethical Challenges</h2>
           <p>
             The evolution of free speech online has not been without its legal and ethical
@@ -555,7 +558,6 @@
         <div class="myspace-nav">
           <!-- MySpace Logo -->
           <img src="../../assets/myspoce.png" alt="MySpace logo" class="myspoceLogo" />
-          <!-- Navigation Links -->
           <div class="nav-links">
             <a href="#">Home</a>
             <a href="#">Browse</a>
@@ -572,10 +574,8 @@
             <a href="#">SignUp</a>
           </div>
         </div>
-        <!-- Main Content -->
         <div class="myspace-content">
           <div class="left-column">
-            <!-- Cool New People Section -->
             <div class="cool-new-people">
               <h2>Cool New People</h2>
               <div class="profiles">
@@ -607,7 +607,6 @@
               </div>
             </div>
             <div class="myspace-music">
-              <!-- Music listings -->
               <h2>Featured Song</h2>
               <div class="music-feature">
                 <img
@@ -626,7 +625,6 @@
               </div>
             </div>
           </div>
-          <!-- Right Column Ads or Content -->
           <div class="right-column">
             <div class="member-login">
               <strong>Member Login</strong>
@@ -637,7 +635,7 @@
                   <input type="checkbox" id="rememberEmail" />
                   <label for="rememberEmail">Remember my E-mail</label>
                 </div>
-                <button class="button-myspoce" type="submit">LOGIN</button>
+                <button @click.prevent="" class="button-myspoce">LOGIN</button>
                 <div class="login-links">
                   <a href="#">SIGN UP!</a>
                   <a href="#">Forgot your password?</a>
@@ -646,10 +644,9 @@
             </div>
           </div>
         </div>
-        <!-- Footer Links -->
         <div class="myspace-footer">
           <a href="#">About</a> | <a href="#">News</a> | <a href="#">FAQ</a> |
-          <a href="#">Terms</a> | <a href="#">Privacy</a> | <a href="#">Contact</a> |
+          <a href="#">Terms</a> | <a href="#" @click="handlePrivacyClick">Privacy</a> | <a href="#">Contact</a> |
           <a href="#">Promote</a> | <a href="#">Advertise</a> |
           <a href="#">MySpace Shop</a>
         </div>
@@ -734,7 +731,6 @@ const submitAnswer = async () => {
   answer.value = feedback.toUpperCase()
   if (data.feedback === 'Correct! The phrase matches exactly.') {
     console.log('succeed web game')
-    // Dispatch action to update game success status
     store.dispatch('updateGameSuccess', { gameIndex: 2, success: true })
     document.body.style.backgroundColor = '#fff'
     transition()
@@ -781,6 +777,12 @@ const transition = () => {
       )
   }, 1500)
 }
+const handlePrivacyClick = (event) => {
+  event.preventDefault(); // Prevent the default behavior of the link
+  event.target.innerText = 'you say'; // Change the text
+  event.target.classList.add('red-text'); // Add the red-text class
+};
+
 </script>
 <style scoped>
 .old-web {
@@ -794,6 +796,7 @@ const transition = () => {
 }
 
 .search-input {
+  margin-left: 10px;
   width: 350px;
   height: 30px;
   background-color: #f5f5f5;
@@ -827,6 +830,10 @@ li p {
   font-size: 12px;
   margin: 0px;
   padding: 0px;
+}
+
+.red-text {
+    color: red !important;
 }
 
 .green {
@@ -909,8 +916,10 @@ li p {
 }
 
 .whatever {
-  opacity: 0;
+  color: white;
   user-select: all;
+  position: absolute;
+  left:42%;
 }
 .bannerWeTalk pre {
   font-family: 'Courier New', Courier, monospace;
@@ -1177,7 +1186,7 @@ li p {
 
 .myspace-footer {
   text-align: center;
-  padding: 20px;
+  padding: 15px;
   background-color: #d3d3d3;
   clear: both;
 }

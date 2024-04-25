@@ -5,7 +5,6 @@ import MiddleText from './components/MiddleText.vue'
 import InputField from './components/InputField.vue'
 import RainEffect from './components/RainEffect.vue'
 import summaryDisplay from './components/summaryDisplay.vue'
-import RainMp3 from './components/RainMp3.vue'
 import FireFly from './components/fireflies.vue'
 import svgLogo from './components/svgLogo.vue'
 import App3 from './App3.vue'
@@ -67,7 +66,6 @@ function testButtonClick() {
     <FireFly class="absolute" />
     <RainEffect class="absolute" />
     <MiddleText />
-    <RainMp3 />
     <InputField />
     <summaryDisplay ref="summaryDisplay" />
 
