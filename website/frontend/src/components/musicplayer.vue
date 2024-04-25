@@ -350,28 +350,24 @@ export default {
       // Define the animation timeline
       const timeline = anime.timeline({
         easing: 'easeInOutQuad',
-        duration: 2500
+        duration: 3500
       })
 
       // Add animations to the timeline
-      timeline
-        .add({
-          targets: element,
-          scale: [1, 1.4], // Scale up slightly more than before
-          opacity: [1, 0.6], // Reduce opacity more gradually
-          translateY: ['0%', '-5%'] // Move the element upwards slightly
-        })
-        .add(
-          {
-            targets: element,
-            scale: [1.4, 0.1],
-            opacity: [0.6, 0],
-            translateX: ['0%', '-35%', '50%', '0%'],
-            translateY: ['-45%', '45%', '-45%', '0%'],
-            rotateY: 360
-          },
-          '-=50'
-        )
+      // .add({
+      //   targets: element,
+      //   scale: [1, 1.4], // Scale up slightly more than before
+      //   opacity: [1, 0.6], // Reduce opacity more gradually
+      //   translateY: ['0%', '-5%'] // Move the element upwards slightly
+      // })
+      timeline.add({
+        targets: element,
+        scale: [1, 0],
+        opacity: [1, 0],
+        // translateX: ['0%', '-35%', '50%', '0%'],
+        translateY: ['0%', '35%', '-10%', '-55%']
+        // rotateY: 360
+      })
 
       setTimeout(() => {
         this.router.push('/app3')
