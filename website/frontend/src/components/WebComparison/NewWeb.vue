@@ -563,7 +563,7 @@
             <!-- Images with descriptions -->
 
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/1-1.jpg" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/1-11.jpg" alt="#" /></a>
               <div class="description">
                 <p>
                   <span>Top 5</span> movies that circumvented censorship, when directors are
@@ -605,7 +605,8 @@
               </p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/1-8.jpg" alt="#" /></a>
+              <a href="#"><img class="madmax" src="../../assets/topico/1-8.jpg" alt="#" /></a>
+
               <p><span>Top 10</span> movies banned in France, censorship underneath</p>
             </div>
             <div class="image-wrapper">
@@ -636,11 +637,11 @@
               </div>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/2-2.jpg" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/2-2.webp" alt="#" /></a>
               <p><span>Top 10</span> most controversial video games</p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/2-3.jpg" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/2-33.jpg" alt="#" /></a>
               <p><span>Top 20</span> songs that have been banned in certain countries</p>
             </div>
             <div class="image-wrapper">
@@ -664,17 +665,17 @@
               </p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/2-8.jpg" alt="but I will" /></a>
+              <a href="#"><img src="../../assets/topico/2-8.webp" alt="but I will" /></a>
               <p><span>Top 12</span> hidden messages in websites' images</p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/2-9.jpg" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/2-91.jpg" alt="#" /></a>
               <p>
                 <span>Top 10</span> biggest scandals around Facebook, we are sold, we are plundered
               </p>
             </div>
             <div class="image-wrapper">
-              <a href="#"><img src="../../assets/topico/2-10.jpg" alt="#" /></a>
+              <a href="#"><img src="../../assets/topico/2-100.webp" alt="#" /></a>
               <p>
                 <span>Top 12</span> most homophobic countries, the ones where you risk your life
               </p>
@@ -2036,6 +2037,7 @@ hr {
   margin-bottom: 10px;
   /* Adjusted height for the image wrapper */
   overflow: hidden;
+  position: relative;
 }
 
 .news-page .image-wrapper img {
@@ -2044,7 +2046,9 @@ hr {
   border-radius: 8px;
   transition: all 0.3s ease;
   cursor: default;
+  object-fit: cover;
 }
+
 .news-page .image-wrapper img:hover {
   scale: 1.1;
 }
