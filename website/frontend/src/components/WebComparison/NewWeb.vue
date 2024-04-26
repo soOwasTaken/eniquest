@@ -999,7 +999,7 @@ function handleResultClick(link) {
 }
 
 const isTableOfContentsHidden = ref(true)
-const ishidden = true
+//const ishidden = true
 
 function toggleTableOfContents() {
   isTableOfContentsHidden.value = !isTableOfContentsHidden.value
