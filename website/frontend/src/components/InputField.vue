@@ -132,7 +132,7 @@ export default {
     handleKeyPress(e) {
       if (e.key === 'Enter') {
         const userInput = e.target.value
-        if (userInput.length >= 15) {
+        if (userInput.length >= 1) {
           fetch('/processPrompt', {
             method: 'POST',
             headers: {
