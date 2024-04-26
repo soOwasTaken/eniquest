@@ -192,13 +192,13 @@ export default {
         targets: '#animated-text',
         opacity: [0, 1],
         easing: 'easeInOutSine',
-        duration: 4000,
+        duration: 1300,
         complete: () => {
           this.paragraphAnimationCompleted = true
           /* this.animateButton() */ // Trigger button animation when text animation is complete
         }
       })
-      setTimeout(this.animateButton, 1500)
+      setTimeout(this.animateButton, 1000)
     },
     animateButton() {
       anime({
