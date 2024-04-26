@@ -322,7 +322,21 @@ export default {
     },
     async navigateToGame(index) {
       const gameRoute = `/app${index + 1}` // Since index is 0-based, add 1 to match the route
-      this.router.push(gameRoute)
+      anime({
+        targets: ['.enter-button', '.logout-button', '.completed-games', 'svg'],
+        opacity: [1, 0],
+        easing: 'easeInElastic(1, .6)',
+        duration: 700
+      })
+      anime({
+        targets: ['.full-page'],
+        background: ['rgba(0, 0, 0, 0.871)', 'rgba(0, 0, 0, 1)'],
+        easing: 'easeInElastic(1, .6)',
+        duration: 700
+      })
+      setTimeout(() => {
+        this.router.push(gameRoute)
+      }, 791)
     }
   },
   watch: {
