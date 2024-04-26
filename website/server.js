@@ -564,6 +564,18 @@ const server = app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
 
+app.post("/api/update-user-preference", (req, res) => {
+  const { wantsUpdate } = req.body;
+
+  if (currentUser) {
+    currentUser.wantsUpdate = wantsUpdate;
+    saveUsersToFile();
+    res.json({ message: "User preference updated successfully." });
+  } else {
+    res.status(401).json({ error: "Unauthorized" });
+  }
+});
+
 process.on("SIGINT", () => {
   server.close(() => {
     fs.readFile("users.json", "utf8", (err, data) => {

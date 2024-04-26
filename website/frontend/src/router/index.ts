@@ -9,6 +9,7 @@ import App6 from '../App6.vue'
 import App8 from '../App8.vue'
 import Home from '../Home.vue'
 import Auth from '../Auth.vue'
+import End from '../End.vue'
 import store from '../stores/store'
 
 const router = createRouter({
@@ -63,7 +64,7 @@ const router = createRouter({
     {
       path: '/app7',
       name: 'app7',
-      component: App6,
+      component: End,
       meta: { requiresAuth: true, minLevel: 6 }
     },
     {
@@ -71,6 +72,12 @@ const router = createRouter({
       name: 'auth',
       component: Auth
     }
+    // {
+    //   path: '/app8',
+    //   name: 'auth',
+    //   component: End
+    //   meta: { requiresAuth: true, minLevel: 6 }
+    // },
   ]
 })
 
