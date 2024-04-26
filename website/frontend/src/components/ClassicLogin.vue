@@ -7,6 +7,7 @@
         <div v-if="mode === 'passwordChange'">
           <div class="input-holder">
             <i class="icon fas fa-lock"></i>
+            <<<<<<< HEAD
             <input
               type="password"
               class="input"
@@ -24,6 +25,25 @@
               v-model="confirmNewPassword"
               required
             />
+            =======
+            <input
+              type="password"
+              class="input"
+              placeholder="New Password"
+              v-model="newPassword"
+              required
+            />
+          </div>
+          <div class="input-holder">
+            <i class="icon fas fa-lock"></i>
+            <input
+              type="password"
+              class="input"
+              placeholder="Confirm New Password"
+              v-model="confirmNewPassword"
+              required
+            />
+            >>>>>>> origin/main
           </div>
           <div class="input-holder">
             <input type="submit" class="button larger-button" value="Confirm New Password" />
