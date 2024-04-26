@@ -14,6 +14,17 @@ import { useStore } from 'vuex'
 function testButtonClick() {
   console.log('Button clicked!')
 }
+onMounted(() => {
+  anime({
+    targets: ['#app'],
+    /* scale: [0.001, 1], */ // Scale up to 100% of original size
+    opacity: [0, 1],
+    duration: 2000, // Duration of animation
+    /* translateX: ['-90%', '9%', '0%'], */
+    /* backgroundColor: ['#fff', '#000'], */
+    easing: 'easeInOutQuad'
+  })
+})
 // const changeComponent = inject('changeComponent')
 
 // // Function to toggle the value of suceedValue
