@@ -92,16 +92,18 @@
           <div class="input-holder" v-if="mode !== 'passwordChange'">
             <input type="submit" class="button larger-button" :value="getButtonValue()" />
             <p class="link" v-if="mode === 'login'" @click="toggleForgotPassword">
-              Forget your password?
+              Forgot your password ?
             </p>
           </div>
         </template>
       </form>
     </div>
     <div class="footer">
-      <p v-if="mode === 'login' || mode === 'forgotPassword'">Don't have an account?</p>
-      <p v-else>Already have an account?</p>
-      <button class="button" @click="toggleMode">
+      <p class="small-text" v-if="mode === 'login' || mode === 'forgotPassword'">
+        Don't have an account ?
+      </p>
+      <p class="small-text" v-else>Already have an account ?</p>
+      <button class="button medium-button" @click="toggleMode">
         {{ mode === 'login' || mode === 'forgotPassword' ? 'Sign up' : 'Login' }}
       </button>
     </div>
@@ -294,7 +296,7 @@ export default {
 
 .input {
   font-family: 'Sedan', serif;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   width: 100%;
   padding: 8px;
   margin-left: 12px;
@@ -336,17 +338,27 @@ export default {
 }
 
 .link {
-  padding-top: 5px;
-  color: #ffffffb2;
+  padding-left: 23%;
+  color: #ffffff6e;
   font-family: 'Sedan', serif;
   cursor: pointer;
   text-decoration: none;
+  font-size: 16px;
+  transform: translateX(5%) translateY(-50%);
 }
 
 .larger-button {
   font-size: 1.2rem; /* Adjust as needed */
 }
-
+.medium-button {
+  font-size: 1rem; /* Adjust as needed */
+  transform: translateX(10%);
+}
+.small-text {
+  font-size: 1.1rem;
+  cursor: default;
+  transform: translateX(50%) translateY(15%);
+}
 .link:hover {
   color: #fff;
 }
