@@ -16,15 +16,20 @@ app.use(bodyParser.json()); // to parse JSON body
 app.post("/processPrompt", async (req, res) => {
   const userContent = req.body.content; // Extract the user's input sent from frontend
 
+  if (userContent.length < 15) {
+    res.json({ summary: "Sorry, your answer is too short...", scoreResult: 0 });
+    return;
+  }
+
   let data = JSON.stringify({
     model: "open-mistral-7b",
     messages: [
       {
         role: "user",
         content:
-          "A user is asked about the limit of free speech : Please rate his answer based on the Implications question on a scale of 0 to 10 based on the criteria of reasoning quality, ethical considerations, respect for diversity, example relevance, and insight into implications. brief explanation in 7 words or less:'" +
+          "A user is asked about the limit of free speech : Please rate his answer based on the Implications question on a scale of 0 to 10 based on the criteria of reasoning quality, ethical considerations, respect for diversity, example relevance, and insight into implications. brief explanation in 5 words or less:'" +
           userContent +
-          "'\nCriteria:\n1)Reasoning Quality: Does the response demonstrate clear and logical reasoning?\n2)Ethical Consideration: How does the response deal with ethical implications?\n3)Respect for Diversity: Does the response acknowledge and respect diverse viewpoints?\nExample Relevance: How relevant and illustrative are the examples provided?\nInsight into Implications: Does the response discuss the implications of where free speech stops?\nYou should always use this specific pattern\nScore: [Insert x/10]\nSummary: [Insert a concise sentence (max. 7 words) capturing the essence of the evaluation]\n", // Insert user input here
+          "'\nCriteria:\n1)Reasoning Quality: Does the response demonstrate clear, a sentence, and logical reasoning?\n2)Ethical Consideration: How does the response deal with ethical implications?\n3)Respect for Diversity: Does the response acknowledge and respect diverse viewpoints?\nExample Relevance: How relevant and illustrative are the examples provided?\nInsight into Implications: Does the response discuss the implications of where free speech stops?\nYou should always use this specific pattern\nScore: [Insert x/10]\nSummary: [Insert a concise sentence (max. 5 words) capturing the essence of the evaluation]\n",
       },
     ],
     temperature: 0.7,
@@ -75,12 +80,21 @@ app.post("/processPrompt", async (req, res) => {
         // Now we include both the score and summary in our response to the frontend
         res.json({ summary: result.summary, scoreResult: result.scoreResult });
       } else {
-        res.status(404).send("Summary not found");
+        res.json({
+          summary:
+            "Sorry we didn't understand your answer. Press 'enter' again or Try again.",
+          scoreResult: 0,
+        });
+        return;
       }
     })
     .catch((error) => {
       console.log(error);
-      res.status(500).send("Error processing the prompt");
+      // res.status(500).send("Error processing the prompt");
+      res.json({
+        summary: "Sorry, we didn't understand your answer. Try again.",
+        scoreResult: 0,
+      });
     });
 });
 
@@ -548,6 +562,18 @@ app.post("/api/reset-password", async (req, res) => {
 // server running
 const server = app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
+});
+
+app.post("/api/update-user-preference", (req, res) => {
+  const { wantsUpdate } = req.body;
+
+  if (currentUser) {
+    currentUser.wantsUpdate = wantsUpdate;
+    saveUsersToFile();
+    res.json({ message: "User preference updated successfully." });
+  } else {
+    res.status(401).json({ error: "Unauthorized" });
+  }
 });
 
 process.on("SIGINT", () => {
