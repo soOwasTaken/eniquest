@@ -13,19 +13,19 @@ provide('changeComponent', useRoute)
 
 <style scoped>
 :root {
-  --background-color: black;
+  --background-color: rgb(0, 0, 0);
   --text-color: hsl(0, 0%, 100%);
 }
 /* #app {
   background-color: rgb(255, 255, 255);
 } */
 body {
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
   margin: 0;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
 }
 .fade-enter-active,
 .fade-leave-active {

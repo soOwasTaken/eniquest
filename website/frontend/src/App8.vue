@@ -1,34 +1,39 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
 import puzzle from './components/puzzle-sowell.vue'
 import anime from 'animejs/lib/anime.es.js'
-import svgLogo from './components/svgLogo.vue'
+import svgLogo from './components/blacksvglogo.vue'
 onMounted(() => {
   anime
     .timeline({
       easing: 'easeInOutQuad',
-      duration: 3000
+      duration: 2000
     })
     .add({
       targets: '.puzzle-game',
       translateX: ['-100%', '0%'], // Move from left to right
       opacity: [0, 1], // Fade in
-      scale: [0.2, 1], // Start small and scale up to 100% of original size
-      rotateX: [180, -180, 0], // Rotate two full turns
+      /* scale: [0.2, 1], */ // Start small and scale up to 100% of original size
+      /* rotateX: [180, -180, 0], */ // Rotate two full turns
       elasticity: 600 // Add elasticity for a bouncing effect
     })
 })
+const router = useRouter()
+function goHome() {
+  console.log('going home via svg')
+  router.push('/')
+}
 </script>
 
 <template>
+  <svgLogo />
   <div id="app5">
-    <svgLogo class="svg-logo" />
     <puzzle />
   </div>
 </template>
 
-<style>
+<style scoped>
 * {
   box-sizing: border-box;
 }

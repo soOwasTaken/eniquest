@@ -6,7 +6,7 @@ import anime from 'animejs/lib/anime.es.js'
 import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime({
-    targets: '.main-container',
+    targets: '#app9',
     scale: [0.001, 1], // Scale up to 100% of original size
     duration: 1500, // Duration of animation
     easing: 'easeInOutQuad'
@@ -15,13 +15,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="app6">
-    <svgLogo class="svg-logo" />
+  <div id="app9">
+    <div class="logowrap">
+      <svgLogo class="svg-logo" />
+    </div>
     <dot />
   </div>
 </template>
 
-<style>
+<style scoped>
 * {
   box-sizing: border-box;
 }
@@ -30,7 +32,7 @@ onMounted(() => {
 }
 
 body {
-  background-color: black;
+  background-color: rgba(32, 98, 19, 0.67);
   margin: 0;
   top: 0;
   left: 0;

@@ -6,7 +6,7 @@ import anime from 'animejs/lib/anime.es.js'
 import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime({
-    targets: ['.terminal'],
+    targets: ['#app6'],
     scale: [0.001, 1], // Scale up to 100% of original size
     translateX: ['100%', '-10%', '0%'],
     translateY: ['100%', '0%'],
@@ -18,7 +18,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="app5">
+  <div id="app6">
     <svgLogo class="svg-logo" />
     <terminalWeb />
   </div>

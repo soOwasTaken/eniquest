@@ -5,7 +5,6 @@ import MiddleText from './components/MiddleText.vue'
 import InputField from './components/InputField.vue'
 import RainEffect from './components/RainEffect.vue'
 import summaryDisplay from './components/summaryDisplay.vue'
-import RainMp3 from './components/RainMp3.vue'
 import FireFly from './components/fireflies.vue'
 import svgLogo from './components/svgLogo.vue'
 import App3 from './App3.vue'
@@ -15,7 +14,17 @@ import { useStore } from 'vuex'
 function testButtonClick() {
   console.log('Button clicked!')
 }
-
+onMounted(() => {
+  anime({
+    targets: ['#app'],
+    /* scale: [0.001, 1], */ // Scale up to 100% of original size
+    opacity: [0, 1],
+    duration: 2000, // Duration of animation
+    /* translateX: ['-90%', '9%', '0%'], */
+    /* backgroundColor: ['#fff', '#000'], */
+    easing: 'easeInOutQuad'
+  })
+})
 // const changeComponent = inject('changeComponent')
 
 // // Function to toggle the value of suceedValue
@@ -68,7 +77,6 @@ function testButtonClick() {
     <FireFly class="absolute" />
     <RainEffect class="absolute" />
     <MiddleText />
-    <RainMp3 />
     <InputField />
     <summaryDisplay ref="summaryDisplay" />
 
@@ -85,7 +93,6 @@ function testButtonClick() {
 }
 
 #app1 {
-  overflow-y: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -103,9 +110,4 @@ function testButtonClick() {
 .absolute {
   display: absolute;
 }
-/* .svg-logo {
-  position: absolute;
-  top: 0.5%;
-
-} */
 </style>

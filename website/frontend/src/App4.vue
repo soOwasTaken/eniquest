@@ -6,10 +6,10 @@ import anime from 'animejs/lib/anime.es.js'
 import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime({
-    targets: ['.braille-app'],
+    targets: ['#app4'],
     scale: [0.001, 1], // Scale up to 100% of original size
-    duration: 1500, // Duration of animation
-    translateX: ['-50%', '50%', '0%'],
+    duration: 2500, // Duration of animation
+    translateX: ['-90%', '9%', '0%'],
     /* backgroundColor: ['#fff', '#000'], */
     easing: 'easeInOutQuad'
   })
@@ -25,8 +25,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <svgLogo class="svg-logo" />
   <div id="app4">
+    <svgLogo class="svg-logo" />
     <braille />
   </div>
 </template>
