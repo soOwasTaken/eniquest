@@ -74,7 +74,7 @@ const tiles = ref([])
 const completed = ref(false)
 let selectedTileIndex = null
 let userInput = ref('')
-const timer = ref(150) // TIME //////////////////////
+const timer = ref(180) // TIME //////////////////////
 const timerColor = ref('black')
 
 const changeComponent = inject('changeComponent')
@@ -327,7 +327,7 @@ const swapTiles = (index1, index2) => {
 const resetGame = () => {
   completed.value = false
   shuffleTiles()
-  timer.value = 150 // TIME ///////////////////////////////
+  timer.value = 180 // TIME ///////////////////////////////
   timerColor.value = 'yellow'
 }
 
