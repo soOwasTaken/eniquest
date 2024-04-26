@@ -11,7 +11,7 @@ onMounted(() => {
       duration: 2000
     })
     .add({
-      targets: '.puzzle-game',
+      targets: '#app5',
       translateX: ['-100%', '0%'], // Move from left to right
       opacity: [0, 1], // Fade in
       /* scale: [0.2, 1], */ // Start small and scale up to 100% of original size
@@ -27,8 +27,8 @@ function goHome() {
 </script>
 
 <template>
-  <svgLogo />
   <div id="app5">
+    <svgLogo />
     <puzzle />
   </div>
 </template>
