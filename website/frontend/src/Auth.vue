@@ -59,7 +59,7 @@ export default {
             store.dispatch('logout')
             setTimeout(() => {
               showVerifyEmailAlert.value = false
-            }, 3000)
+            }, 4000)
           }
         } else {
           // Login failed, display error message
@@ -174,8 +174,9 @@ export default {
   font-size: 16px;
   text-transform: uppercase;
   position: fixed;
-  width: 40vw;
-  top: 10%;
-  right: 11%;
+  width: 20vw;
+  bottom: 44%;
+  right: 30%;
+  color: rgba(133, 43, 43, 0.957);
 }
 </style>
