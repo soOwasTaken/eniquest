@@ -91,7 +91,8 @@ app.post("/processPrompt", async (req, res) => {
         res.json({ summary: result.summary, scoreResult: result.scoreResult });
       } else {
         res.json({
-          summary: "Sorry we didn't understand your answer. Try again.",
+          summary:
+            "Sorry, we didn't understand your answer. Press the enter key again or try another answer.",
           scoreResult: 0,
         });
         return;
@@ -99,9 +100,10 @@ app.post("/processPrompt", async (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.status(500).send("Error processing the prompt");
+      /* res.status(500).send("Error processing the prompt"); */
       res.json({
-        summary: "Sorry, we didn't understand your answer. Try again.",
+        summary:
+          "Sorry, we didn't understand your answer. Press the enter key again or try another answer.",
         scoreResult: 0,
       });
     });
