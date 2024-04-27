@@ -4,6 +4,9 @@
     <p class="achievement-subtitle">
       You have completed all the enigmas. More enigmas will be added soon. Stay tuned!
     </p>
+    <div class="notification" v-if="notificationMessage">
+      {{ notificationMessage }}
+    </div>
     <div class="email-notification">
       <div class="checkbox-wrapper-46">
         <input type="checkbox" id="cbx-46" class="inp-cbx" v-model="wantsUpdate" />
@@ -11,16 +14,14 @@
           ><span>
             <svg viewBox="0 0 12 10" height="10px" width="12px">
               <polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg></span
-          ><span class="email-label"
-            >Do you want to receive an email when there are more enigmas ?</span
-          >
+          ><span class="email-label">I want to receive an email when there are more enigmas</span>
         </label>
       </div>
 
       <!-- <input type="checkbox" id="email-check" v-model="wantsUpdate" />
-      <label for="email-check" class="email-label"
-        >Do you want to receive an email when there are more enigmas ?</label
-      > -->
+		<label for="email-check" class="email-label"
+		  >Do you want to receive an email when there are more enigmas ?</label
+		> -->
     </div>
     <!-- <button class="submit-button" @click="submitUpdatePreference">Submit</button> -->
     <button @click="submitUpdatePreference">
@@ -31,10 +32,12 @@
 </template>
 
 <script>
+import anime from '../../node_modules/animejs/lib/anime.es'
 export default {
   data() {
     return {
-      wantsUpdate: false
+      wantsUpdate: false,
+      notificationMessage: ''
     }
   },
   methods: {
@@ -48,7 +51,21 @@ export default {
       })
         .then((response) => {
           if (response.ok) {
-            alert('Your preference has been updated.')
+            this.notificationMessage = 'Your preference has been updated.'
+            setTimeout(() => {
+              anime({
+                targets: ['.notification'],
+                /* scale: [0.001, 1], */ // Scale up to 100% of original size
+                translateY: ['0%', '-100%'],
+                duration: 1000, // Duration of animation
+                /* translateX: ['-90%', '9%', '0%'], */
+                /* backgroundColor: ['#fff', '#000'], */
+                easing: 'easeInOutQuad'
+              })
+            }, 3000)
+            setTimeout(() => {
+              this.notificationMessage = ''
+            }, 4001)
           } else {
             throw new Error('Network response was not ok.')
           }
@@ -56,7 +73,25 @@ export default {
         .catch((error) => {
           console.error('There was a problem with the fetch operation:', error)
         })
+    },
+    async fetchCurrentUser() {
+      try {
+        const response = await fetch('/api/current-user')
+        if (response.ok) {
+          const currentUser = await response.json()
+          this.wantsUpdate = currentUser.wantsUpdate // Set wantsUpdate based on currentUser
+          return currentUser
+        } else {
+          throw new Error('Failed to fetch current user')
+        }
+      } catch (error) {
+        console.error('Error fetching current user:', error)
+        return null
+      }
     }
+  },
+  mounted() {
+    this.fetchCurrentUser() // Fetch current user data when component is mounted
   }
 }
 </script>
@@ -68,7 +103,7 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #78161638;
+  background-color: #5f2b5d3c;
 }
 
 .achievement-title {
@@ -254,6 +289,42 @@ button:hover {
 button:active span::before {
   background: #2751cd;
 }
+
+.notification {
+  position: fixed;
+  text-align: center;
+  top: 0;
+  left: 35%;
+  right: 0;
+  padding: 1rem;
+  padding-right: 0;
+  background-color: rgb(15, 124, 24);
+  color: white;
+  text-transform: uppercase;
+  font-family: monospace;
+  font-weight: 500;
+  word-spacing: 20px;
+  letter-spacing: 5px;
+  animation: fadeIn 0.7s ease-out;
+
+  width: 30%;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* 100% {
+    opacity: 0;
+    transform: translateY(-100%);
+  } */
+}
+
 @keyframes wave-46 {
   50% {
     transform: scale(0.9);
