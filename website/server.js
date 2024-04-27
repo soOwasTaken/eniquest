@@ -91,8 +91,7 @@ app.post("/processPrompt", async (req, res) => {
         res.json({ summary: result.summary, scoreResult: result.scoreResult });
       } else {
         res.json({
-          summary:
-            "Sorry we didn't understand your answer. Press 'enter' again or Try again.",
+          summary: "Sorry we didn't understand your answer. Try again.",
           scoreResult: 0,
         });
         return;
@@ -100,10 +99,9 @@ app.post("/processPrompt", async (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      // res.status(500).send("Error processing the prompt");
+      res.status(500).send("Error processing the prompt");
       res.json({
-        summary:
-          "Sorry we didn't understand your answer. Press 'enter' again or Try again.",
+        summary: "Sorry, we didn't understand your answer. Try again.",
         scoreResult: 0,
       });
     });
@@ -461,11 +459,12 @@ app.post("/api/users/register", async (req, res) => {
 app.post("/api/logout", async (req, res) => {
   try {
     // Update loggedin status in the database
-    await pool.query("UPDATE users SET loggedin = false WHERE id = $1", [
-      currentUser.id,
-    ]);
+    if (currentUser)
+      await pool.query("UPDATE users SET loggedin = false WHERE id = $1", [
+        currentUser.id,
+      ]);
 
-    console.log(currentUser.email, " has logged out");
+    if (currentUser) console.log(currentUser.email, " has logged out");
     res.json({ message: "User logged out successfully." });
   } catch (error) {
     console.error("Error logging out:", error);
@@ -560,27 +559,27 @@ function processLatestEntry() {
 //   saveUsersToFile();
 //   console.log(currentUser);
 // }
-// function processEntryById(content, id) {
-//   console.log("Content received for processing:", content); // Debug: log the content
+function processEntryById(content, id) {
+  console.log("Content received for processing:", content); // Debug: log the content
 
-//   const scoreRegex = /Score: (\d+)\/10/;
-//   const summaryRegex = /[^:]*:[^:]*: ([^\.]*)\./;
+  const scoreRegex = /Score: (\d+)\/10/;
+  const summaryRegex = /[^:]*:[^:]*: ([^\.]*)\./;
 
-//   const scoreMatch = content.match(scoreRegex);
-//   const summaryMatch = content.match(summaryRegex);
+  const scoreMatch = content.match(scoreRegex);
+  const summaryMatch = content.match(summaryRegex);
 
-//   if (scoreMatch && summaryMatch) {
-//     const score = parseInt(scoreMatch[1], 10);
-//     const summary = summaryMatch[1].trim();
-//     const scoreResult = score >= 6 ? 1 : 0;
-//     if (scoreResult === 1 && currentUser.level < 1) updateUserLevel(1);
+  if (scoreMatch && summaryMatch) {
+    const score = parseInt(scoreMatch[1], 10);
+    const summary = summaryMatch[1].trim();
+    const scoreResult = score >= 6 ? 1 : 0;
+    if (scoreResult === 1 && currentUser.level < 1) updateUserLevel(1);
 
-//     return { scoreResult, summary };
-//   } else {
-//     console.error("Pattern not found in content");
-//     return null;
-//   }
-// }
+    return { scoreResult, summary };
+  } else {
+    console.error("Pattern not found in content");
+    return null;
+  }
+}
 
 //////////////////////////// DATABASE UPDATE LEVEL AND PROCESSENTRYBYID /////////////////////////////
 async function updateUserLevel(level) {
@@ -600,31 +599,31 @@ async function updateUserLevel(level) {
   }
 }
 
-async function processEntryById(content, id) {
-  console.log("Content received for processing:", content); // Debug: log the content
+// async function processEntryById(content, id) {
+//   console.log("Content received for processing:", content); // Debug: log the content
 
-  const scoreRegex = /Score: (\d+)\/10/;
-  const summaryRegex = /[^:]*:[^:]*: ([^\.]*)\./;
+//   const scoreRegex = /Score: (\d+)\/10/;
+//   const summaryRegex = /[^:]*:[^:]*: ([^\.]*)\./;
 
-  const scoreMatch = content.match(scoreRegex);
-  const summaryMatch = content.match(summaryRegex);
+//   const scoreMatch = content.match(scoreRegex);
+//   const summaryMatch = content.match(summaryRegex);
 
-  if (scoreMatch && summaryMatch) {
-    const score = parseInt(scoreMatch[1], 10);
-    const summary = summaryMatch[1].trim();
-    const scoreResult = score >= 6 ? 1 : 0;
+//   if (scoreMatch && summaryMatch) {
+//     const score = parseInt(scoreMatch[1], 10);
+//     const summary = summaryMatch[1].trim();
+//     const scoreResult = score >= 6 ? 1 : 0;
 
-    // Check and update user's level
-    if (scoreResult === 1 && currentUser.level < 1) {
-      await updateUserLevel(1);
-    }
+//     // Check and update user's level
+//     if (scoreResult === 1 && currentUser.level < 1) {
+//       await updateUserLevel(1);
+//     }
 
-    return { scoreResult, summary };
-  } else {
-    console.error("Pattern not found in content");
-    return null;
-  }
-}
+//     return { scoreResult, summary };
+//   } else {
+//     console.error("Pattern not found in content");
+//     return null;
+//   }
+// }
 
 async function sendVerificationEmail(email, verificationLink) {
   const apiKey = process.env.API_EMAIL;
@@ -946,7 +945,7 @@ app.post("/api/update-user-preference", async (req, res) => {
 
   try {
     // Update user's wantsUpdate preference in the database
-    await pool.query("UPDATE users SET wants_update = $1 WHERE id = $2", [
+    await pool.query("UPDATE users SET wantsupdate = $1 WHERE id = $2", [
       wantsUpdate,
       currentUser.id,
     ]);

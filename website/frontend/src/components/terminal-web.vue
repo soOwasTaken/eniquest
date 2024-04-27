@@ -296,6 +296,7 @@ To the whims of those who rule as knaves.<br>`,
               this.setSucceedTerminal(true)
               this.store.dispatch('updateGameSuccess', { gameIndex: 5, success: true })
               this.transition()
+              document.body.style.background = '#11151d'
             }
           })
           .catch((error) => {

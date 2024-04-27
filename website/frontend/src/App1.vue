@@ -91,7 +91,9 @@ onMounted(() => {
 :root {
   --text-color: hsl(0, 0%, 100%);
 }
-
+body {
+  background-color: black !important;
+}
 #app1 {
   display: flex;
   flex-direction: column;
