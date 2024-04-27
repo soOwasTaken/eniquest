@@ -9,6 +9,16 @@ const port = 3000;
 const filePath = "data.json";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { Pool } = require("pg");
+
+// Create a connection pool
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
 
 app.use(bodyParser.json()); // to parse JSON body
 //app.use(express.static('public')); // if your frontend files are in 'public' directory
@@ -82,7 +92,7 @@ app.post("/processPrompt", async (req, res) => {
       } else {
         res.json({
           summary:
-            "Sorry we didn't understand your answer. Press 'enter' again or Try again.",
+            "Sorry, we didn't understand your answer. Press the enter key again or try another answer.",
           scoreResult: 0,
         });
         return;
@@ -90,9 +100,10 @@ app.post("/processPrompt", async (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      // res.status(500).send("Error processing the prompt");
+      /* res.status(500).send("Error processing the prompt"); */
       res.json({
-        summary: "Sorry, we didn't understand your answer. Try again.",
+        summary:
+          "Sorry, we didn't understand your answer. Press the enter key again or try another answer.",
         scoreResult: 0,
       });
     });
@@ -253,107 +264,259 @@ fs.readFile("users.json", "utf8", (err, data) => {
     }
   }
 });
+
+////////////////////////////// JSON FILE LOGIN && REGISTER ///////////////////////////////////////////////////////////
 // Login endpoint
-app.post("/api/users/login", (req, res) => {
+// app.post("/api/users/login", (req, res) => {
+//   const { email, password } = req.body;
+
+//   // Find user by email
+//   const user = users.find((user) => user.email === email);
+
+//   // If user not found or password doesn't match, return error
+//   if (!user || !bcrypt.compareSync(password, user.password)) {
+//     return res
+//       .status(401)
+//       .json({ success: false, message: "Invalid email or password" });
+//   }
+
+//   // Generate JWT token
+//   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+//     expiresIn: "1h", // Token expires in 1 hour
+//   });
+
+//   // Return token to client
+//   res.json({ success: true, token });
+//   if (user.verified) {
+//     user.loggedin = true;
+//     console.log(user.email, " is logged in");
+//   } else {
+//     user.loggedin = false;
+//     console.log("needs to be verify: ", user.email);
+//   }
+//   saveUsersToFile();
+//   currentUser = user;
+//   console.log(" current user: ", user);
+// });
+
+// // Register endpoint
+// app.post("/api/users/register", async (req, res) => {
+//   const { email, password } = req.body;
+
+//   // Check if user already exists
+//   if (users.find((user) => user.email === email)) {
+//     return res
+//       .status(400)
+//       .json({ success: false, message: "User already exists" });
+//   }
+
+//   const hashedPassword = bcrypt.hashSync(password, 10);
+//   const userId = Math.random().toString(36).substr(2, 9);
+
+//   const newUser = { id: userId, email, password: hashedPassword };
+//   newUser.verified = false;
+//   newUser.level = 0;
+
+//   const verificationLink = `http://localhost:${port}/api/users/verify/${userId}`; // You might want to adjust this to your actual domain
+
+//   await sendVerificationEmail(email, verificationLink);
+//   currentUser = newUser;
+//   users.push(newUser);
+
+//   saveUsersToFile();
+
+//   res.status(201).json({
+//     success: true,
+//     message:
+//       "Verification email sent. Please check your email to complete registration.",
+//   });
+// });
+/////////////////////// DATABASE LOGIN && REGISTER //////////////////////////////////////
+
+// Login endpoint
+app.post("/api/users/login", async (req, res) => {
   const { email, password } = req.body;
 
-  // Find user by email
-  const user = users.find((user) => user.email === email);
+  try {
+    // Query the database to find the user by email
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    const user = result.rows[0];
 
-  // If user not found or password doesn't match, return error
-  if (!user || !bcrypt.compareSync(password, user.password)) {
-    return res
-      .status(401)
-      .json({ success: false, message: "Invalid email or password" });
-  }
+    // If user not found or password doesn't match, return error
+    if (!user || !bcrypt.compareSync(password, user.password)) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid email or password" });
+    }
 
-  // Generate JWT token
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
-    expiresIn: "1h", // Token expires in 1 hour
-  });
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h", // Token expires in 1 hour
+    });
 
-  // Return token to client
-  res.json({ success: true, token });
-  if (user.verified) {
-    user.loggedin = true;
+    // Update loggedin status in the database
+    await pool.query("UPDATE users SET loggedin = true WHERE id = $1", [
+      user.id,
+    ]);
+
+    // Update currentUser variable
+    currentUser = user;
+
+    // Return token to client
+    res.json({ success: true, token });
+
     console.log(user.email, " is logged in");
-  } else {
-    user.loggedin = false;
-    console.log("needs to be verify: ", user.email);
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
-  saveUsersToFile();
-  currentUser = user;
-  console.log(" current user: ", user);
 });
 
 // Register endpoint
 app.post("/api/users/register", async (req, res) => {
   const { email, password } = req.body;
 
-  // Check if user already exists
-  if (users.find((user) => user.email === email)) {
-    return res
-      .status(400)
-      .json({ success: false, message: "User already exists" });
+  try {
+    // Check if user already exists
+    const existingUser = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
+    if (existingUser.rows.length > 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists" });
+    }
+
+    // Hash password
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    // Generate unique user ID
+    const userId = Math.random().toString(36).substr(2, 9);
+
+    // Insert new user into the database
+    await pool.query(
+      "INSERT INTO users (id, email, password, verified, level, loggedin) VALUES ($1, $2, $3, $4, $5, $6)",
+      [userId, email, hashedPassword, false, 0, false]
+    );
+
+    // Send verification email (assuming this function is defined elsewhere)
+    const verificationLink = `http://localhost:${port}/api/users/verify/${userId}`;
+    await sendVerificationEmail(email, verificationLink);
+
+    res.status(201).json({
+      success: true,
+      message:
+        "Verification email sent. Please check your email to complete registration.",
+    });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
-
-  const hashedPassword = bcrypt.hashSync(password, 10);
-  const userId = Math.random().toString(36).substr(2, 9);
-
-  const newUser = { id: userId, email, password: hashedPassword };
-  newUser.verified = false;
-  newUser.level = 0;
-
-  const verificationLink = `http://localhost:${port}/api/users/verify/${userId}`; // You might want to adjust this to your actual domain
-
-  await sendVerificationEmail(email, verificationLink);
-  currentUser = newUser;
-  users.push(newUser);
-
-  saveUsersToFile();
-
-  res.status(201).json({
-    success: true,
-    message:
-      "Verification email sent. Please check your email to complete registration.",
-  });
 });
+
+///////////////////// JSON LOGOUT , CURRENT USER,  VERIFY ID, VERIFY STATUS ///////////////
+// // Define a route handler for setting user.loggedin to false
+// app.post("/api/logout", (req, res) => {
+//   // Assuming you have access to the currentUser object
+//   currentUser.loggedin = false;
+//   saveUsersToFile();
+//   console.log(currentUser.email, " has logged out");
+//   res.json({ message: "User logged out successfully." });
+// });
+
+// app.get("/api/current-user", (req, res) => {
+//   res.json(currentUser);
+// });
+
+// app.get("/api/users/verify/:userId", (req, res) => {
+//   const { userId } = req.params;
+//   const user = users.find((user) => user.id === userId);
+
+//   if (!user) {
+//     return res.status(404).send("User not found.");
+//   }
+
+//   user.verified = true; // Add a verified property to the user
+//   saveUsersToFile();
+
+//   res.send("Email verified successfully! You can now login.");
+// });
+
+// app.get("/api/users/verify-status/:email", (req, res) => {
+//   const { email } = req.params;
+//   const user = users.find((user) => user.email === email);
+
+//   if (!user) {
+//     return res.status(404).send("User not found.");
+//   }
+
+//   res.json({ verified: user.verified || false });
+// });
+
+////////////////////////// DATABASE LOGOUT , CURRENT USER,  VERIFY ID, VERIFY STATUS ///////////////
 // Define a route handler for setting user.loggedin to false
-app.post("/api/logout", (req, res) => {
-  // Assuming you have access to the currentUser object
-  currentUser.loggedin = false;
-  saveUsersToFile();
-  console.log(currentUser.email, " has logged out");
-  res.json({ message: "User logged out successfully." });
+app.post("/api/logout", async (req, res) => {
+  try {
+    // Update loggedin status in the database
+    if (currentUser)
+      await pool.query("UPDATE users SET loggedin = false WHERE id = $1", [
+        currentUser.id,
+      ]);
+
+    if (currentUser) console.log(currentUser.email, " has logged out");
+    res.json({ message: "User logged out successfully." });
+  } catch (error) {
+    console.error("Error logging out:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
 });
 
+// Get current user from database
 app.get("/api/current-user", (req, res) => {
   res.json(currentUser);
 });
 
-app.get("/api/users/verify/:userId", (req, res) => {
+// Verify user email based on userId
+app.get("/api/users/verify/:userId", async (req, res) => {
   const { userId } = req.params;
-  const user = users.find((user) => user.id === userId);
 
-  if (!user) {
-    return res.status(404).send("User not found.");
+  try {
+    // Update verified status in the database
+    await pool.query("UPDATE users SET verified = true WHERE id = $1", [
+      userId,
+    ]);
+
+    res.send("Email verified successfully! You can now login.");
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    res.status(500).send("Internal server error");
   }
-
-  user.verified = true; // Add a verified property to the user
-  saveUsersToFile();
-
-  res.send("Email verified successfully! You can now login.");
 });
 
-app.get("/api/users/verify-status/:email", (req, res) => {
+// Get verification status of a user by email
+app.get("/api/users/verify-status/:email", async (req, res) => {
   const { email } = req.params;
-  const user = users.find((user) => user.email === email);
 
-  if (!user) {
-    return res.status(404).send("User not found.");
+  try {
+    // Query the database to get the user's verification status
+    const result = await pool.query(
+      "SELECT verified FROM users WHERE email = $1",
+      [email]
+    );
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(404).send("User not found.");
+    }
+
+    res.json({ verified: user.verified || false });
+  } catch (error) {
+    console.error("Error checking verification status:", error);
+    res.status(500).send("Internal server error");
   }
-
-  res.json({ verified: user.verified || false });
 });
 
 function processLatestEntry() {
@@ -380,22 +543,24 @@ function processLatestEntry() {
     }
   });
 }
-function updateUserLevel(level) {
-  // Find the index of the user with the same email
-  const existingUserIndex = users.findIndex(
-    (user) => user.email === currentUser.email
-  );
 
-  // If a user with the same email is found, remove it
-  if (existingUserIndex !== -1) {
-    users.splice(existingUserIndex, 1);
-  }
-  currentUser.level = level;
-  // Add the new user to the array
-  users.push(currentUser);
-  saveUsersToFile();
-  console.log(currentUser);
-}
+/////////////// JSON FILE UPDATELEVEL AND PROCESSENTRYBYiD///////////////////////////////////////////////////
+// function updateUserLevel(level) {
+//   // Find the index of the user with the same email
+//   const existingUserIndex = users.findIndex(
+//     (user) => user.email === currentUser.email
+//   );
+
+//   // If a user with the same email is found, remove it
+//   if (existingUserIndex !== -1) {
+//     users.splice(existingUserIndex, 1);
+//   }
+//   currentUser.level = level;
+//   // Add the new user to the array
+//   users.push(currentUser);
+//   saveUsersToFile();
+//   console.log(currentUser);
+// }
 function processEntryById(content, id) {
   console.log("Content received for processing:", content); // Debug: log the content
 
@@ -417,6 +582,50 @@ function processEntryById(content, id) {
     return null;
   }
 }
+
+//////////////////////////// DATABASE UPDATE LEVEL AND PROCESSENTRYBYID /////////////////////////////
+async function updateUserLevel(level) {
+  try {
+    // Update the user's level in the database
+    await pool.query("UPDATE users SET level = $1 WHERE id = $2", [
+      level,
+      currentUser.id,
+    ]);
+
+    // Update currentUser's level
+    currentUser.level = level;
+
+    console.log(currentUser);
+  } catch (error) {
+    console.error("Error updating user level:", error);
+  }
+}
+
+// async function processEntryById(content, id) {
+//   console.log("Content received for processing:", content); // Debug: log the content
+
+//   const scoreRegex = /Score: (\d+)\/10/;
+//   const summaryRegex = /[^:]*:[^:]*: ([^\.]*)\./;
+
+//   const scoreMatch = content.match(scoreRegex);
+//   const summaryMatch = content.match(summaryRegex);
+
+//   if (scoreMatch && summaryMatch) {
+//     const score = parseInt(scoreMatch[1], 10);
+//     const summary = summaryMatch[1].trim();
+//     const scoreResult = score >= 6 ? 1 : 0;
+
+//     // Check and update user's level
+//     if (scoreResult === 1 && currentUser.level < 1) {
+//       await updateUserLevel(1);
+//     }
+
+//     return { scoreResult, summary };
+//   } else {
+//     console.error("Pattern not found in content");
+//     return null;
+//   }
+// }
 
 async function sendVerificationEmail(email, verificationLink) {
   const apiKey = process.env.API_EMAIL;
@@ -445,24 +654,64 @@ function generateRandomKey() {
   return crypto.randomBytes(3).toString("hex").toUpperCase(); // Generates a 6-character hexadecimal string
 }
 
+/////////////////// JSON USEEERRRSS  REQUEST-RESET ///////////////////////////////
+// app.post("/api/users/request-reset", async (req, res) => {
+//   const { email } = req.body;
+//   const user = users.find((user) => user.email === email);
+
+//   if (!user) {
+//     return res.status(404).json({ success: false, message: "User not found" });
+//   }
+
+//   // Generate and store the reset key
+//   const resetKey = generateRandomKey();
+//   user.resetKey = resetKey;
+//   user.resetKeyExpires = Date.now() + 3600000; // Key expires in 1 hour
+
+//   await sendResetKeyEmail(user.email, resetKey);
+
+//   saveUsersToFile(); // Assuming you have a function to save the state
+
+//   res.json({ success: true, message: "Reset key sent to your email address." });
+// });
+
+///////////////////// DATABASE REQUEST RESET ///////////////////////////////////////////
 app.post("/api/users/request-reset", async (req, res) => {
   const { email } = req.body;
-  const user = users.find((user) => user.email === email);
 
-  if (!user) {
-    return res.status(404).json({ success: false, message: "User not found" });
+  try {
+    // Find the user by email in the database
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // Generate and store the reset key
+    const resetKey = generateRandomKey();
+    await pool.query(
+      "UPDATE users SET reset_key = $1, reset_key_expires = $2 WHERE id = $3",
+      [resetKey, Date.now() + 3600000, user.id]
+    );
+
+    // Send the reset key via email
+    await sendResetKeyEmail(user.email, resetKey);
+
+    res.json({
+      success: true,
+      message: "Reset key sent to your email address.",
+    });
+  } catch (error) {
+    console.error("Error requesting password reset:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to request password reset." });
   }
-
-  // Generate and store the reset key
-  const resetKey = generateRandomKey();
-  user.resetKey = resetKey;
-  user.resetKeyExpires = Date.now() + 3600000; // Key expires in 1 hour
-
-  await sendResetKeyEmail(user.email, resetKey);
-
-  saveUsersToFile(); // Assuming you have a function to save the state
-
-  res.json({ success: true, message: "Reset key sent to your email address." });
 });
 
 async function sendResetKeyEmail(email, key) {
@@ -486,76 +735,227 @@ async function sendResetKeyEmail(email, key) {
   }
 }
 
+///////////////////////// JSON VERIFYRESETKEY, REQUESTRESET, RESETPASSWORD, UPDATE USER PREFERECE ////////////////////////////
+
+// // Endpoint to verify the reset key
+// app.post("/api/verify-reset-key", (req, res) => {
+//   const { email, key } = req.body;
+//   const user = users.find((user) => user.email === email);
+
+//   if (!user) {
+//     return res.status(404).json({ success: false, message: "User not found" });
+//   }
+
+//   const isKeyValid = user.resetKey === key && user.resetKeyExpires > Date.now();
+
+//   if (isKeyValid) {
+//     res.json({ success: true, message: "Key is valid" });
+//   } else {
+//     res.json({ success: false, message: "Invalid or expired key" });
+//   }
+// });
+
+// app.post("/api/request-reset", async (req, res) => {
+//   const { email } = req.body;
+//   const user = users.find((user) => user.email === email);
+
+//   if (!user) {
+//     return res.status(404).json({ success: false, message: "User not found" });
+//   }
+//   console.log("key genered");
+//   const resetKey = generateRandomKey();
+//   user.resetKey = resetKey;
+//   user.resetKeyExpires = Date.now() + 3600000; // Key expires in 1 hour
+
+//   try {
+//     await sendResetKeyEmail(user.email, resetKey);
+//     saveUsersToFile(); // Save state, assuming you have this function
+
+//     res.json({
+//       success: true,
+//       message: "Reset key sent to your email address.",
+//     });
+//   } catch (error) {
+//     console.error("Failed to send reset key email:", error);
+//     res
+//       .status(500)
+//       .json({ success: false, message: "Failed to send reset key email." });
+//   }
+// });
+
+// app.post("/api/reset-password", async (req, res) => {
+//   const { email, key, newPassword } = req.body;
+//   const user = users.find((user) => user.email === email);
+
+//   if (!user) {
+//     return res.status(404).json({ success: false, message: "User not found" });
+//   }
+
+//   if (user.resetKey === key && user.resetKeyExpires > Date.now()) {
+//     const hashedPassword = bcrypt.hashSync(newPassword, 10);
+//     user.password = hashedPassword;
+//     delete user.resetKey;
+//     delete user.resetKeyExpires;
+
+//     saveUsersToFile();
+
+//     res.json({
+//       success: true,
+//       message: "Password has been reset successfully.",
+//     });
+//   } else {
+//     res
+//       .status(400)
+//       .json({ success: false, message: "Invalid or expired reset key" });
+//   }
+// });
+
+// app.post("/api/update-user-preference", (req, res) => {
+//   const { wantsUpdate } = req.body;
+
+//   if (currentUser) {
+//     currentUser.wantsUpdate = wantsUpdate;
+//     saveUsersToFile();
+//     res.json({ message: "User preference updated successfully." });
+//   } else {
+//     res.status(401).json({ error: "Unauthorized" });
+//   }
+// });
+
+///////////////////////// DATABASE VERIFYRESETKEY, REQUESTRESET, RESETPASSWORD, UPDATE USER PREFERECE ////////////////////////////
+
 // Endpoint to verify the reset key
-app.post("/api/verify-reset-key", (req, res) => {
+app.post("/api/verify-reset-key", async (req, res) => {
   const { email, key } = req.body;
-  const user = users.find((user) => user.email === email);
 
-  if (!user) {
-    return res.status(404).json({ success: false, message: "User not found" });
-  }
+  try {
+    // Find the user by email in the database
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    const user = result.rows[0];
 
-  const isKeyValid = user.resetKey === key && user.resetKeyExpires > Date.now();
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
 
-  if (isKeyValid) {
-    res.json({ success: true, message: "Key is valid" });
-  } else {
-    res.json({ success: false, message: "Invalid or expired key" });
+    const isKeyValid =
+      user.reset_key === key && user.reset_key_expires > Date.now();
+
+    if (isKeyValid) {
+      res.json({ success: true, message: "Key is valid" });
+    } else {
+      res.json({ success: false, message: "Invalid or expired key" });
+    }
+  } catch (error) {
+    console.error("Error verifying reset key:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to verify reset key." });
   }
 });
 
+// Endpoint to request a password reset
 app.post("/api/request-reset", async (req, res) => {
   const { email } = req.body;
-  const user = users.find((user) => user.email === email);
-
-  if (!user) {
-    return res.status(404).json({ success: false, message: "User not found" });
-  }
-  console.log("key genered");
-  const resetKey = generateRandomKey();
-  user.resetKey = resetKey;
-  user.resetKeyExpires = Date.now() + 3600000; // Key expires in 1 hour
 
   try {
-    await sendResetKeyEmail(user.email, resetKey);
-    saveUsersToFile(); // Save state, assuming you have this function
+    // Find the user by email in the database
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    console.log("Key generated");
+    const resetKey = generateRandomKey();
+    await pool.query(
+      "UPDATE users SET reset_key = $1, reset_key_expires = $2 WHERE id = $3",
+      [resetKey, Date.now() + 3600000, user.id]
+    );
+
+    // Send the reset key via email
+    await sendResetKeyEmail(email, resetKey);
 
     res.json({
       success: true,
       message: "Reset key sent to your email address.",
     });
   } catch (error) {
-    console.error("Failed to send reset key email:", error);
+    console.error("Failed to request password reset:", error);
     res
       .status(500)
-      .json({ success: false, message: "Failed to send reset key email." });
+      .json({ success: false, message: "Failed to request password reset." });
   }
 });
 
+// Endpoint to reset password
 app.post("/api/reset-password", async (req, res) => {
   const { email, key, newPassword } = req.body;
-  const user = users.find((user) => user.email === email);
 
-  if (!user) {
-    return res.status(404).json({ success: false, message: "User not found" });
-  }
+  try {
+    // Find the user by email in the database
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    const user = result.rows[0];
 
-  if (user.resetKey === key && user.resetKeyExpires > Date.now()) {
-    const hashedPassword = bcrypt.hashSync(newPassword, 10);
-    user.password = hashedPassword;
-    delete user.resetKey;
-    delete user.resetKeyExpires;
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
 
-    saveUsersToFile();
+    if (user.reset_key === key && user.reset_key_expires > Date.now()) {
+      const hashedPassword = bcrypt.hashSync(newPassword, 10);
+      await pool.query("UPDATE users SET password = $1 WHERE id = $2", [
+        hashedPassword,
+        user.id,
+      ]);
+      await pool.query(
+        "UPDATE users SET reset_key = NULL, reset_key_expires = NULL WHERE id = $1",
+        [user.id]
+      );
 
-    res.json({
-      success: true,
-      message: "Password has been reset successfully.",
-    });
-  } else {
+      res.json({
+        success: true,
+        message: "Password has been reset successfully.",
+      });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message: "Invalid or expired reset key" });
+    }
+  } catch (error) {
+    console.error("Error resetting password:", error);
     res
-      .status(400)
-      .json({ success: false, message: "Invalid or expired reset key" });
+      .status(500)
+      .json({ success: false, message: "Failed to reset password." });
+  }
+});
+
+// Endpoint to update user preference
+app.post("/api/update-user-preference", async (req, res) => {
+  const { wantsUpdate } = req.body;
+
+  try {
+    // Update user's wantsUpdate preference in the database
+    await pool.query("UPDATE users SET wantsupdate = $1 WHERE id = $2", [
+      wantsUpdate,
+      currentUser.id,
+    ]);
+
+    res.json({ message: "User preference updated successfully." });
+  } catch (error) {
+    console.error("Error updating user preference:", error);
+    res.status(500).json({ error: "Failed to update user preference." });
   }
 });
 
@@ -564,33 +964,38 @@ const server = app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
 
-app.post("/api/update-user-preference", (req, res) => {
-  const { wantsUpdate } = req.body;
+//////////////// JSON SET CURRENT USER LOGGEDIN TO FALSE WHEN SHUTING THE SERVER ////////////////
+// process.on("SIGINT", () => {
+//   server.close(() => {
+//     fs.readFile("users.json", "utf8", (err, data) => {
+//       if (err) {
+//         console.error("Error reading users data:", err);
+//       } else {
+//         try {
+//           users = JSON.parse(data);
+//           users.forEach((user) => (user.loggedin = false));
+//           saveUsersToFile();
+//           console.log("Logged every user out");
+//         } catch (parseError) {
+//           console.error("Error parsing users data:", parseError);
+//         }
+//       }
+//     });
+//   });
+// });
 
-  if (currentUser) {
-    currentUser.wantsUpdate = wantsUpdate;
-    saveUsersToFile();
-    res.json({ message: "User preference updated successfully." });
-  } else {
-    res.status(401).json({ error: "Unauthorized" });
-  }
-});
-
+//////////////// DATABASE SET CURRENT USER LOGGEDIN TO FALSE WHEN SHUTING THE SERVER ////////////////
 process.on("SIGINT", () => {
-  server.close(() => {
-    fs.readFile("users.json", "utf8", (err, data) => {
-      if (err) {
-        console.error("Error reading users data:", err);
-      } else {
-        try {
-          users = JSON.parse(data);
-          users.forEach((user) => (user.loggedin = false));
-          saveUsersToFile();
-          console.log("Logged every user out");
-        } catch (parseError) {
-          console.error("Error parsing users data:", parseError);
-        }
-      }
-    });
+  server.close(async () => {
+    try {
+      // Update loggedin status of all users to false in the database
+      await pool.query("UPDATE users SET loggedin = false");
+      console.log("Logged out all users");
+    } catch (error) {
+      console.error("Error updating loggedin status:", error);
+    } finally {
+      // Exit the process
+      process.exit(0);
+    }
   });
 });

@@ -52,6 +52,7 @@ export default {
         .then((response) => {
           if (response.ok) {
             this.notificationMessage = 'Your preference has been updated.'
+            document.body.style.backgroundColor = 'black'
             setTimeout(() => {
               anime({
                 targets: ['.notification'],
