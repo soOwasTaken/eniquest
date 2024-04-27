@@ -163,6 +163,7 @@ export default {
     }
   },
   mounted() {
+    this.checkServer()
     this.animateSVG()
     this.displayText = this.translatedText // Set the initial text to the runic version
     this.animateText()
@@ -224,6 +225,7 @@ export default {
       try {
         const currentUser = await this.fetchCurrentUser()
         if (!currentUser) {
+          this.logout()
           this.router.push('/app1')
           console.log('continue button failed')
         } else {
@@ -239,6 +241,13 @@ export default {
         }
       } catch (error) {
         console.error('Error while continuing site:', error)
+      }
+    },
+    async checkServer() {
+      const currentUser = await this.fetchCurrentUser()
+      if (!currentUser) {
+        this.logout()
+        this.router.push('/app1')
       }
     },
     async fetchCurrentUser() {
