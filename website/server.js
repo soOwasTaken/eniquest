@@ -962,21 +962,38 @@ const server = app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
 });
 
+//////////////// JSON SET CURRENT USER LOGGEDIN TO FALSE WHEN SHUTING THE SERVER ////////////////
+// process.on("SIGINT", () => {
+//   server.close(() => {
+//     fs.readFile("users.json", "utf8", (err, data) => {
+//       if (err) {
+//         console.error("Error reading users data:", err);
+//       } else {
+//         try {
+//           users = JSON.parse(data);
+//           users.forEach((user) => (user.loggedin = false));
+//           saveUsersToFile();
+//           console.log("Logged every user out");
+//         } catch (parseError) {
+//           console.error("Error parsing users data:", parseError);
+//         }
+//       }
+//     });
+//   });
+// });
+
+//////////////// DATABASE SET CURRENT USER LOGGEDIN TO FALSE WHEN SHUTING THE SERVER ////////////////
 process.on("SIGINT", () => {
-  server.close(() => {
-    fs.readFile("users.json", "utf8", (err, data) => {
-      if (err) {
-        console.error("Error reading users data:", err);
-      } else {
-        try {
-          users = JSON.parse(data);
-          users.forEach((user) => (user.loggedin = false));
-          saveUsersToFile();
-          console.log("Logged every user out");
-        } catch (parseError) {
-          console.error("Error parsing users data:", parseError);
-        }
-      }
-    });
+  server.close(async () => {
+    try {
+      // Update loggedin status of all users to false in the database
+      await pool.query("UPDATE users SET loggedin = false");
+      console.log("Logged out all users");
+    } catch (error) {
+      console.error("Error updating loggedin status:", error);
+    } finally {
+      // Exit the process
+      process.exit(0);
+    }
   });
 });
