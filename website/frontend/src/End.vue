@@ -7,21 +7,26 @@ import endPage from './components/endPage.vue'
 import svgLogo from './components/svgLogo.vue'
 onMounted(() => {
   anime({
-    targets: ['#end'],
-    scale: [0.001, 1], // Scale up to 100% of original size
-    translateX: ['100%', '-10%', '0%'],
-    translateY: ['100%', '0%'],
-    duration: 2500, // Duration of animation
-    backgroundColor: ['#fff', '#11151d'],
+    targets: ['.end-wrapper'],
+    /* scale: [0.001, 1], */ // Scale up to 100% of original size
+    translateX: ['-300%', '0%'],
+    translateY: ['-300%', '0%'],
+    duration: 1500, // Duration of animation
     easing: 'easeInOutQuad'
   })
+  //   anime({
+  //     targets: ['body'],
+  //     backgroundColor: '#fff'
+  //   })
 })
 </script>
 
 <template>
-  <div id="end">
-    <svgLogo class="svg-logo" />
-    <endPage />
+  <svgLogo class="svg-logo" />
+  <div class="end-wrapper">
+    <div id="end">
+      <endPage />
+    </div>
   </div>
 </template>
 
@@ -34,11 +39,14 @@ onMounted(() => {
 }
 
 body {
-  background-color: black;
+  background-color: #11151d;
   margin: 0;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+}
+.end-wrapper {
+  background-color: black;
 }
 </style>

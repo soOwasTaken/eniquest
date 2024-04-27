@@ -112,7 +112,13 @@
         @click="store.getters.isLoggedIn ? continueSite() : enterSite()"
         class="enter-button"
       >
-        {{ store.getters.isLoggedIn ? 'Continue' : 'Enter the Arena' }}
+        {{
+          store.getters.isLoggedIn
+            ? filteredGameOptions.length !== 6
+              ? 'Continue'
+              : 'you are done... for now at least'
+            : 'Enter the Arena'
+        }}
       </button>
       <button v-if="store.getters.isLoggedIn" @click="logout" class="logout-button">Log Out</button>
       <OverlayComponent v-show="isVisible" :style="{ opacity: overlayOpacity }" />
