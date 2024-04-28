@@ -7,7 +7,6 @@
         <div v-if="mode === 'passwordChange'">
           <div class="input-holder">
             <i class="icon fas fa-lock"></i>
-            <<<<<<< HEAD
             <input
               type="password"
               class="input"
@@ -25,7 +24,7 @@
               v-model="confirmNewPassword"
               required
             />
-            =======
+
             <input
               type="password"
               class="input"
@@ -43,7 +42,6 @@
               v-model="confirmNewPassword"
               required
             />
-            >>>>>>> origin/main
           </div>
           <div class="input-holder">
             <input type="submit" class="button larger-button" value="Confirm New Password" />
@@ -136,6 +134,12 @@ export default {
       if (this.mode === 'login') {
         this.$emit('login', { email: this.email, password: this.password })
       } else if (this.mode === 'signup') {
+        if (!this.validatePassword(this.password)) {
+          alert(
+            'Password is not strong enough. Please use a combination of uppercase, lowercase, numbers, and special characters.'
+          )
+          return
+        }
         if (this.password !== this.confirmPassword) {
           alert('Passwords do not match')
           return
@@ -149,6 +153,12 @@ export default {
           this.checkEmail(this.email)
         }
       } else if (this.mode === 'passwordChange') {
+        if (!this.validatePassword(this.newPassword)) {
+          alert(
+            'Password is not strong enough. Please use a combination of uppercase, lowercase, numbers, and special characters.'
+          )
+          return
+        }
         if (this.newPassword !== this.confirmNewPassword) {
           alert('New passwords do not match')
           return
@@ -257,6 +267,22 @@ export default {
           console.error('Error resetting password:', error)
           alert('Failed to reset password.')
         })
+    },
+    validatePassword(password) {
+      const hasUppercase = /[A-Z]/.test(password)
+      const hasLowercase = /[a-z]/.test(password)
+      const hasNumber = /\d/.test(password)
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password)
+
+      if (password.length < 8) {
+        return false
+      }
+
+      if (!hasUppercase || !hasLowercase || !hasNumber || !hasSpecialChar) {
+        return false
+      }
+
+      return true
     }
   }
 }
