@@ -409,6 +409,7 @@ app.post("/api/users/login", async (req, res) => {
   }
 });
 
+const baseUrl = process.env.API_BASE_URL || "";
 // Register endpoint
 app.post("/api/users/register", async (req, res) => {
   const { email, password } = req.body;
@@ -438,7 +439,8 @@ app.post("/api/users/register", async (req, res) => {
     );
 
     // Send verification email (assuming this function is defined elsewhere)
-    const verificationLink = `http://localhost:${port}/api/users/verify/${userId}`;
+
+    const verificationLink = `:${baseUrl}/api/users/verify/${userId}`;
     await sendVerificationEmail(email, verificationLink);
 
     res.status(201).json({
@@ -516,8 +518,8 @@ app.get("/api/current-user", (req, res) => {
 });
 
 // Verify user email based on userId
-const baseUrl = process.env.API_BASE_URL || "";
-app.get(`${baseUrl}/api/useers/verify/:userId`, async (req, res) => {
+
+app.get(`${base}/api/users/verify/:userId`, async (req, res) => {
   const { userId } = req.params;
 
   try {
