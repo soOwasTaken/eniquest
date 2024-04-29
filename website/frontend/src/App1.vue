@@ -24,6 +24,7 @@ onMounted(() => {
     /* backgroundColor: ['#fff', '#000'], */
     easing: 'easeInOutQuad'
   })
+  document.body.style.backgroundColor = 'black'
 })
 // const changeComponent = inject('changeComponent')
 
