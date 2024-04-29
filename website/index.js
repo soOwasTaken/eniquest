@@ -10,19 +10,53 @@ const filePath = "data.json";
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Pool } = require("pg");
+const url = require("url");
+const path = require("path");
+// Parse the PostgreSQL connection URL
+const databaseUrl = process.env.DATABASE_URL; // Set this environment variable with the PostgreSQL connection URL
+const params = url.parse(databaseUrl);
+const auth = params.auth.split(":");
+
+const config = {
+  user: auth[0],
+  password: auth[1],
+  host: params.hostname,
+  port: params.port,
+  database: params.pathname.split("/")[1],
+  // ssl: {
+  //   rejectUnauthorized: true // Ensure SSL verification is enabled
+  // }
+};
+
+const pool = new Pool(config);
+
+pool.query("SELECT NOW()", (err, res) => {
+  if (err) {
+    console.error("Error connecting to the database:", err);
+  } else {
+    console.log("Connected to the database:", res.rows[0].now);
+  }
+});
 
 // Create a connection pool
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
+// const pool = new Pool({
+//   user: process.env.DB_USER,
+//   host: process.env.DB_HOST,
+//   database: process.env.DB_NAME,
+//   password: process.env.DB_PASSWORD,
+//   port: process.env.DB_PORT,
+// });
 
 app.use(bodyParser.json()); // to parse JSON body
 //app.use(express.static('public')); // if your frontend files are in 'public' directory
+app.use(express.static(path.join(__dirname, "./frontend/dist")));
 
+console.log(__dirname);
+// Route to serve the frontend application
+app.get("/", (req, res) => {
+  /* res.json("TESTING") */
+  res.sendFile(path.join(__dirname, "./frontend/dist/", "index.html"));
+});
 app.post("/processPrompt", async (req, res) => {
   const userContent = req.body.content; // Extract the user's input sent from frontend
 
@@ -252,18 +286,18 @@ function saveUsersToFile() {
 }
 
 // Load users data from JSON file (if exists)
-fs.readFile("users.json", "utf8", (err, data) => {
-  if (err) {
-    console.error("Error reading users data:", err);
-  } else {
-    try {
-      users = JSON.parse(data);
-      console.log("Users data loaded from users.json");
-    } catch (parseError) {
-      console.error("Error parsing users data:", parseError);
-    }
-  }
-});
+// fs.readFile("users.json", "utf8", (err, data) => {
+//   if (err) {
+//     console.error("Error reading users data:", err);
+//   } else {
+//     try {
+//       users = JSON.parse(data);
+//       console.log("Users data loaded from users.json");
+//     } catch (parseError) {
+//       console.error("Error parsing users data:", parseError);
+//     }
+//   }
+// });
 
 ////////////////////////////// JSON FILE LOGIN && REGISTER ///////////////////////////////////////////////////////////
 // Login endpoint
@@ -357,17 +391,18 @@ app.post("/api/users/login", async (req, res) => {
     });
 
     // Update loggedin status in the database
-    await pool.query("UPDATE users SET loggedin = true WHERE id = $1", [
-      user.id,
-    ]);
+    if (user.verified) {
+      await pool.query("UPDATE users SET loggedin = true WHERE id = $1", [
+        user.id,
+      ]);
+      console.log(user.email, " is logged in");
+    }
 
     // Update currentUser variable
     currentUser = user;
 
     // Return token to client
     res.json({ success: true, token });
-
-    console.log(user.email, " is logged in");
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
