@@ -440,7 +440,7 @@ app.post("/api/users/register", async (req, res) => {
 
     // Send verification email (assuming this function is defined elsewhere)
 
-    const verificationLink = `:${baseUrl}/api/users/verify/${userId}`;
+    const verificationLink = `${baseUrl}/api/users/verify/${userId}`;
     await sendVerificationEmail(email, verificationLink);
 
     res.status(201).json({
