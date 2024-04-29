@@ -354,24 +354,26 @@ export default {
       })
 
       // Add animations to the timeline
-      // .add({
-      //   targets: element,
-      //   scale: [1, 1.4], // Scale up slightly more than before
-      //   opacity: [1, 0.6], // Reduce opacity more gradually
-      //   translateY: ['0%', '-5%'] // Move the element upwards slightly
-      // })
       timeline.add({
         targets: element,
         scale: [1, 0],
         opacity: [1, 0],
-        // translateX: ['0%', '-35%', '50%', '0%'],
         translateY: ['0%', '35%', '-10%', '-55%']
-        // rotateY: 360
       })
+
+      // Stop audio playback
+      this.stopAudioPlayback()
 
       setTimeout(() => {
         this.router.push('/app3')
       }, 3500)
+    },
+
+    stopAudioPlayback() {
+      if (!this.audio.paused) {
+        this.audio.pause()
+        this.isPlaying = false
+      }
     }
   },
 
