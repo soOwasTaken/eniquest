@@ -519,7 +519,7 @@ app.get("/api/current-user", (req, res) => {
 
 // Verify user email based on userId
 
-app.get(`${baseUrl}/api/users/verify/:userId`, async (req, res) => {
+app.get(`/api/users/verify/:userId`, async (req, res) => {
   const { userId } = req.params;
 
   try {
