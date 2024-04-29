@@ -510,12 +510,14 @@ app.post("/api/logout", async (req, res) => {
 });
 
 // Get current user from database
+
 app.get("/api/current-user", (req, res) => {
   res.json(currentUser);
 });
 
 // Verify user email based on userId
-app.get("/api/users/verify/:userId", async (req, res) => {
+const baseUrl = process.env.API_BASE_URL || "";
+app.get(`${baseUrl}/api/users/verify/:userId`, async (req, res) => {
   const { userId } = req.params;
 
   try {
