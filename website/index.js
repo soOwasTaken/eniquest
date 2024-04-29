@@ -53,10 +53,23 @@ app.use(express.static(path.join(__dirname, "./frontend/dist")));
 
 console.log(__dirname);
 // Route to serve the frontend application
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
   /* res.json("TESTING") */
   res.sendFile(path.join(__dirname, "./frontend/dist/", "index.html"));
 });
+app.get("/about", (req, res) => {
+  /* res.json("TESTING") */
+  res.sendFile(path.join(__dirname, "./frontend/dist/", "index.html"));
+});
+app.get("/app*", (req, res) => {
+  /* res.json("TESTING") */
+  res.sendFile(path.join(__dirname, "./frontend/dist/", "index.html"));
+});
+app.get("/auth", (req, res) => {
+  /* res.json("TESTING") */
+  res.sendFile(path.join(__dirname, "./frontend/dist/", "index.html"));
+});
+
 app.post("/processPrompt", async (req, res) => {
   const userContent = req.body.content; // Extract the user's input sent from frontend
 
