@@ -24,7 +24,6 @@ onMounted(() => {
     /* backgroundColor: ['#fff', '#000'], */
     easing: 'easeInOutQuad'
   })
-  document.body.style.backgroundColor = 'black'
 })
 // const changeComponent = inject('changeComponent')
 
@@ -105,6 +104,7 @@ body {
   left: 0;
   width: 100%;
   height: 100vh;
+  background-color: black;
   transition:
     transform 1s,
     opacity 1s; /* Add transition for smoother effect */
