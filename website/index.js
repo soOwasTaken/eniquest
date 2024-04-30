@@ -533,9 +533,9 @@ app.post("/api/logout", async (req, res) => {
 app.get("/api/current-user", async (req, res) => {
   try {
     // Query the database for the user with loggedin set to true
-    const result = await pool.query(
-      "SELECT * FROM users WHERE loggedin = true"
-    );
+    const result = await pool.query("SELECT * FROM users WHERE id = $1", [
+      currentUser.id,
+    ]);
     currentUser = result.rows[0];
 
     if (currentUser) {
