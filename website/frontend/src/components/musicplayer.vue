@@ -370,10 +370,8 @@ export default {
     },
 
     stopAudioPlayback() {
-      if (!this.audio.paused) {
-        this.audio.pause()
-        this.isPlaying = false
-      }
+      this.audio.pause()
+      this.isPlaying = false
     }
   },
 
