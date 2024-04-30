@@ -80,7 +80,9 @@ export default {
         const response = await fetch('/api/current-user')
         if (response.ok) {
           const currentUser = await response.json()
-          this.wantsUpdate = currentUser.wantsupdate === true // Set wantsUpdate based on currentUser
+          console.log('current user: ', currentUser)
+          this.wantsUpdate = currentUser.wantsupdate // Set wantsUpdate based on currentUser
+          console.log(this.wantsUpdate)
           return currentUser
         } else {
           throw new Error('Failed to fetch current user')
@@ -110,6 +112,7 @@ export default {
 .achievement-title {
   font-size: 3em;
   font-weight: bold;
+  font-family: Georgia, 'Times New Roman', Times, serif;
   color: #b59207;
   margin-top: 0;
   text-transform: uppercase;

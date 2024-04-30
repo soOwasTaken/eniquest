@@ -526,8 +526,30 @@ app.post("/api/logout", async (req, res) => {
 
 // Get current user from database
 
-app.get("/api/current-user", (req, res) => {
-  res.json(currentUser);
+// app.get("/api/current-user", (req, res) => {
+//   console.log(currentUser);
+//   res.json(currentUser);
+// });
+app.get("/api/current-user", async (req, res) => {
+  try {
+    // Query the database for the user with loggedin set to true
+    const result = await pool.query(
+      "SELECT * FROM users WHERE loggedin = true"
+    );
+    currentUser = result.rows[0];
+
+    if (currentUser) {
+      // User found
+      console.log(currentUser);
+      res.json(currentUser);
+    } else {
+      // No user found with loggedin set to true
+      res.status(404).json({ error: "Current user not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching current user:", error);
+    res.status(500).json({ error: "Failed to fetch current user" });
+  }
 });
 
 // Verify user email based on userId
