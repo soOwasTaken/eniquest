@@ -80,7 +80,7 @@ export default {
         const response = await fetch('/api/current-user')
         if (response.ok) {
           const currentUser = await response.json()
-          this.wantsUpdate = currentUser.wantsUpdate === true // Set wantsUpdate based on currentUser
+          this.wantsUpdate = currentUser.wantsupdate === true // Set wantsUpdate based on currentUser
           return currentUser
         } else {
           throw new Error('Failed to fetch current user')
