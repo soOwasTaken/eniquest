@@ -21,7 +21,6 @@ onMounted(() => {
 </script>
 <template>
   <div id="app3">
-    <svgLogo class="svg-logo" />
     <musicPlayer />
   </div>
 </template>
