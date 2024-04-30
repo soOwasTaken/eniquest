@@ -101,4 +101,85 @@ Potentiel fix a faire :
 
 3. Une fois qu'on a une version déployer fonctionelle, s'orienter vers le déploiement d'une DB en utilisant potentiellement [trevor.io](https://trevor.io/)
 
-[vercel](https://vercel.com/) pour host nos sites
+[vercel](https://vercel.com/) pour host nos sites (ou pas mdr)
+
+## fix problème multi-account CurrentUser.
+
+To handle multipleextend this practice to your server-side handling. Here's how you can proceed:
+
+### 1. Pass User Token with Each Request
+Modify the frontend to send the authentication token with each request, rather than relying on a server-side `currentUser` variable. You can achieve this by using Vue interceptors or by simply including the token in headers or as a request parameter when making API calls.
+
+### 2. Authenticate Token on the Server
+On the server, each API request should authenticate the token, decode it to extract user details, and then proceed with the user-specific logic. This approach eliminates the need for a `currentUser` variable and allows your server to handle multiple users concurrently.
+
+Here’s a step-by-step modification to your Vuex and server setup:
+
+#### Vuex Store Modification
+Ensure that every API call from Vuex sends the authentication token. You could add this token to the headers of your HTTP requests. If you are using `axios`, it would look something like this:
+
+```javascript
+axios.defaults.headers.common['Authorization'] = `Bearer ${store.state.token}`;
+```
+
+#### Server-Side Changes
+1. **Token Verification Middleware**: Create middleware to verify the token and extract user information.
+
+   ```javascript
+   const jwt = require('jsonwebtoken');
+
+   function authenticateToken(req, res, next) {
+     const authHeader = req.headers['authorization'];
+     const token = authHeader && authHeader.split(' ')[1];
+     if (token == null) return res.sendStatus(401);
+
+     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+       if (err) return res.sendStatus(403);
+       req.user = user;
+       next();
+     });
+   }
+   ```
+
+2. **Modify Endpoints to Use Middleware**: Apply this middleware to your routes. Here's how you would modify the `/api/current-user` endpoint:
+
+   ```javascript
+   app.get("/api/current-user", authenticateToken, async (req, res) => {
+     try {
+       const result = await pool.query("SELECT * FROM users WHERE id = $1", [
+         req.user.id,
+       ]);
+
+       if (result.rows.length) {
+         res.json(result.rows[0]);
+       } else {
+         res.status(404).json({ error: "User not found" });
+       }
+     } catch (error) {
+       console.error("Error fetching user:", error);
+       res.status(500).json({ error: "Failed to fetch user" });
+     }
+   });
+   ```
+
+3. **Update All References**: Ensure all server-side logic that previously used `currentUser` now uses `req.user`, provided by the token authentication middleware.
+
+### 3. Token Management
+- **Generating Tokens**: When a user logs in, generate a JWT token containing their user ID and any other relevant information. Send this token to the client.
+- **Decoding Tokens**: On the server, decode this token to extract the user ID and fetch user details for each request.
+
+### 4. Security Considerations
+Ensure that the tokens are stored and transmitted securely:
+- Use HTTPS to protect the token during transmission.
+- Configure HTTP-only cookies if storing tokens in cookies, to mitigate XSS attacks.
+
+This setup will handle multiple users efficiently by maintaining the state individually across requests, removing dependency on any shared or global state variable like `currentUser`. This is essential for building scalable and secure web applications. users concurrently without interference using the `currentUser` variable, you need to shift from using a global server-side variable to a more robust session or token-based user identification system. Given that you're already using tokens on the client side with Vuex and localStorage, you should 
+
+
+### Files that has FetchCurrentUser :
+
+- src/auth.vue
+- src/router/index.ts
+- src/components/login.vue
+- src/components/endPage.vue
+- Maybe more w/see
