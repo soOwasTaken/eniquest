@@ -33,6 +33,7 @@
 
 <script>
 import anime from '../../node_modules/animejs/lib/anime.es'
+import api from '../stores/axios-setup.js'
 export default {
   data() {
     return {
@@ -77,19 +78,17 @@ export default {
     },
     async fetchCurrentUser() {
       try {
-        const response = await fetch('/api/current-user')
-        if (response.ok) {
-          const currentUser = await response.json()
-          console.log('current user: ', currentUser)
-          this.wantsUpdate = currentUser.wantsupdate // Set wantsUpdate based on currentUser
-          console.log(this.wantsUpdate)
-          return currentUser
+        const response = await api.get('/current-user');
+        if (response.status === 200) { // Check for a 200 OK status
+          this.currentUser = await response.json(); // Assuming currentUser is still the variable holding user data on the frontend
+          return this.currentUser;
         } else {
-          throw new Error('Failed to fetch current user')
+          throw new Error('Failed to fetch current user');
         }
       } catch (error) {
-        console.error('Error fetching current user:', error)
-        return null
+        console.error('Error fetching current user:', error);
+        this.currentUser = null;
+        return null;
       }
     }
   },

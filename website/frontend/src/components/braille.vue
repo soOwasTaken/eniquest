@@ -110,11 +110,13 @@ export default {
       }
 
       if (event.key === 'Enter') {
+        const token = localStorage.getItem('token');
         const response = await fetch('/checkIndex', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+            },
           body: JSON.stringify({ index: this.currentIndex })
         })
 

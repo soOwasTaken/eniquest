@@ -11,6 +11,7 @@ import Home from '../Home.vue'
 import Auth from '../Auth.vue'
 import End from '../End.vue'
 import store from '../stores/store'
+import api from '../stores/axios-setup.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -104,16 +105,15 @@ router.beforeEach(async (to, from, next) => {
 
 async function fetchCurrentUser() {
   try {
-    const response = await fetch('/api/current-user')
-    if (response.ok) {
-      const currentUser = await response.json()
-      return currentUser
+    const response = await api.get('/current-user')
+    if (response.status === 200) {
+      return response.data; // Directly return the data object from Axios response
     } else {
-      throw new Error('Failed to fetch current user')
+      throw new Error('Failed to fetch current user');
     }
   } catch (error) {
-    console.error('Error fetching current user:', error)
-    return null
+    console.error('Error fetching current user:', error);
+    return null;
   }
 }
 

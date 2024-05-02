@@ -19,6 +19,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router' // Import useRouter from Vue Router
 import LoginSignup from './components/ClassicLogin.vue'
 // import LoginSignup from './components/oldlogin.vue'
+import api from './stores/axios-setup.js';
 import axios from 'axios'
 
 export default {
@@ -32,7 +33,7 @@ export default {
     // Reference to the OverlayComponent
     const loginUser = async (userData) => {
       try {
-        const response = await axios.post('/api/users/login', userData)
+        const response = await api.post('/users/login', userData)
         if (response.data.success) {
           // Check if the user is verified
           const isVerified = await checkEmailVerification(userData.email)
@@ -77,7 +78,7 @@ export default {
 
     const signupUser = async (userData) => {
       try {
-        const response = await axios.post('/api/users/register', userData)
+        const response = await api.post('/users/register', userData)
         if (response.data.success) {
           // Registration successful, show alert message to verify email
           alert('Registration successful. Please verify your email.')
@@ -97,7 +98,7 @@ export default {
     // Function to check if the user's email is verified
     const checkEmailVerification = async (email) => {
       try {
-        const response = await axios.get(`/api/users/verify-status/${email}`)
+        const response = await api.get(`/users/verify-status/${email}`)
         return response.data.verified
       } catch (error) {
         console.error('Error checking email verification status:', error)
@@ -107,7 +108,7 @@ export default {
 
     const logoutUser = async () => {
       try {
-        const response = await axios.post('/api/logout')
+        const response = await api.post('/logout')
         console.log(response.data.message) // Log success message
       } catch (error) {
         console.error('Error logging out:', error.response.data) // Log error message
@@ -140,16 +141,15 @@ export default {
     }
     async function fetchCurrentUser() {
       try {
-        const response = await fetch('/api/current-user')
-        if (response.ok) {
-          const currentUser = await response.json()
-          return currentUser
+        const response = await api.get('/current-user')
+        if (response.status === 200) {
+          return response.data;
         } else {
-          throw new Error('Failed to fetch current user')
+          throw new Error('Failed to fetch current user');
         }
       } catch (error) {
-        console.error('Error fetching current user:', error)
-        return null
+        console.error('Error fetching current user:', error);
+        return null;
       }
     }
     return {

@@ -131,6 +131,7 @@ import anime from 'animejs'
 import OverlayComponent from '../Auth.vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import api from '../stores/axios-setup';
 import axios from 'axios'
 export default {
   components: {
@@ -222,52 +223,38 @@ export default {
       console.log('ok')
     },
     async continueSite() {
-      try {
-        const currentUser = await this.fetchCurrentUser()
-        if (!currentUser) {
-          this.logout()
-          this.router.push('/app1')
-          console.log('continue button failed')
-        } else {
-          anime({
-            targets: '.full-page',
-            opacity: [1, 0], // Fade out
-            easing: 'easeInOutSine',
-            duration: 2000,
-            complete: () => {
-              this.router.push(`/app${currentUser.level + 1}`)
-            }
-          })
+      anime({
+        targets: '.full-page',
+        opacity: [1, 0], // Fade out
+        easing: 'easeInOutSine',
+        duration: 2000,
+        complete: () => {
+          this.router.push(`/app${currentUser.level + 1}`)
         }
-      } catch (error) {
-        console.error('Error while continuing site:', error)
-      }
+      })
     },
     async checkServer() {
       const currentUser = await this.fetchCurrentUser()
-      if (!currentUser) {
-        this.logout()
-        this.router.push('/app1')
-      }
+      this.router.push('/app1')
     },
     async fetchCurrentUser() {
       try {
-        const response = await fetch('/api/current-user')
-        if (response.ok) {
-          this.currentUser = await response.json()
-          return this.currentUser
+        const response = await api.get('/current-user');
+        if (response.status === 200) { // Check for a 200 OK status
+          this.currentUser = await response.json(); // Assuming currentUser is still the variable holding user data on the frontend
+          return this.currentUser;
         } else {
-          throw new Error('Failed to fetch current user')
+          throw new Error('Failed to fetch current user');
         }
       } catch (error) {
-        console.error('Error fetching current user:', error)
-        this.currentUser = null
-        return null
+        console.error('Error fetching current user:', error);
+        this.currentUser = null;
+        return null;
       }
     },
     async logout() {
       try {
-        const response = await axios.post('/api/logout')
+        const response = await api.post('/logout')
         console.log(response.data.message) // Log success message
       } catch (error) {
         console.error('Error logging out:', error) // Log error message
