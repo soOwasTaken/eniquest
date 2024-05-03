@@ -34,6 +34,7 @@ onMounted(() => {
 }
 
 body {
+  overflow: hidden;
   background-color: black;
   margin: 0;
   top: 0;
@@ -42,8 +43,8 @@ body {
   height: 100%;
 }
 
-#app4 {
-  border-radius: 70%; /* Ensure that the initial border radius is set to 70% */
+#app3 {
+  overflow: hidden;
 }
 .svg-logo {
   z-index: 9999;

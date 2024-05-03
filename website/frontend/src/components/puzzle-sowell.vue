@@ -142,12 +142,12 @@ const handleInput = async () => {
   console.log('User input:', userInputValue)
 
   const game = 'game4'
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token')
   const response = await fetch('/checkOrder', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+      Authorization: `Bearer ${token}` // Include the token in the Authorization header
     },
     body: JSON.stringify({ game, order: userInputValue })
   })
@@ -352,6 +352,7 @@ shuffleTiles()
   /* overflow-y: auto; */
   width: 100%;
   background: rgba(0, 0, 0, 0.2);
+  overflow: hidden;
   /* transform: translateY(-10%); */
 }
 .grid-container {

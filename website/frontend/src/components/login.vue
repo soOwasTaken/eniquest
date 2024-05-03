@@ -131,7 +131,7 @@ import anime from 'animejs'
 import OverlayComponent from '../Auth.vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import api from '../stores/axios-setup';
+import api from '../stores/axios-setup'
 import axios from 'axios'
 export default {
   components: {
@@ -236,23 +236,24 @@ export default {
     async checkServer() {
       const currentUser = await this.fetchCurrentUser()
       if (!currentUser) {
-      this.logout()
-      this.router.push('/app1')
+        this.logout()
+        this.router.push('/app1')
       }
     },
     async fetchCurrentUser() {
       try {
-        const response = await api.get('/current-user');
-        if (response.status === 200) { // Check for a 200 OK status
-          this.currentUser = await response.data; // Assuming currentUser is still the variable holding user data on the frontend
-          return this.currentUser;
+        const response = await api.get('/current-user')
+        if (response.status === 200) {
+          // Check for a 200 OK status
+          this.currentUser = await response.data // Assuming currentUser is still the variable holding user data on the frontend
+          return this.currentUser
         } else {
-          throw new Error('Failed to fetch current user');
+          throw new Error('Failed to fetch current user')
         }
       } catch (error) {
-        console.error('Error fetching current user:', error);
-        this.currentUser = null;
-        return null;
+        console.error('Error fetching current user:', error)
+        this.currentUser = null
+        return null
       }
     },
     async logout() {
@@ -379,6 +380,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Sedan&display=swap');
 
 .full-page {
+  overflow: hidden;
   width: 100vw;
   height: 100vh;
   display: flex;
