@@ -3,7 +3,7 @@ import axios from 'axios';
 import store from './store';
 
 // Determine the base URL based on the environment
-const baseURL = process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3000/api';
+const baseURL = process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3000';
 
 const api = axios.create({
   baseURL: baseURL,
@@ -19,5 +19,6 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
+console.log('Setting up axios instance', api);
 export default api;
 

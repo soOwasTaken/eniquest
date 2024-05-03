@@ -1038,14 +1038,19 @@ app.post("/api/reset-password", async (req, res) => {
 });
 
 // Endpoint to update user preference
-app.post("/api/update-user-preference", async (req, res) => {
+app.post("/api/update-user-preference", authenticateToken, async (req, res) => {
   const { wantsUpdate } = req.body;
 
   try {
-    // Update user's wantsUpdate preference in the database
-    await pool.query("UPDATE users SET wantsupdate = $1 WHERE id = $2", [
+    // Ensure the user's email is attached to the request via the auth token
+    if (!req.user.email) {
+      return res.status(400).json({ error: "User email not provided in token" });
+    }
+
+    // Update user's wantsUpdate preference in the database based on their email
+    await pool.query("UPDATE users SET wantsupdate = $1 WHERE email = $2", [
       wantsUpdate,
-      req.user.id,
+      req.user.email,
     ]);
 
     res.json({ message: "User preference updated successfully." });
@@ -1054,6 +1059,7 @@ app.post("/api/update-user-preference", async (req, res) => {
     res.status(500).json({ error: "Failed to update user preference." });
   }
 });
+
 
 // server running
 const server = app.listen(port, () => {

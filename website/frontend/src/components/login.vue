@@ -229,19 +229,22 @@ export default {
         easing: 'easeInOutSine',
         duration: 2000,
         complete: () => {
-          this.router.push(`/app${currentUser.level + 1}`)
+          this.router.push(`/app${this.currentUser.level + 1}`)
         }
       })
     },
     async checkServer() {
       const currentUser = await this.fetchCurrentUser()
+      if (!currentUser) {
+      this.logout()
       this.router.push('/app1')
+      }
     },
     async fetchCurrentUser() {
       try {
         const response = await api.get('/current-user');
         if (response.status === 200) { // Check for a 200 OK status
-          this.currentUser = await response.json(); // Assuming currentUser is still the variable holding user data on the frontend
+          this.currentUser = await response.data; // Assuming currentUser is still the variable holding user data on the frontend
           return this.currentUser;
         } else {
           throw new Error('Failed to fetch current user');
