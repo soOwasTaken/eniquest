@@ -32,24 +32,26 @@
 </template>
 
 <script>
+import { routerKey, useRouter } from 'vue-router'
 import anime from '../../node_modules/animejs/lib/anime.es'
 import api from '../stores/axios-setup.js'
-const token = localStorage.getItem('token');
+const token = localStorage.getItem('token')
 export default {
   data() {
     return {
       wantsUpdate: false,
-      notificationMessage: ''
+      notificationMessage: '',
+      router: useRouter()
     }
   },
   methods: {
     submitUpdatePreference() {
       fetch('/api/update-user-preference', {
         method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Include the token in the Authorization header
-          },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` // Include the token in the Authorization header
+        },
         body: JSON.stringify({ wantsUpdate: this.wantsUpdate })
       })
         .then((response) => {
@@ -70,6 +72,21 @@ export default {
             setTimeout(() => {
               this.notificationMessage = ''
             }, 4001)
+            setTimeout(() => {
+              anime({
+                targets: ['.achievement-container'],
+                /* scale: [0.001, 1], */ // Scale up to 100% of original size
+                translateY: ['0%', '200%'],
+                translateX: ['0%', '200%'],
+                duration: 1000, // Duration of animation
+                /* translateX: ['-90%', '9%', '0%'], */
+                /* backgroundColor: ['#fff', '#000'], */
+                easing: 'easeInOutQuad'
+              })
+              setTimeout(() => {
+                this.router.push('/')
+              }, 1000)
+            }, 4100)
           } else {
             throw new Error('Network response was not ok.')
           }
@@ -80,19 +97,20 @@ export default {
     },
     async fetchCurrentUser() {
       try {
-        const response = await api.get('/current-user');
-        if (response.status === 200) { // Check for a 200 OK status
-          this.currentUser = await response.data; // Assuming currentUser is still the variable holding user data on the frontend
+        const response = await api.get('/current-user')
+        if (response.status === 200) {
+          // Check for a 200 OK status
+          this.currentUser = await response.data // Assuming currentUser is still the variable holding user data on the frontend
           this.wantsUpdate = this.currentUser.wantsupdate
           console.log(this.wantsUpdate)
-          return this.currentUser;
+          return this.currentUser
         } else {
-          throw new Error('Failed to fetch current user');
+          throw new Error('Failed to fetch current user')
         }
       } catch (error) {
-        console.error('Error fetching current user:', error);
-        this.currentUser = null;
-        return null;
+        console.error('Error fetching current user:', error)
+        this.currentUser = null
+        return null
       }
     }
   },
