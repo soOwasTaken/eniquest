@@ -272,12 +272,13 @@ To the whims of those who rule as knaves.<br>`,
       if (this.command.toLowerCase().trim().startsWith('answer ')) {
         // Extract the guessed names
         const guessedNames = this.command.substring(6).trim()
-
+        const token = localStorage.getItem('token');
         // Send the guessed names to the server for validation
         fetch('/checkOrder', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include the token in the Authorization header
           },
           body: JSON.stringify({ game: 'game1', order: guessedNames }) // Set the game parameter based on the game being played
         })

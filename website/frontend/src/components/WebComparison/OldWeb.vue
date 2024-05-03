@@ -662,7 +662,7 @@ import anime from '../../../node_modules/animejs/lib/anime.es'
 import App4 from '../../App4.vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-
+import api from '../../stores/axios-setup.js'
 const router = useRouter()
 const store = useStore()
 const showResults = ref(false) // Initially hide the search results
@@ -717,14 +717,25 @@ function returnToForumPage(forumPage) {
 const submitAnswer = async () => {
   const fullAnswer = answer.value
   const game = 'game2'
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    console.error('No token available');
+    return; // Optionally handle the lack of token
+  }
 
   const response = await fetch('/checkOrder', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` // Include the token in the Authorization header
     },
     body: JSON.stringify({ game, order: fullAnswer })
-  })
+  });
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok: ' + response.statusText);
+  }
 
   const data = await response.json()
   let feedback = data.feedback

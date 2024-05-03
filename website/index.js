@@ -47,6 +47,30 @@ pool.query("SELECT NOW()", (err, res) => {
 //   port: process.env.DB_PORT,
 // });
 
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Extract the token from the Authorization header
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token provided' }); // No token found in the request headers
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      console.log('Token verification failed:', err);
+      return res.status(403).json({ message: 'Invalid token' }); // Token is not valid
+    }
+    console.log("Decoded JWT:", decoded); // Log the decoded JWT for debugging
+
+    // Attach the decoded token to the request as the user object
+    req.user = { id: decoded.userId, email: decoded.email };
+    next(); // Proceed to the next middleware
+  });
+}
+
+
+
 app.use(bodyParser.json()); // to parse JSON body
 //app.use(express.static('public')); // if your frontend files are in 'public' directory
 app.use(express.static(path.join(__dirname, "./frontend/dist")));
@@ -70,7 +94,7 @@ app.get("/auth", (req, res) => {
   res.sendFile(path.join(__dirname, "./frontend/dist/", "index.html"));
 });
 
-app.post("/processPrompt", async (req, res) => {
+app.post("/processPrompt", authenticateToken, async (req, res) => {
   const userContent = req.body.content; // Extract the user's input sent from frontend
 
   if (userContent.length < 15) {
@@ -111,7 +135,7 @@ app.post("/processPrompt", async (req, res) => {
     .request(config)
     .then((response) => {
       const content = response.data.choices[0].message.content;
-      const result = processEntryById(content, response.data.id);
+      const result = processEntryById(content, response.data.id, req.user.email);
       const userOutput = userContent; // Assuming this is what you meant by user output
       const totalTokens =
         response.data.usage.prompt_tokens +
@@ -163,37 +187,41 @@ app.post("/processPrompt", async (req, res) => {
 /// THIS IS WHERE WE CHECK ALL GAMES ANSWERS ///
 
 ///BRAILLE///
-app.post("/checkIndex", (req, res) => {
+app.post("/checkIndex", authenticateToken, async (req, res) => {
   const { index } = req.body;
-
   if (index === 57) {
-    res.json({ result: true });
-    if (currentUser.level < 4) updateUserLevel(4);
+    try {
+      await updateUserLevel(4, req.user.email);
+      console.log("User level updated successfully");
+      res.json({ result: true, feedback: "Level updated to 4." });
+    } catch (error) {
+      console.error("Failed to update user level:", error);
+      res.status(500).json({ error: "Failed to update user level" });
+    }
   } else {
-    res.json({ result: false });
+    res.json({ result: false, feedback: "Incorrect index." });
   }
 });
 
-app.post("/checkOrder", (req, res) => {
+
+app.post("/checkOrder", authenticateToken, async (req, res) => {
   const { game, order } = req.body;
 
-  /// WEB COMP ///
+  // Example game check:
   if (game === "game2") {
-    // Define the correct phrase for the first game
-    const correctPhrase =
-      "I disapprove of what you say, but I will defend to the death your right to say it";
-    const correctPhrase2 =
-      "I disapprove of what you say but I will defend to the death your right to say it";
-
-    // Remove any trailing period from both user's answer and correct phrase
+    const correctPhrase = "I disapprove of what you say, but I will defend to the death your right to say it";
     const userAnswer = order.trim().replace(/\.$/, "").toLowerCase();
-    const correctAnswer = correctPhrase.toLowerCase().replace(/\.$/, "");
-    const correctAnswer2 = correctPhrase2.toLowerCase().replace(/\.$/, "");
 
-    // Check if the provided string matches the correct phrase
+    const correctAnswer = correctPhrase.toLowerCase().replace(/\.$/, "");
+
     if (userAnswer === correctAnswer || userAnswer === correctAnswer2) {
-      res.json({ feedback: "Correct! The phrase matches exactly." });
-      if (currentUser.level < 3) updateUserLevel(3);
+      try {
+        await updateUserLevel(3, req.user.email);  // Using email to update level
+        res.json({ feedback: "Correct! The phrase matches exactly." });
+      } catch (error) {
+        console.error("Failed to update user level:", error);
+        res.status(500).json({ error: "Failed to update user level" });
+      }
     } else {
       res.json({ feedback: "Incorrect. Please try again." });
     }
@@ -223,7 +251,7 @@ app.post("/checkOrder", (req, res) => {
     // Send the appropriate feedback to the client
     if (correctNames.length === 5) {
       res.json({ feedback: "Correct!" });
-      if (currentUser.level < 6) updateUserLevel(6);
+      updateUserLevel(6, req.user.email);
     } else if (correctNames.length > 0) {
       res.json({
         feedback: `Partial correct. You only got ${
@@ -242,7 +270,7 @@ app.post("/checkOrder", (req, res) => {
     // Check if the user input matches the correct answer
     if (order === correctAnswer) {
       res.json({ feedback: "Correct! You've solved the puzzle." });
-      if (currentUser.level < 5) updateUserLevel(5);
+      updateUserLevel(5, req.user.email);
     } else {
       res.json({ feedback: "Incorrect." });
     }
@@ -265,8 +293,7 @@ app.post("/checkOrder", (req, res) => {
       order === alternativeString2.toLowerCase()
     ) {
       res.json({ feedback: "Well done" });
-
-      if (currentUser.level < 2) updateUserLevel(2);
+      updateUserLevel(2, req.user.email);
     } else {
       res.json({ feedback: "Wrong... Try again." });
     }
@@ -285,7 +312,6 @@ app.post("/checkOrder", (req, res) => {
 
 // Dummy database for users (you'll replace this with a real database)
 let users = [];
-let currentUser;
 
 // Save users data to JSON file
 function saveUsersToFile() {
@@ -399,9 +425,11 @@ app.post("/api/users/login", async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h", // Token expires in 1 hour
-    });
+    const token = jwt.sign(
+      { userId: user.id, email: user.email }, // Adding email to the token payload
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
     // Update loggedin status in the database
     if (user.verified) {
@@ -410,9 +438,6 @@ app.post("/api/users/login", async (req, res) => {
       ]);
       console.log(user.email, " is logged in");
     }
-
-    // Update currentUser variable
-    currentUser = user;
 
     // Return token to client
     res.json({ success: true, token });
@@ -511,12 +536,12 @@ app.post("/api/users/register", async (req, res) => {
 app.post("/api/logout", async (req, res) => {
   try {
     // Update loggedin status in the database
-    if (currentUser)
+    if (req.user)
       await pool.query("UPDATE users SET loggedin = false WHERE id = $1", [
-        currentUser.id,
+        req.user.id,
       ]);
 
-    if (currentUser) console.log(currentUser.email, " has logged out");
+    if (req.user) console.log(req.user.email, " has logged out");
     res.json({ message: "User logged out successfully." });
   } catch (error) {
     console.error("Error logging out:", error);
@@ -530,25 +555,21 @@ app.post("/api/logout", async (req, res) => {
 //   console.log(currentUser);
 //   res.json(currentUser);
 // });
-app.get("/api/current-user", async (req, res) => {
-  try {
-    // Query the database for the user with loggedin set to true
-    const result = await pool.query("SELECT * FROM users WHERE id = $1", [
-      currentUser.id,
-    ]);
-    currentUser = result.rows[0];
+app.get("/api/current-user", authenticateToken, async (req, res) => {
+  console.log('Current user:', req.user); // This will log the user information extracted from the token
 
-    if (currentUser) {
-      // User found
-      console.log(currentUser);
-      res.json(currentUser);
+  try {
+    // Query the database to fetch user details using the user ID extracted from the token
+    const result = await pool.query("SELECT * FROM users WHERE id = $1", [req.user.id]);
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
     } else {
-      // No user found with loggedin set to true
-      res.status(404).json({ error: "Current user not found" });
+      res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
-    console.error("Error fetching current user:", error);
-    res.status(500).json({ error: "Failed to fetch current user" });
+    console.error("Error fetching user details:", error);
+
+    res.status(500).json({ error: "Failed to fetch user details" });
   }
 });
 
@@ -635,7 +656,7 @@ function processLatestEntry() {
 //   saveUsersToFile();
 //   console.log(currentUser);
 // }
-function processEntryById(content, id) {
+function processEntryById(content, id, userEmail) {
   console.log("Content received for processing:", content); // Debug: log the content
 
   const scoreRegex = /Score: (\d+)\/10/;
@@ -648,7 +669,9 @@ function processEntryById(content, id) {
     const score = parseInt(scoreMatch[1], 10);
     const summary = summaryMatch[1].trim();
     const scoreResult = score >= 6 ? 1 : 0;
-    if (scoreResult === 1 && currentUser.level < 1) updateUserLevel(1);
+    if (scoreResult === 1) {
+      updateUserLevel(1, userEmail);  // Now using userEmail passed to the function
+    }
 
     return { scoreResult, summary };
   } else {
@@ -658,20 +681,19 @@ function processEntryById(content, id) {
 }
 
 //////////////////////////// DATABASE UPDATE LEVEL AND PROCESSENTRYBYID /////////////////////////////
-async function updateUserLevel(level) {
+async function updateUserLevel(level, email) {
+  console.log(`Attempting to update user level to ${level} for user with email ${email}`);
   try {
-    // Update the user's level in the database
-    await pool.query("UPDATE users SET level = $1 WHERE id = $2", [
-      level,
-      currentUser.id,
-    ]);
-
-    // Update currentUser's level
-    currentUser.level = level;
-
-    console.log(currentUser);
+    const res = await pool.query("UPDATE users SET level = $1 WHERE email = $2", [level, email]);
+    if (res.rowCount > 0) {
+      console.log(`User level updated successfully for email: ${email}`);
+    } else {
+      console.log(`No user found with email: ${email}`);
+    }
   } catch (error) {
     console.error("Error updating user level:", error);
+
+    throw error;  // It's a good practice to re-throw the error if you catch it in a function like this, especially if you need the calling function to know that an error occurred.
   }
 }
 
@@ -1016,14 +1038,19 @@ app.post("/api/reset-password", async (req, res) => {
 });
 
 // Endpoint to update user preference
-app.post("/api/update-user-preference", async (req, res) => {
+app.post("/api/update-user-preference", authenticateToken, async (req, res) => {
   const { wantsUpdate } = req.body;
 
   try {
-    // Update user's wantsUpdate preference in the database
-    await pool.query("UPDATE users SET wantsupdate = $1 WHERE id = $2", [
+    // Ensure the user's email is attached to the request via the auth token
+    if (!req.user.email) {
+      return res.status(400).json({ error: "User email not provided in token" });
+    }
+
+    // Update user's wantsUpdate preference in the database based on their email
+    await pool.query("UPDATE users SET wantsupdate = $1 WHERE email = $2", [
       wantsUpdate,
-      currentUser.id,
+      req.user.email,
     ]);
 
     res.json({ message: "User preference updated successfully." });
@@ -1032,6 +1059,7 @@ app.post("/api/update-user-preference", async (req, res) => {
     res.status(500).json({ error: "Failed to update user preference." });
   }
 });
+
 
 // server running
 const server = app.listen(port, () => {

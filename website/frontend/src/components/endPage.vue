@@ -33,6 +33,8 @@
 
 <script>
 import anime from '../../node_modules/animejs/lib/anime.es'
+import api from '../stores/axios-setup.js'
+const token = localStorage.getItem('token');
 export default {
   data() {
     return {
@@ -44,9 +46,10 @@ export default {
     submitUpdatePreference() {
       fetch('/api/update-user-preference', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+          },
         body: JSON.stringify({ wantsUpdate: this.wantsUpdate })
       })
         .then((response) => {
@@ -77,19 +80,19 @@ export default {
     },
     async fetchCurrentUser() {
       try {
-        const response = await fetch('/api/current-user')
-        if (response.ok) {
-          const currentUser = await response.json()
-          console.log('current user: ', currentUser)
-          this.wantsUpdate = currentUser.wantsupdate // Set wantsUpdate based on currentUser
+        const response = await api.get('/current-user');
+        if (response.status === 200) { // Check for a 200 OK status
+          this.currentUser = await response.data; // Assuming currentUser is still the variable holding user data on the frontend
+          this.wantsUpdate = this.currentUser.wantsupdate
           console.log(this.wantsUpdate)
-          return currentUser
+          return this.currentUser;
         } else {
-          throw new Error('Failed to fetch current user')
+          throw new Error('Failed to fetch current user');
         }
       } catch (error) {
-        console.error('Error fetching current user:', error)
-        return null
+        console.error('Error fetching current user:', error);
+        this.currentUser = null;
+        return null;
       }
     }
   },

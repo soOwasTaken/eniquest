@@ -389,10 +389,12 @@ export default {
     /////////////////////////////////////////////////////////
     async confirmInput() {
       try {
+        const token = localStorage.getItem('token');
         const response = await fetch('/checkOrder', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Include the token in the Authorization header
           },
           body: JSON.stringify({
             game: 'game5',
