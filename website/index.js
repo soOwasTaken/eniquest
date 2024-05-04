@@ -47,19 +47,18 @@ pool.query("SELECT NOW()", (err, res) => {
 //   port: process.env.DB_PORT,
 // });
 
-
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Extract the token from the Authorization header
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Extract the token from the Authorization header
 
   if (!token) {
-    return res.status(401).json({ message: 'No token provided' }); // No token found in the request headers
+    return res.status(401).json({ message: "No token provided" }); // No token found in the request headers
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      console.log('Token verification failed:', err);
-      return res.status(403).json({ message: 'Invalid token' }); // Token is not valid
+      console.log("Token verification failed:", err);
+      return res.status(403).json({ message: "Invalid token" }); // Token is not valid
     }
     console.log("Decoded JWT:", decoded); // Log the decoded JWT for debugging
 
@@ -68,8 +67,6 @@ function authenticateToken(req, res, next) {
     next(); // Proceed to the next middleware
   });
 }
-
-
 
 app.use(bodyParser.json()); // to parse JSON body
 //app.use(express.static('public')); // if your frontend files are in 'public' directory
@@ -135,7 +132,11 @@ app.post("/processPrompt", authenticateToken, async (req, res) => {
     .request(config)
     .then((response) => {
       const content = response.data.choices[0].message.content;
-      const result = processEntryById(content, response.data.id, req.user.email);
+      const result = processEntryById(
+        content,
+        response.data.id,
+        req.user.email
+      );
       const userOutput = userContent; // Assuming this is what you meant by user output
       const totalTokens =
         response.data.usage.prompt_tokens +
@@ -203,20 +204,20 @@ app.post("/checkIndex", authenticateToken, async (req, res) => {
   }
 });
 
-
 app.post("/checkOrder", authenticateToken, async (req, res) => {
   const { game, order } = req.body;
 
   // Example game check:
   if (game === "game2") {
-    const correctPhrase = "I disapprove of what you say, but I will defend to the death your right to say it";
+    const correctPhrase =
+      "I disapprove of what you say, but I will defend to the death your right to say it";
     const userAnswer = order.trim().replace(/\.$/, "").toLowerCase();
 
     const correctAnswer = correctPhrase.toLowerCase().replace(/\.$/, "");
 
     if (userAnswer === correctAnswer || userAnswer === correctAnswer2) {
       try {
-        await updateUserLevel(3, req.user.email);  // Using email to update level
+        await updateUserLevel(3, req.user.email); // Using email to update level
         res.json({ feedback: "Correct! The phrase matches exactly." });
       } catch (error) {
         console.error("Failed to update user level:", error);
@@ -556,11 +557,13 @@ app.post("/api/logout", async (req, res) => {
 //   res.json(currentUser);
 // });
 app.get("/api/current-user", authenticateToken, async (req, res) => {
-  console.log('Current user:', req.user); // This will log the user information extracted from the token
+  console.log("Current user:", req.user); // This will log the user information extracted from the token
 
   try {
     // Query the database to fetch user details using the user ID extracted from the token
-    const result = await pool.query("SELECT * FROM users WHERE id = $1", [req.user.id]);
+    const result = await pool.query("SELECT * FROM users WHERE id = $1", [
+      req.user.id,
+    ]);
     if (result.rows.length > 0) {
       res.json(result.rows[0]);
     } else {
@@ -670,7 +673,7 @@ function processEntryById(content, id, userEmail) {
     const summary = summaryMatch[1].trim();
     const scoreResult = score >= 6 ? 1 : 0;
     if (scoreResult === 1) {
-      updateUserLevel(1, userEmail);  // Now using userEmail passed to the function
+      updateUserLevel(1, userEmail); // Now using userEmail passed to the function
     }
 
     return { scoreResult, summary };
@@ -682,9 +685,14 @@ function processEntryById(content, id, userEmail) {
 
 //////////////////////////// DATABASE UPDATE LEVEL AND PROCESSENTRYBYID /////////////////////////////
 async function updateUserLevel(level, email) {
-  console.log(`Attempting to update user level to ${level} for user with email ${email}`);
+  console.log(
+    `Attempting to update user level to ${level} for user with email ${email}`
+  );
   try {
-    const res = await pool.query("UPDATE users SET level = $1 WHERE email = $2", [level, email]);
+    const res = await pool.query(
+      "UPDATE users SET level = $1 WHERE email = $2",
+      [level, email]
+    );
     if (res.rowCount > 0) {
       console.log(`User level updated successfully for email: ${email}`);
     } else {
@@ -693,7 +701,7 @@ async function updateUserLevel(level, email) {
   } catch (error) {
     console.error("Error updating user level:", error);
 
-    throw error;  // It's a good practice to re-throw the error if you catch it in a function like this, especially if you need the calling function to know that an error occurred.
+    throw error; // It's a good practice to re-throw the error if you catch it in a function like this, especially if you need the calling function to know that an error occurred.
   }
 }
 
@@ -1044,7 +1052,9 @@ app.post("/api/update-user-preference", authenticateToken, async (req, res) => {
   try {
     // Ensure the user's email is attached to the request via the auth token
     if (!req.user.email) {
-      return res.status(400).json({ error: "User email not provided in token" });
+      return res
+        .status(400)
+        .json({ error: "User email not provided in token" });
     }
 
     // Update user's wantsUpdate preference in the database based on their email
@@ -1059,7 +1069,6 @@ app.post("/api/update-user-preference", authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Failed to update user preference." });
   }
 });
-
 
 // server running
 const server = app.listen(port, () => {
