@@ -1,5 +1,11 @@
 <!-- OverlayComponent.vue -->
 <template>
+  <div class="alert-password" v-if="passwordAlert">
+    <p>
+      your password should contain <br />8 characters minimum with a combination of<br />
+      uppercase, lowercase, numbers, and special characters.
+    </p>
+  </div>
   <div class="overlay" v-show="isVisible">
     <div class="overlay-content">
       <form @submit.prevent="handleSubmit" class="login-form">
@@ -7,7 +13,6 @@
         <div v-if="mode === 'passwordChange'">
           <div class="input-holder">
             <i class="icon fas fa-lock"></i>
-            <<<<<<< HEAD
             <input
               type="password"
               class="input"
@@ -25,16 +30,16 @@
               v-model="confirmNewPassword"
               required
             />
-            =======
-            <input
+
+            <!-- <input
               type="password"
               class="input"
               placeholder="New Password"
               v-model="newPassword"
               required
-            />
+            /> -->
           </div>
-          <div class="input-holder">
+          <!-- <div class="input-holder">
             <i class="icon fas fa-lock"></i>
             <input
               type="password"
@@ -43,8 +48,7 @@
               v-model="confirmNewPassword"
               required
             />
-            >>>>>>> origin/main
-          </div>
+          </div> -->
           <div class="input-holder">
             <input type="submit" class="button larger-button" value="Confirm New Password" />
           </div>
@@ -81,6 +85,7 @@
           </div>
           <div class="input-holder" v-if="mode === 'signup' && mode !== 'passwordChange'">
             <i class="icon fas fa-lock"></i>
+
             <input
               type="password"
               class="input"
@@ -126,16 +131,28 @@ export default {
       resetPasswordParagraph: 'Please enter your email to reset your password.',
       showResetKeyInput: false,
       newPassword: '',
-      confirmNewPassword: ''
+      confirmNewPassword: '',
+      passwordAlert: false
       // ... other data properties required for the overlay
     }
   },
 
   methods: {
     handleSubmit() {
+      this.passwordAlert = false
       if (this.mode === 'login') {
         this.$emit('login', { email: this.email, password: this.password })
       } else if (this.mode === 'signup') {
+        if (!this.validatePassword(this.password)) {
+          // alert(
+          //   'Password is not strong enough. Please use a combination of uppercase, lowercase, numbers, and special characters.'
+          // )
+          this.passwordAlert = true
+          // setTimeout(() => {
+          //   this.passwordAlert = false
+          // }, 2000)
+          return
+        }
         if (this.password !== this.confirmPassword) {
           alert('Passwords do not match')
           return
@@ -149,6 +166,16 @@ export default {
           this.checkEmail(this.email)
         }
       } else if (this.mode === 'passwordChange') {
+        if (!this.validatePassword(this.newPassword)) {
+          // alert(
+          //   'Password is not strong enough. Please use a combination of uppercase, lowercase, numbers, and special characters.'
+          // )
+          this.passwordAlert = true
+          // setTimeout(() => {
+          //   this.passwordAlert = false
+          // }, 2000)
+          return
+        }
         if (this.newPassword !== this.confirmNewPassword) {
           alert('New passwords do not match')
           return
@@ -257,6 +284,22 @@ export default {
           console.error('Error resetting password:', error)
           alert('Failed to reset password.')
         })
+    },
+    validatePassword(password) {
+      const hasUppercase = /[A-Z]/.test(password)
+      const hasLowercase = /[a-z]/.test(password)
+      const hasNumber = /\d/.test(password)
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password)
+
+      if (password.length < 8) {
+        return false
+      }
+
+      if (!hasUppercase || !hasLowercase || !hasNumber || !hasSpecialChar) {
+        return false
+      }
+
+      return true
     }
   }
 }
@@ -377,6 +420,16 @@ export default {
   height: 100%;
   width: 100%;
   border-top: 0.5px solid #fff;
+}
+.alert-password {
+  position: absolute;
+  text-align: center;
+  transform: translate(-18%, -358%);
+  text-transform: uppercase;
+  font-size: 18px;
+  color: #870a0a;
+  /* background: #8e09094a; */
+  width: 30vw;
 }
 @media (max-width: 768px) {
   .overlay {
