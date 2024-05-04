@@ -75,6 +75,6 @@ describe("User Authentication Endpoints", () => {
     expect(response.body).toHaveProperty("email");
     // Add more assertions based on the response structure
   });
-
-  // Add more tests as needed
+  /// TO COMPLETE /// MAYBE NOT ALL TESTS IN THE SAME FILE
+  // give appropriate tests files names
 });
