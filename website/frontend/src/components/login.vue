@@ -5,6 +5,7 @@
     </video>
     <div class="content">
       <ul class="completed-games" v-if="store.getters.isLoggedIn && currentUser">
+        <SPAN class="user-email">{{ currentUser.email.split('@')[0] }}</SPAN>
         <li v-if="filteredGameOptions.length > 0" class="succeeded-title">&nbsp;Succeeded:</li>
         <li v-for="(game, index) in filteredGameOptions" :key="index">
           <button class="completed-games-element" @click="navigateToGame(index)">
@@ -457,12 +458,15 @@ p {
 .logout-button {
   /* top: -10%; */
   /* left: 1%; */
-  bottom: 7%;
+  top: -3%;
   width: 6%;
   padding: 0;
   height: 5%;
   font-size: 16px;
   opacity: 0;
+  transform: translate(0px);
+  left: 97.5%;
+
   border-color: rgba(255, 255, 255, 0.256);
   color: rgba(255, 255, 255, 0.256);
 }
@@ -505,19 +509,22 @@ p {
   transform: translateX(5%) translateY(15%) skewX(-22deg);
 }
 
-.enter-button:hover,
-.logout-button:hover {
+.enter-button:hover {
   /* background-color: white; */
   /* color: black; */
   transform: translate(-50%, -15%);
   background-color: rgb(31, 108, 31);
 }
 .logout-button:hover {
+  background-color: rgb(31, 108, 31);
+  transform: translate(-50%, -55%);
+}
+.logout-button:hover {
   opacity: 1;
   background-color: rgba(165, 42, 42, 0.733);
   font-weight: bold;
   color: aliceblue;
-  transform: translate(-50%, 25%);
+  transform: translate(0%, 25%);
   text-transform: uppercase;
   /* scale: 1.3; */
 }
@@ -526,6 +533,14 @@ p {
   cursor: default;
 }
 
+.user-email {
+  position: absolute;
+  right: -4%;
+  top: -10%;
+  background-color: #32333100;
+  font-size: 22px;
+  font-family: monospace;
+}
 @keyframes flashAnimation {
   0% {
     opacity: 0;
