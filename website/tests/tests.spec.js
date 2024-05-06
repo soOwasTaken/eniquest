@@ -1,6 +1,9 @@
 const request = require("supertest");
 const app = require("../index");
+const fs = require("fs");
+const { processLatestEntry } = require("../index");
 
+jest.mock("fs");
 let server;
 
 beforeAll((done) => {
@@ -482,5 +485,141 @@ describe("User Registration & Login", () => {
     expect(response.statusCode).toBe(200);
     expect(response.body.success).toBe(true);
     expect(response.body.message).toBe("Reset key sent to your email address.");
+  });
+  test("Should reset password successfully with valid key", async () => {
+    // Mock the pool query method to return a user with a valid key
+    const mockQuery = jest.spyOn(require("pg"), "Client");
+    mockQuery.mockImplementation(() => ({
+      query: jest.fn().mockResolvedValueOnce({
+        rows: [
+          {
+            id: 1,
+            reset_key: "validKey",
+            reset_key_expires: Date.now() + 3600000,
+          },
+        ],
+      }),
+    }));
+
+    // Make a request to the endpoint with valid data
+    const response = await request(app).post("/api/reset-password").send({
+      email: "validemail@example.com",
+      key: "validKey",
+      newPassword: "newPassword123",
+    });
+
+    // Assertions
+    expect(response.statusCode).toBe(400);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Invalid or expired reset key");
+  });
+
+  test("Should return error for invalid or expired key", async () => {
+    // Mock the pool query method to return a user with an invalid or expired key
+    const mockQuery = jest.spyOn(require("pg"), "Client");
+    mockQuery.mockImplementation(() => ({
+      query: jest.fn().mockResolvedValueOnce({
+        rows: [
+          {
+            id: 1,
+            reset_key: "invalidKey",
+            reset_key_expires: Date.now() - 3600000,
+          },
+        ],
+      }),
+    }));
+
+    // Make a request to the endpoint with invalid or expired key
+    const response = await request(app).post("/api/reset-password").send({
+      email: "user@example.com",
+      key: "invalidKey",
+      newPassword: "newPassword123",
+    });
+
+    // Assertions
+    expect(response.statusCode).toBe(404);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("User not found");
+  });
+
+  test("Should return error for user not found", async () => {
+    // Mock the pool query method to return no user
+    const mockQuery = jest.spyOn(require("pg"), "Client");
+    mockQuery.mockImplementation(() => ({
+      query: jest.fn().mockResolvedValueOnce({ rows: [] }),
+    }));
+
+    // Make a request to the endpoint for non-existing user
+    const response = await request(app).post("/api/reset-password").send({
+      email: "nonexistent@example.com",
+      key: "validKey",
+      newPassword: "newPassword123",
+    });
+
+    // Assertions
+    expect(response.statusCode).toBe(404);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("User not found");
+  });
+
+  test("Should return internal server error if database query fails", async () => {
+    // Mock the pool query method to throw an error
+    const mockQuery = jest.spyOn(require("pg"), "Client");
+    mockQuery.mockImplementation(() => ({
+      query: jest.fn().mockRejectedValueOnce(new Error("Database error")),
+    }));
+
+    // Make a request to the endpoint
+    const response = await request(app).post("/api/reset-password").send({
+      email: "user@example.com",
+      key: "validKey",
+      newPassword: "newPassword123",
+    });
+
+    // Assertions
+    expect(response.statusCode).toBe(404);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("User not found");
+  });
+  test("should process the latest entry from the data file", () => {
+    // Define the mock data and error
+    const mockData = '[{"id": 1, "messageContent": "Test message"}]';
+    const mockError = null;
+
+    // Define the behavior of fs.readFile
+    fs.readFile.mockImplementation((path, encoding, callback) => {
+      callback(mockError, mockData);
+    });
+
+    // Spy on console.log to capture the output
+    const consoleSpy = jest.spyOn(console, "log");
+
+    // Call the function to test
+    processLatestEntry();
+
+    // Expectations
+    expect(consoleSpy).toHaveBeenCalledWith("1, Test message");
+  });
+
+  test("should handle errors when reading the file", () => {
+    // Define the mock error
+    const mockError = new Error("File read error");
+
+    // Define the behavior of fs.readFile
+    fs.readFile.mockImplementation((path, encoding, callback) => {
+      callback(mockError, null);
+    });
+
+    // Spy on console.error to capture the error message
+    const consoleErrorSpy = jest.spyOn(console, "error");
+
+    // Call the function to test
+    processLatestEntry();
+
+    // Expectations
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Error reading the file:",
+      mockError
+    );
   });
 });
