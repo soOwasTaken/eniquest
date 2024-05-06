@@ -1,5 +1,0 @@
-.env
-node_modules
-data.json
-users.json
-.gitignore

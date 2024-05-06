@@ -1,0 +1,18 @@
+[
+  {
+    "id": "xombtux8b",
+    "email": "laro9664@gmail.com",
+    "password": "$2b$10$hRLo4G0bYg.nXyoaM3uSl.59nw6/YIQlmtoj0uQ0x.FkTEx5DHuX.",
+    "verified": true,
+    "level": 6,
+    "loggedin": false
+  },
+  {
+    "id": "32uo9wpj5",
+    "email": "yamor57797@dxice.com",
+    "password": "$2b$10$5HljWH6eILSA8gazqhIuROuX6ZB2nA.693m.aZn.hq/4S6q4rTN5m",
+    "verified": true,
+    "level": 6,
+    "loggedin": false
+  }
+]
