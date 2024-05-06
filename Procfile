@@ -1,2 +1,1 @@
-web: cd website && npm install && cd frontend && npm install && cd ../.. && npm run dev
-
+web: cd website && npm run build && node index.js
