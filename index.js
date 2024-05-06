@@ -18,7 +18,7 @@ const params = url.parse(databaseUrl);
 const auth = params.auth.split(":");
 
 const pool = new Pool({
-    connectionString: process.env.HEROKU_POSTGRESQL_ROSE_URL,
+    connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     }
