@@ -24,8 +24,6 @@ const pool = new Pool({
     }
 });
 
-const pool = new Pool(config);
-
 pool.query("SELECT NOW()", (err, res) => {
   if (err) {
     console.error("Error connecting to the database:", err);
