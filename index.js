@@ -835,7 +835,7 @@ async function sendResetKeyEmail(email, key) {
   const apiKey = process.env.API_EMAIL;
   const subject = encodeURIComponent("Your Password Reset Key");
   const from = encodeURIComponent("444deph12@gmail.com");
-  const fromName = encodeURIComponent("Your Company Name");
+  const fromName = encodeURIComponent("Eniquest");
   const bodyHtml = encodeURIComponent(
     `<html><body>Your password reset key is: <strong>${key}</strong>. It expires in 1 hour.</body></html>`
   );
