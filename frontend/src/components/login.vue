@@ -1,11 +1,14 @@
 <template>
+  <div class="profile-div">
+    <SPAN class="user-email">{{ currentUser.email.split('@')[0] }}</SPAN>
+    <button v-if="store.getters.isLoggedIn" @click="logout" class="logout-button">Log Out</button>
+  </div>
   <div class="full-page">
     <video autoplay muted loop id="myVideo">
       <source src="../assets/145433-787039464_small(1).mp4" type="video/mp4" />
     </video>
     <div class="content">
       <ul class="completed-games" v-if="store.getters.isLoggedIn && currentUser">
-        <SPAN class="user-email">{{ currentUser.email.split('@')[0] }}</SPAN>
         <li v-if="filteredGameOptions.length > 0" class="succeeded-title">&nbsp;Succeeded:</li>
         <li v-for="(game, index) in filteredGameOptions" :key="index">
           <button class="completed-games-element" @click="navigateToGame(index)">
@@ -121,7 +124,7 @@
             : 'Enter the Arena'
         }}
       </button>
-      <button v-if="store.getters.isLoggedIn" @click="logout" class="logout-button">Log Out</button>
+
       <OverlayComponent v-show="isVisible" :style="{ opacity: overlayOpacity }" />
     </div>
   </div>
@@ -395,6 +398,7 @@ ul {
 }
 
 .content {
+  position: relative;
   display: flex;
   justify-content: space-around; /* Ensures the paragraph and SVG are spaced out */
   align-items: center;
@@ -433,7 +437,13 @@ p {
   opacity: 0;
   animation: flashAnimation 0.2s forwards; /* Quick flash */
 }
-
+.profile-div {
+  position: absolute;
+  height: 10vh;
+  width: 10vw;
+  right: 8%;
+  margin-top: 1%;
+}
 .enter-button,
 .logout-button {
   padding: 10px 20px;
@@ -449,24 +459,27 @@ p {
     all 0.3s,
     color 0.3s;
   position: absolute;
+
+  text-transform: uppercase;
+
+  border-radius: 3px;
+}
+.enter-button {
   bottom: 20%; /* Distance from bottom */
   left: 50%;
-  text-transform: uppercase;
   transform: translateX(-50%);
-  border-radius: 3px;
 }
 .logout-button {
   /* top: -10%; */
   /* left: 1%; */
-  top: -3%;
-  width: 6%;
+
+  width: 40%;
   padding: 0;
-  height: 5%;
+  height: 50%;
   font-size: 16px;
   opacity: 0;
   transform: translate(0px);
-  left: 97.5%;
-
+  z-index: 9999;
   border-color: rgba(255, 255, 255, 0.256);
   color: rgba(255, 255, 255, 0.256);
 }
@@ -515,16 +528,13 @@ p {
   transform: translate(-50%, -15%);
   background-color: rgb(31, 108, 31);
 }
-.logout-button:hover {
-  background-color: rgb(31, 108, 31);
-  transform: translate(-50%, -55%);
-}
+
 .logout-button:hover {
   opacity: 1;
   background-color: rgba(165, 42, 42, 0.733);
   font-weight: bold;
   color: aliceblue;
-  transform: translate(0%, 25%);
+  transform: translate(8%, 0%);
   text-transform: uppercase;
   /* scale: 1.3; */
 }
@@ -534,10 +544,11 @@ p {
 }
 
 .user-email {
-  position: absolute;
+  /* position: absolute;
   right: -4%;
-  top: -10%;
+  top: -10%; */
   background-color: #32333100;
+  margin-right: 20%;
   font-size: 22px;
   font-family: monospace;
 }
