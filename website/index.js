@@ -38,11 +38,13 @@ pool.query("SELECT NOW()", (err, res) => {
   }
 });
 
+module.exports = pool;
 // Create a connection pool
 // const pool = new Pool({
 //   user: process.env.DB_USER,
 //   host: process.env.DB_HOST,
-//   database: process.env.DB_NAME,
+//   database: process.env.DB_NAME,20
+
 //   password: process.env.DB_PASSWORD,
 //   port: process.env.DB_PORT,
 // });

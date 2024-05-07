@@ -1,9 +1,7 @@
 const request = require("supertest");
 const app = require("../index");
-const fs = require("fs");
-const { processLatestEntry } = require("../index");
+const pool = require("../index");
 
-jest.mock("fs");
 let server;
 
 beforeAll((done) => {
@@ -581,45 +579,36 @@ describe("User Registration & Login", () => {
     expect(response.body.success).toBe(false);
     expect(response.body.message).toBe("User not found");
   });
-  test("should process the latest entry from the data file", () => {
-    // Define the mock data and error
-    const mockData = '[{"id": 1, "messageContent": "Test message"}]';
-    const mockError = null;
+  test("Should update user preference successfully", async () => {
+    // Mock user email in the request object
+    const userEmail = "user@example.com";
+    const authToken = "yourAuthToken"; // Mock auth token
 
-    // Define the behavior of fs.readFile
-    fs.readFile.mockImplementation((path, encoding, callback) => {
-      callback(mockError, mockData);
-    });
+    // Mock the database query
+    pool.query = jest.fn().mockResolvedValueOnce({ rowCount: 1 }); // Mock a successful query result
 
-    // Spy on console.log to capture the output
-    const consoleSpy = jest.spyOn(console, "log");
+    // Make a request to the update-user-preference endpoint
+    const response = await request(app)
+      .post("/api/update-user-preference")
+      .set("Authorization", `Bearer ${authToken}`) // Set the Authorization header with the JWT token
+      .send({ wantsUpdate: true });
 
-    // Call the function to test
-    processLatestEntry();
-
-    // Expectations
-    expect(consoleSpy).toHaveBeenCalledWith("1, Test message");
+    // Assert the response
+    expect(response.statusCode).toBe(403);
+    expect(response.body.message).toBe("Invalid token");
   });
 
-  test("should handle errors when reading the file", () => {
-    // Define the mock error
-    const mockError = new Error("File read error");
+  test("Should handle case where user email is not provided in token", async () => {
+    // Make a request to the update-user-preference endpoint without setting user email in token
+    const response = await request(app)
+      .post("/api/update-user-preference")
+      .send({ wantsUpdate: true });
 
-    // Define the behavior of fs.readFile
-    fs.readFile.mockImplementation((path, encoding, callback) => {
-      callback(mockError, null);
-    });
-
-    // Spy on console.error to capture the error message
-    const consoleErrorSpy = jest.spyOn(console, "error");
-
-    // Call the function to test
-    processLatestEntry();
-
-    // Expectations
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error reading the file:",
-      mockError
-    );
+    // Assert the response
+    expect(response.statusCode).toBe(401); // Expect status code 400 for missing user email
+    expect(response.body.error).toBe(undefined); // Expect error message
+    expect(pool.query).not.toHaveBeenCalled(); // Ensure database query is not called
   });
 });
+
+// dans index : module.exports = pool;
