@@ -1,7 +1,7 @@
 <template>
-  <div class="profile-div">
+  <div v-if="store.getters.isLoggedIn" class="profile-div">
     <SPAN class="user-email">{{ currentUser.email.split('@')[0] }}</SPAN>
-    <button v-if="store.getters.isLoggedIn" @click="logout" class="logout-button">Log Out</button>
+    <button @click="logout" class="logout-button">Log Out</button>
   </div>
   <div class="full-page">
     <video autoplay muted loop id="myVideo">
