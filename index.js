@@ -18,10 +18,10 @@ const params = url.parse(databaseUrl);
 const auth = params.auth.split(":");
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 pool.query("SELECT NOW()", (err, res) => {
@@ -679,10 +679,15 @@ function processEntryById(content, id, userEmail) {
 
 //////////////////////////// DATABASE UPDATE LEVEL AND PROCESSENTRYBYID /////////////////////////////
 async function updateUserLevel(level, email) {
-  console.log(`Attempting to update user level to ${level} for user with email ${email}`);
+  console.log(
+    `Attempting to update user level to ${level} for user with email ${email}`
+  );
   try {
     // First, fetch the current level of the user
-    const currentLevelResult = await pool.query("SELECT level FROM users WHERE email = $2", [email]);
+    const currentLevelResult = await pool.query(
+      "SELECT level FROM users WHERE email = $2",
+      [email]
+    );
     if (currentLevelResult.rowCount === 0) {
       console.log(`No user found with email: ${email}`);
       return;
@@ -692,11 +697,16 @@ async function updateUserLevel(level, email) {
 
     // Compare the new level with the current level
     if (level < currentLevel) {
-      console.log(`New level (${level}) is lower than the current level (${currentLevel}). Not updating.`);
+      console.log(
+        `New level (${level}) is lower than the current level (${currentLevel}). Not updating.`
+      );
       return;
     }
     // Update the user's level
-    const res = await pool.query("UPDATE users SET level = $1 WHERE email = $2", [level, email]);
+    const res = await pool.query(
+      "UPDATE users SET level = $1 WHERE email = $2",
+      [level, email]
+    );
     if (res.rowCount > 0) {
       console.log(`User level updated successfully for email: ${email}`);
     } else {
@@ -738,7 +748,7 @@ async function sendVerificationEmail(email, verificationLink) {
   const apiKey = process.env.API_EMAIL;
   const subject = encodeURIComponent("Verify Your Email Address");
   const from = encodeURIComponent("444deph12@gmail.com");
-  const fromName = encodeURIComponent("Your Company Name");
+  const fromName = encodeURIComponent("Eniquest");
   const bodyHtml = encodeURIComponent(
     `<html><body>Please verify your email by clicking on this link: <a href="${verificationLink}">Verify Email</a></body></html>`
   );
