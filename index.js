@@ -685,7 +685,7 @@ async function updateUserLevel(level, email) {
   try {
     // First, fetch the current level of the user
     const currentLevelResult = await pool.query(
-      "SELECT level FROM users WHERE email = $2",
+      "SELECT level FROM users WHERE email = $1",
       [email]
     );
     if (currentLevelResult.rowCount === 0) {
