@@ -801,7 +801,7 @@ app.post("/api/users/request-reset", async (req, res) => {
 
   try {
     // Find the user by email in the database
-    const result = await pool.query("SELECT * FROM users WHERE email = $1", [
+    const result = await pool.query("SELECT * FROM users WHERE email = '$1'", [
       email,
     ]);
     const user = result.rows[0];
