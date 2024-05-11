@@ -120,8 +120,8 @@
             censorship.
           </p>
           <span class="whatever">I disapprove</span>
-          <br>
-          <br>
+          <br />
+          <br />
           <h2>Legal and Ethical Challenges</h2>
           <p>
             The evolution of free speech online has not been without its legal and ethical
@@ -646,8 +646,8 @@
         </div>
         <div class="myspace-footer">
           <a href="#">About</a> | <a href="#">News</a> | <a href="#">FAQ</a> |
-          <a href="#">Terms</a> | <a href="#" @click="handlePrivacyClick">Privacy</a> | <a href="#">Contact</a> |
-          <a href="#">Promote</a> | <a href="#">Advertise</a> |
+          <a href="#">Terms</a> | <a href="#" @click="handlePrivacyClick">Privacy</a> |
+          <a href="#">Contact</a> | <a href="#">Promote</a> | <a href="#">Advertise</a> |
           <a href="#">MySpace Shop</a>
         </div>
       </div>
@@ -717,24 +717,24 @@ function returnToForumPage(forumPage) {
 const submitAnswer = async () => {
   const fullAnswer = answer.value
   const game = 'game2'
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token')
 
   if (!token) {
-    console.error('No token available');
-    return; // Optionally handle the lack of token
+    console.error('No token available')
+    return // Optionally handle the lack of token
   }
 
   const response = await fetch('/checkOrder', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+      Authorization: `Bearer ${token}` // Include the token in the Authorization header
     },
     body: JSON.stringify({ game, order: fullAnswer })
-  });
+  })
 
   if (!response.ok) {
-    throw new Error('Network response was not ok: ' + response.statusText);
+    throw new Error('Network response was not ok: ' + response.statusText)
   }
 
   const data = await response.json()
@@ -789,11 +789,10 @@ const transition = () => {
   }, 1500)
 }
 const handlePrivacyClick = (event) => {
-  event.preventDefault(); // Prevent the default behavior of the link
-  event.target.innerText = 'you say'; // Change the text
-  event.target.classList.add('red-text'); // Add the red-text class
-};
-
+  event.preventDefault() // Prevent the default behavior of the link
+  event.target.innerText = 'you say' // Change the text
+  event.target.classList.add('red-text') // Add the red-text class
+}
 </script>
 <style scoped>
 .old-web {
@@ -844,11 +843,12 @@ li p {
 }
 
 .red-text {
-    color: red !important;
+  color: red !important;
 }
 
 .green {
   color: green;
+  cursor: pointer;
 }
 
 .logo {
@@ -858,6 +858,7 @@ li p {
 .link {
   color: #0000ff;
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .results {
@@ -930,7 +931,7 @@ li p {
   color: white;
   user-select: all;
   position: absolute;
-  left:42%;
+  left: 42%;
 }
 .bannerWeTalk pre {
   font-family: 'Courier New', Courier, monospace;
