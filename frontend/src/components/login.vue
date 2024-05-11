@@ -1,4 +1,6 @@
 <template>
+  <img src="../assets/github-logo.png" alt="github" class="github-logo" @click="redirectToGitHub" />
+
   <div v-if="store.getters.isLoggedIn" class="profile-div">
     <SPAN class="user-email">{{ currentUser.email.split('@')[0] }}</SPAN>
     <button @click="logout" class="logout-button">Log Out</button>
@@ -347,6 +349,9 @@ export default {
       setTimeout(() => {
         this.router.push(gameRoute)
       }, 791)
+    },
+    redirectToGitHub() {
+      window.open('https://github.com/soOwasTaken/eniquest', '_blank')
     }
   },
   watch: {
@@ -587,5 +592,19 @@ p {
 .content {
   position: relative; /* Ensures content is on top of the video */
   z-index: 1; /* Higher than video */
+}
+.github-logo {
+  position: absolute;
+  scale: 0.5;
+  bottom: -4%;
+  right: -2%;
+  z-index: 9999;
+  opacity: 0.2;
+  transition: all 0.5s ease;
+}
+.github-logo:hover {
+  transform: translateY(-5%);
+  cursor: pointer;
+  opacity: 1;
 }
 </style>
