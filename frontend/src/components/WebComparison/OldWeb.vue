@@ -848,7 +848,7 @@ li p {
 
 .green {
   color: green;
-  cursor: default;
+  cursor: pointer;
 }
 
 .logo {
