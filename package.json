@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"node index.js\" \"cd ./frontend && npm run dev\"",
-    "build": "npm install",
+    "build": "cd frontend && npm install && npm build-only",
     "start": "node index.js",
     "test": "jest --detectOpenHandles"
   },
