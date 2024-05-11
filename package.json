@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"node index.js\" \"cd ./frontend && npm run dev\"",
-    "build": "npm install && npm install @vitejs/plugin-vue && npm install pinia && cd frontend && npm run build-only",
+    "build": "cd frontend && npm install --legacy-peer-deps && npm run build-only",
     "start": "node index.js",
     "test": "jest --detectOpenHandles"
   },
