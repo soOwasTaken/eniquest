@@ -50,7 +50,7 @@ export default {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Token
+          Authorization: `Bearer ${token}` // Token
         },
         body: JSON.stringify({ wantsUpdate: this.wantsUpdate })
       })
@@ -109,7 +109,6 @@ export default {
         }
       } catch (error) {
         console.error('Error fetching current user:', error)
-        this.currentUser = null
         return null
       }
     }
