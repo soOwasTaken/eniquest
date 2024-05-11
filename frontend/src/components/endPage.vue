@@ -114,6 +114,7 @@ export default {
     }
   },
   mounted() {
+    location.reload()
     this.fetchCurrentUser() // Fetch current user data when component is mounted
   }
 }
