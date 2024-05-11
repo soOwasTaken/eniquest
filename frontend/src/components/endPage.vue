@@ -55,7 +55,7 @@ export default {
         body: JSON.stringify({ wantsUpdate: this.wantsUpdate })
       })
         .then((response) => {
-          if (response.ok) {
+          if (response.status === 200) {
             this.notificationMessage = 'Your preference has been updated.'
             document.body.style.backgroundColor = 'black'
             setTimeout(() => {
