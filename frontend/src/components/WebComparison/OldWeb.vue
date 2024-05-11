@@ -28,7 +28,7 @@
             </p>
             <p><span style="font-weight: bold">Description:</span> a article about how the...</p>
             <p><span style="font-weight: bold">Category :</span> Computers > Internet > WWW ...</p>
-            <span class="green">www.we-talk.com/ - 47k</span>
+            <span @click.prevent="openPage('pageOne')" class="green">www.we-talk.com/ - 47k</span>
           </li>
           <li>
             <a @click.prevent="openPage('pageTwo')" class="link"
@@ -40,14 +40,18 @@
               everyone...
             </p>
             <p><span style="font-weight: bold">Category :</span> Forum > Internet > Sharing ...</p>
-            <span class="green">www.lets-share-about.com/ - 54k</span>
+            <span class="green" @click.prevent="openPage('pageTwo')"
+              >www.lets-share-about.com/ - 54k</span
+            >
           </li>
           <li>
             <a @click.prevent="openPage('pageThree')" class="link">myspoce.com</a>
             <p>The unlimited <span style="font-weight: bold">Free Speech</span> first network.</p>
             <p><span style="font-weight: bold">Description:</span> social network...</p>
             <p><span style="font-weight: bold">Category :</span> Media > Social ...</p>
-            <span class="green">www.my-spoce.com/ - 37k</span>
+            <span class="green" @click.prevent="openPage('pageThree')"
+              >www.my-spoce.com/ - 37k</span
+            >
           </li>
         </ul>
       </div>
