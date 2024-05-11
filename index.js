@@ -205,9 +205,12 @@ app.post("/checkOrder", authenticateToken, async (req, res) => {
   if (game === "game2") {
     const correctPhrase =
       "I disapprove of what you say, but I will defend to the death your right to say it";
+    const correctPhrase2 =
+      "I disapprove of what you say but I will defend to the death your right to say it";
     const userAnswer = order.trim().replace(/\.$/, "").toLowerCase();
 
     const correctAnswer = correctPhrase.toLowerCase().replace(/\.$/, "");
+    const correctAnswer2 = correctPhrase2.toLowerCase().replace(/\.$/, "");
 
     if (userAnswer === correctAnswer || userAnswer === correctAnswer2) {
       try {
