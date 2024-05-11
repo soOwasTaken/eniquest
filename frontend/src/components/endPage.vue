@@ -50,7 +50,7 @@ export default {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}` // Token
+          Authorization: `Bearer ${localStorage.getItem('token')}` // Token
         },
         body: JSON.stringify({ wantsUpdate: this.wantsUpdate })
       })
@@ -114,7 +114,6 @@ export default {
     }
   },
   mounted() {
-    location.reload()
     this.fetchCurrentUser() // Fetch current user data when component is mounted
   }
 }
