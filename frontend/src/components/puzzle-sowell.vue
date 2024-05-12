@@ -66,8 +66,8 @@ import App5 from '../App5.vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-const ROWS = 5
-const COLS = 5
+const ROWS = 6
+const COLS = 6
 const EMPTY_TILE = ROWS * COLS - 1
 
 const tiles = ref([])
@@ -366,8 +366,8 @@ shuffleTiles()
 /* DIMENSIONS */
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, 120px);
-  grid-template-rows: repeat(5, 120px);
+  grid-template-columns: repeat(6, 100px);
+  grid-template-rows: repeat(6, 100px);
   gap: 2px;
 }
 
@@ -424,8 +424,8 @@ shuffleTiles()
 
 /* DIMENSIONS */
 .tile {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   background-color: lightblue;
   border: 1px solid black;
   cursor: pointer;
