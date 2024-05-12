@@ -57,14 +57,3 @@
    npm start
    ```
 
-## Usage
-
-Use Eniquest to solve puzzles and engage with content related to freedom of expression. The website offers a variety of puzzles that challenge users' understanding and encourage critical thinking.
-
-## Acknowledgments
-
-- Thanks to all the contributors who have helped shape Eniquest.
-- Special thanks to MistralAI and ElasticEmail for their services.
-
-
-
