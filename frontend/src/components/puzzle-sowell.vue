@@ -66,15 +66,15 @@ import App5 from '../App5.vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-const ROWS = 7
-const COLS = 7
+const ROWS = 5
+const COLS = 5
 const EMPTY_TILE = ROWS * COLS - 1
 
 const tiles = ref([])
 const completed = ref(false)
 let selectedTileIndex = null
 let userInput = ref('')
-const timer = ref(180) // TIME //////////////////////
+const timer = ref(120) // TIME //////////////////////
 const timerColor = ref('black')
 
 const changeComponent = inject('changeComponent')
@@ -328,7 +328,7 @@ const swapTiles = (index1, index2) => {
 const resetGame = () => {
   completed.value = false
   shuffleTiles()
-  timer.value = 180 // TIME ///////////////////////////////
+  timer.value = 120 // TIME ///////////////////////////////
   timerColor.value = 'yellow'
 }
 
@@ -366,8 +366,8 @@ shuffleTiles()
 /* DIMENSIONS */
 .grid {
   display: grid;
-  grid-template-columns: repeat(7, 85.7142857px);
-  grid-template-rows: repeat(7, 85.7142857px);
+  grid-template-columns: repeat(5, 120px);
+  grid-template-rows: repeat(5, 120px);
   gap: 2px;
 }
 
@@ -424,8 +424,8 @@ shuffleTiles()
 
 /* DIMENSIONS */
 .tile {
-  width: 85.7142857px;
-  height: 85.7142857px;
+  width: 120px;
+  height: 120px;
   background-color: lightblue;
   border: 1px solid black;
   cursor: pointer;
