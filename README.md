@@ -39,7 +39,7 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourrepository/eniquest.git
+   git clone https://github.com/soOwasTaken/eniquest.git
    ```
 2. Install NPM packages:
    ```bash
@@ -48,9 +48,9 @@
 3. Set up the environment variables in a `.env` file:
    ```plaintext
    DATABASE_URL="Your PostgreSQL database URL"
-   JWT_SECRET="Your secret key"
-   MISTRAL_API_KEY="Your MistralAI API key"
-   ELASTIC_EMAIL_API_KEY="Your ElasticEmail API key"
+   JWT_SECRET="secret key"
+   MISTRAL_API_KEY="MistralAI API key"
+   ELASTIC_EMAIL_API_KEY="ElasticEmail API key"
    ```
 4. Run the application:
    ```bash
