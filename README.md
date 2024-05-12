@@ -2,8 +2,8 @@
 
 ## Authors
 
-- [Alexandre Mary](https://github.com/soOwasTaken)
-- [Chris Bikoy](https://github.com/rchrisb)
+- [soOwasTaken](https://github.com/soOwasTaken)
+- [rChrisb](https://github.com/rchrisb)
 
 ## Built With
 
