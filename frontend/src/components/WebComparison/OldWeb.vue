@@ -765,7 +765,7 @@ const transition = () => {
       })
       .add(
         {
-          targets: '.new-web',
+          targets: ['.new-web', '.wiki-container', '.medium-article', '.news-page'],
           opacity: 0.5,
           translateX: '-100%'
         },
@@ -779,7 +779,7 @@ const transition = () => {
       })
       .add(
         {
-          targets: '.new-web',
+          targets: ['.new-web', '.wiki-container', '.medium-article', '.news-page'],
           translateX: '-200%',
           translateY: '200%',
           opacity: 0
