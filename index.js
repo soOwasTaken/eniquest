@@ -659,7 +659,7 @@ function processLatestEntry() {
 function processEntryById(content, id, userEmail) {
   console.log("Content received for processing:", content); // Debug: log the content
 
-  const scoreRegex = /Score: (\d+)\/10/;
+  const scoreRegex = /Score: (\d+)/;
   const summaryRegex = /[^:]*:[^:]*: ([^\.]*)\./;
 
   const scoreMatch = content.match(scoreRegex);
