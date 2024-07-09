@@ -81,7 +81,7 @@ export default {
         const response = await api.post('/users/register', userData)
         if (response.data.success) {
           // Registration successful, show alert message to verify email
-          alert('Registration successful. Please verify your email.')
+          alert('Registration successful. You can now loggin.')
         } else {
           // Registration failed, display error message
           alert(response.data.message)
