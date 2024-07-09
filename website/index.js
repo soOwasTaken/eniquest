@@ -476,7 +476,7 @@ app.post("/api/users/register", async (req, res) => {
     // Insert new user into the database
     await pool.query(
       "INSERT INTO users (id, email, password, verified, level, loggedin) VALUES ($1, $2, $3, $4, $5, $6)",
-      [userId, email, hashedPassword, false, 0, false]
+      [userId, email, hashedPassword, true, 0, false]
     );
 
     // Send verification email (assuming this function is defined elsewhere)
@@ -487,7 +487,7 @@ app.post("/api/users/register", async (req, res) => {
     res.status(201).json({
       success: true,
       message:
-        "Verification email sent. Please check your email to complete registration.",
+        "You can now use that email to connect, Verification email bypassed, due to ElasticEmail API changes. (work in progress)",
     });
   } catch (error) {
     console.error("Error registering user:", error);
